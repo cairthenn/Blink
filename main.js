@@ -1,5 +1,5 @@
 const Electron = require('electron');
-const { app, net, BrowserWindow, Menu } = Electron;
+const { app, BrowserWindow, Menu } = Electron;
 const auth = require('./auth');
 const platform = require('os').platform();
 
