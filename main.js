@@ -1,6 +1,7 @@
 const Electron = require('electron');
 const { app, net, BrowserWindow, Menu } = Electron;
 const auth = require('./auth');
+const platform = require('os').platform();
 
 let main_application;
 
@@ -15,16 +16,23 @@ app.on('ready', function() {
     Menu.setApplicationMenu(main_menu);
 });
 
-const main_menu = Menu.buildFromTemplate([
-    {
-        label: 'Account',
-        submenu: [
-            {
-                label: 'Login',
-                click() {
-                    auth.open_auth_window(true);
-                }
-            },
-        ]
-    }
-]);
+let main_menu;
+const menu_template = [ {
+    label: 'Account',
+    submenu: [
+        {
+            label: 'Login',
+            click() {
+                auth.open_auth_window(true);
+            }
+        },
+    ]
+} ];
+
+if(platform == 'darwin') {
+    // Comply with Mac menu bars
+    main_menu = Menu.buildFromTemplate( [ { label : 'MacOS Placeholder' } ].concat(menu_template));
+} 
+else {
+    Menu.buildFromTemplate(menu_template);
+}
