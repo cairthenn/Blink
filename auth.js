@@ -1,5 +1,6 @@
 const { BrowserWindow } = require('electron');
 const qs = require('querystring');
+const twitch = require('./twitch')
 
 let auth_window;
 
@@ -71,6 +72,7 @@ function auth_failure(reason) {
     console.log(`Unable to authenticate Twitch Account: ${reason}`);
 }
 
-function auth_success(token) {
-    console.log(token);
+function auth_success(auth) {
+    console.log(auth);
+    twitch.verify_token(auth.token);
 }
