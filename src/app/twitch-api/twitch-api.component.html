@@ -1,0 +1,18 @@
+<span>Chat</span>
+<div *ngIf="active_chat">
+    <table>
+    <tr>
+        <div class="scrollbox chat-messages">
+            <ul class="chat-messages">
+                <li *ngFor="let msg of active_chat.messages">
+                    <span><span [style.color]="msg.color">{{msg.username}}:</span> {{msg.message}}</span>
+                </li>
+            </ul>
+        </div>
+    </tr>
+    <tr style="align-content:center">
+        <input #current_input
+        (keyup.enter)="active_chat.send(current_input.value); current_input.value=''">
+    </tr>
+    </table>
+</div>

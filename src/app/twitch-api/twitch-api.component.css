@@ -1,0 +1,12 @@
+ul.chat-messages {
+    list-style-type: none;
+    padding-left: 0px;
+    width: 100%;
+}
+
+ul.chat-messages li {
+    padding-left: 10px;
+    color: #f7fcff;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
