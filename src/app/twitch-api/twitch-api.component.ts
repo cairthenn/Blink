@@ -35,7 +35,9 @@ export class TwitchApiComponent implements OnInit {
 		IrcService.init(sucesss => {
 			if(sucesss) {
 				this.ipcRenderer.send('IRCReady');
-				this.add_channel('autocair');
+				if(this.active_chat == undefined) {
+					this.add_channel('autocair');
+				}
 			}
 		});
 	}

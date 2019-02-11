@@ -1,0 +1,924 @@
+
+.cc-button {
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    align-items: center;
+    display: inline-flex;
+    font-size: 1.2rem;
+    justify-content: center;
+    line-height: 2rem;
+    outline: none;
+    position: relative;
+    text-decoration: none;
+    user-select: none;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.cc-button,.cc-root--dark .cc-button,.cc-root--light .cc-button {
+    background: #6441a4;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #fff;
+}
+
+.cc-root--hover .cc-button:hover {
+    text-decoration: none;
+}
+
+.cc-root--hover .cc-button:hover,.cc-root--dark.cc-root--hover .cc-button:hover,.cc-root--light.cc-root--hover .cc-button:hover {
+    background: #7d5bbe;
+    border-color: #7d5bbe;
+    color: #fff;
+}
+
+.cc-button:focus {
+    text-decoration: none;
+}
+
+.cc-button:focus,.cc-root--dark .cc-button:focus,.cc-root--light .cc-button:focus {
+    background: #7d5bbe;
+    border-color: #9a7fcc;
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #fff;
+}
+
+.cc-button:active {
+    text-decoration: none;
+}
+
+.cc-button:active,.cc-root--dark .cc-button:active,.cc-root--light .cc-button:active {
+    background: #6441a4;
+    border-color: #7d5bbe;
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #fff;
+}
+
+.cc-button__text {
+    padding: .4rem .8rem;
+    position: relative;
+    text-align: center;
+}
+
+.cc-button--text {
+    background: transparent;
+    color: #dad8de;
+}
+
+.cc-root--dark .cc-button--text {
+    background: transparent;
+    color: #dad8de;
+}
+
+.cc-root--light .cc-button--text {
+    background: transparent;
+    color: #6441a4;
+}
+
+.cc-root--hover .cc-button--text:hover {
+    background: hsla(0,0%,100%,.05);
+    border-color: transparent;
+    color: #efeef1;
+}
+
+.cc-root--dark.cc-root--hover .cc-button--text:hover {
+    background: hsla(0,0%,100%,.05);
+    border-color: transparent;
+    color: #efeef1;
+}
+
+.cc-root--light.cc-root--hover .cc-button--text:hover {
+    background: rgba(100,65,164,.05);
+    border-color: transparent;
+    color: #2c2541;
+}
+
+.cc-button--text:focus {
+    background: hsla(0,0%,100%,.05);
+    border: 1px solid transparent;
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #efeef1;
+}
+
+.cc-root--dark .cc-button--text:focus {
+    background: hsla(0,0%,100%,.05);
+    border: 1px solid transparent;
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #efeef1;
+}
+
+.cc-root--light .cc-button--text:focus {
+    background: rgba(100,65,164,.05);
+    border: 1px solid transparent;
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #2c2541;
+}
+
+.cc-button--text:active {
+    background: rgba(100,65,164,.1);
+    border: 1px solid #7d5bbe;
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #efeef1;
+}
+
+.cc-root--dark .cc-button--text:active {
+    background: rgba(100,65,164,.1);
+    border: 1px solid #7d5bbe;
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #efeef1;
+}
+
+.cc-root--light .cc-button--text:active {
+    background: transparent;
+    border: 1px solid rgba(100,65,164,.6);
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #2c2541;
+}
+
+.cc-button--text.cc-button--disabled {
+    background-color: transparent;
+    border-color: transparent;
+    color: rgba(218,216,222,.5);
+}
+
+.cc-root--dark .cc-button--text.cc-button--disabled {
+    background-color: transparent;
+    border-color: transparent;
+    color: rgba(218,216,222,.5);
+}
+
+.cc-root--light .cc-button--text.cc-button--disabled {
+    background-color: transparent;
+    border-color: transparent;
+    color: rgba(100,65,164,.5);
+}
+
+.cc-root--hover .cc-button--text.cc-button--disabled:hover {
+    background-color: transparent;
+    border-color: transparent;
+    color: rgba(218,216,222,.5);
+}
+
+.cc-root--dark.cc-root--hover .cc-button--text.cc-button--disabled:hover {
+    background-color: transparent;
+    border-color: transparent;
+    color: rgba(218,216,222,.5);
+}
+
+.cc-root--light.cc-root--hover .cc-button--text.cc-button--disabled:hover {
+    background-color: transparent;
+    border-color: transparent;
+    color: rgba(100,65,164,.5);
+}
+
+.cc-button--text.cc-button--disabled:active,.cc-button--text.cc-button--disabled:focus {
+    background-color: transparent;
+    border-color: transparent;
+    color: rgba(218,216,222,.5);
+}
+
+.cc-root--dark .cc-button--text.cc-button--disabled:active,.cc-root--dark .cc-button--text.cc-button--disabled:focus {
+    background-color: transparent;
+    border-color: transparent;
+    color: rgba(218,216,222,.5);
+}
+
+.cc-root--light .cc-button--text.cc-button--disabled:active,.cc-root--light .cc-button--text.cc-button--disabled:focus {
+    background-color: transparent;
+    border-color: transparent;
+    color: rgba(100,65,164,.5);
+}
+
+.cc-button--overlay,.cc-root--dark .cc-button--overlay,.cc-root--light .cc-button--overlay {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #fff;
+}
+
+.cc-root--hover .cc-button--overlay:hover,.cc-root--dark.cc-root--hover .cc-button--overlay:hover,.cc-root--light.cc-root--hover .cc-button--overlay:hover {
+    background: hsla(0,0%,100%,.05);
+    border-color: transparent;
+    color: #fff;
+}
+
+.cc-button--overlay:focus,.cc-root--dark .cc-button--overlay:focus,.cc-root--light .cc-button--overlay:focus {
+    background: hsla(0,0%,100%,.05);
+    border-color: hsla(0,0%,100%,.3);
+    box-shadow: 0 0 6px 0 hsla(0,0%,100%,.3);
+    color: #fff;
+}
+
+.cc-button--overlay:active {
+    background: hsla(0,0%,100%,.1);
+}
+
+.cc-button--overlay:active,.cc-root--dark .cc-button--overlay:active {
+    border-color: hsla(0,0%,100%,.6);
+    box-shadow: 0 0 6px 0 hsla(0,0%,100%,.3);
+    color: #fff;
+}
+
+.cc-root--dark .cc-button--overlay:active {
+    background: transparent;
+}
+
+.cc-root--light .cc-button--overlay:active {
+    background: hsla(0,0%,100%,.1);
+    border-color: hsla(0,0%,100%,.6);
+    box-shadow: 0 0 6px 0 hsla(0,0%,100%,.3);
+    color: #fff;
+}
+
+.cc-button--overlay.cc-button--hollow,.cc-button--overlay.cc-button--state-loading,.cc-button--overlay.cc-button--state-success,.cc-root--hover .cc-button--overlay.cc-button--hollow:hover,.cc-root--hover .cc-button--overlay.cc-button--state-loading:hover,.cc-root--hover .cc-button--overlay.cc-button--state-success:hover,.cc-root--dark .cc-button--overlay.cc-button--hollow,.cc-root--dark .cc-button--overlay.cc-button--state-loading,.cc-root--dark .cc-button--overlay.cc-button--state-success,.cc-root--dark.cc-root--hover .cc-button--overlay.cc-button--state-loading:hover,.cc-root--light .cc-button--overlay.cc-button--hollow,.cc-root--light .cc-button--overlay.cc-button--state-loading,.cc-root--light .cc-button--overlay.cc-button--state-success,.cc-root--light.cc-root--hover .cc-button--overlay.cc-button--state-loading:hover {
+    border-color: #fff;
+}
+
+.cc-button--overlay.cc-button--hollow.cc-button--disabled,.cc-button--overlay.cc-button--hollow.cc-button--disabled:active,.cc-button--overlay.cc-button--hollow.cc-button--disabled:focus,.cc-button--overlay.cc-button--state-loading.cc-button--disabled,.cc-button--overlay.cc-button--state-loading.cc-button--disabled:active,.cc-button--overlay.cc-button--state-loading.cc-button--disabled:focus,.cc-button--overlay.cc-button--state-success.cc-button--disabled,.cc-button--overlay.cc-button--state-success.cc-button--disabled:active,.cc-button--overlay.cc-button--state-success.cc-button--disabled:focus,.cc-root--hover .cc-button--overlay.cc-button--hollow.cc-button--disabled:hover,.cc-root--hover .cc-button--overlay.cc-button--state-loading.cc-button--disabled:hover,.cc-root--hover .cc-button--overlay.cc-button--state-success.cc-button--disabled:hover,.cc-root--dark .cc-button--overlay.cc-button--hollow.cc-button--disabled,.cc-root--dark .cc-button--overlay.cc-button--hollow.cc-button--disabled:active,.cc-root--dark .cc-button--overlay.cc-button--hollow.cc-button--disabled:focus,.cc-root--dark .cc-button--overlay.cc-button--state-loading.cc-button--disabled,.cc-root--dark .cc-button--overlay.cc-button--state-loading.cc-button--disabled:active,.cc-root--dark .cc-button--overlay.cc-button--state-loading.cc-button--disabled:focus,.cc-root--dark .cc-button--overlay.cc-button--state-success.cc-button--disabled,.cc-root--dark .cc-button--overlay.cc-button--state-success.cc-button--disabled:active,.cc-root--dark .cc-button--overlay.cc-button--state-success.cc-button--disabled:focus,.cc-root--dark.cc-root--hover .cc-button--overlay.cc-button--state-loading.cc-button--disabled:hover,.cc-root--light .cc-button--overlay.cc-button--hollow.cc-button--disabled,.cc-root--light .cc-button--overlay.cc-button--hollow.cc-button--disabled:active,.cc-root--light .cc-button--overlay.cc-button--hollow.cc-button--disabled:focus,.cc-root--light .cc-button--overlay.cc-button--state-loading.cc-button--disabled,.cc-root--light .cc-button--overlay.cc-button--state-loading.cc-button--disabled:active,.cc-root--light .cc-button--overlay.cc-button--state-loading.cc-button--disabled:focus,.cc-root--light .cc-button--overlay.cc-button--state-success.cc-button--disabled,.cc-root--light .cc-button--overlay.cc-button--state-success.cc-button--disabled:active,.cc-root--light .cc-button--overlay.cc-button--state-success.cc-button--disabled:focus,.cc-root--light.cc-root--hover .cc-button--overlay.cc-button--state-loading.cc-button--disabled:hover {
+    border-color: hsla(0,0%,100%,.5);
+}
+
+.cc-button--overlay.cc-button--disabled,.cc-button--overlay.cc-button--disabled:focus,.cc-root--hover .cc-button--overlay.cc-button--disabled:hover,.cc-root--dark .cc-button--overlay.cc-button--disabled,.cc-root--dark .cc-button--overlay.cc-button--disabled:focus,.cc-root--dark.cc-root--hover .cc-button--overlay.cc-button--disabled:hover,.cc-root--light .cc-button--overlay.cc-button--disabled,.cc-root--light .cc-button--overlay.cc-button--disabled:focus,.cc-root--light.cc-root--hover .cc-button--overlay.cc-button--disabled:hover {
+    background-color: transparent;
+    color: hsla(0,0%,100%,.5);
+}
+
+.cc-button__icon,.cc-button__loading-spinner,.cc-button__num-block,.cc-button__succcess-icon,.cc-button__text {
+    transition-duration: .2s;
+    transition-property: opacity;
+}
+
+.cc-button__loading-spinner,.cc-button__success-icon {
+    -webkit-transform: translate(-50%,-50%);
+    left: 50%;
+    opacity: 0;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.cc-button--state-loading .cc-button__icon,.cc-button--state-loading .cc-button__num-block,.cc-button--state-loading .cc-button__text,.cc-button--state-success .cc-button__icon,.cc-button--state-success .cc-button__num-block,.cc-button--state-success .cc-button__text {
+    opacity: 0;
+}
+
+.cc-button--state-loading .cc-button__loading-spinner,.cc-button--state-success .cc-button__success-icon {
+    opacity: 1;
+}
+
+.cc-button:disabled {
+    cursor: not-allowed;
+}
+
+.cc-button--disabled {
+    background: hsla(0,0%,100%,.05);
+    border-color: hsla(0,0%,100%,.05);
+    color: #898395;
+    cursor: not-allowed;
+}
+
+.cc-root--dark .cc-button--disabled {
+    background: hsla(0,0%,100%,.05);
+    border-color: hsla(0,0%,100%,.05);
+    color: #898395;
+}
+
+.cc-root--light .cc-button--disabled {
+    background: rgba(0,0,0,.05);
+    border-color: rgba(0,0,0,.05);
+    color: #6e6779;
+}
+
+
+.cc-root--hover .cc-button--disabled:hover {
+    background: rgba(0,0,0,.05);
+    border-color: rgba(0,0,0,.05);
+    color: #6e6779;
+}
+
+.cc-root--hover .cc-button--disabled:hover {
+    background: hsla(0,0%,100%,.05);
+    border-color: hsla(0,0%,100%,.05);
+    box-shadow: none;
+    color: #898395;
+}
+
+.cc-root--dark.cc-root--hover .cc-button--disabled:hover {
+    background: hsla(0,0%,100%,.05);
+    border-color: hsla(0,0%,100%,.05);
+    box-shadow: none;
+    color: #898395;
+}
+
+.cc-root--light.cc-root--hover .cc-button--disabled:hover {
+    background: rgba(0,0,0,.05);
+    border-color: rgba(0,0,0,.05);
+    box-shadow: none;
+    color: #6e6779;
+}
+
+.cc-button--disabled:active,.cc-button--disabled:focus {
+    background: hsla(0,0%,100%,.05);
+    border-color: hsla(0,0%,100%,.05);
+    box-shadow: none;
+    color: #898395;
+}
+
+.cc-root--dark .cc-button--disabled:active,.cc-root--dark .cc-button--disabled:focus {
+    background: hsla(0,0%,100%,.05);
+    border-color: hsla(0,0%,100%,.05);
+    box-shadow: none;
+    color: #898395;
+}
+
+.cc-root--light .cc-button--disabled:active,.cc-root--light .cc-button--disabled:focus {
+    background: rgba(0,0,0,.05);
+    border-color: rgba(0,0,0,.05);
+    box-shadow: none;
+    color: #6e6779;
+}
+
+.cc-button__icon {
+    display: inline-flex;
+    padding: .4rem;
+}
+
+.cc-button__icon--left {
+    padding-right: 0;
+}
+
+.cc-button__icon--right {
+    padding-left: 0;
+}
+
+.cc-button--dropmenu .cc-button__text {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.cc-button--small {
+    border-radius: 2px;
+    font-size: 1.1rem;
+    line-height: 1.4rem;
+}
+
+.cc-root--dark .cc-button--small,.cc-root--light .cc-button--small {
+    border-radius: 2px;
+}
+
+.cc-button--small .cc-button__icon {
+    padding: 0 0 0 .3rem;
+}
+
+.cc-button--small .cc-button__icon--right {
+    padding: 0 .3rem 0 0;
+}
+
+.cc-button--small .cc-button__alert-text {
+    margin-top: -1.4rem;
+}
+
+.cc-button--small .cc-button__alert-icon {
+    left: -1.2rem;
+    margin-right: -1.2rem;
+}
+
+.cc-button--large {
+    border-radius: 6px;
+    font-size: 1.6rem;
+    line-height: 2.6rem;
+}
+
+.cc-root--dark .cc-button--large,.cc-root--light .cc-button--large {
+    border-radius: 6px;
+}
+
+.cc-button--large .cc-button__icon {
+    padding: 0 0 0 .5rem;
+}
+
+.cc-button--large .cc-button__icon--right {
+    padding: 0 .5rem 0 0;
+}
+
+.cc-button--large .cc-button__alert-text {
+    margin-top: -2.6rem;
+}
+
+.cc-button--large .cc-button__alert-icon {
+    left: -2rem;
+    margin-right: -2rem;
+}
+
+.cc-button--full-width {
+    width: 100%;
+}
+
+.cc-button--purchase {
+    padding-right: 0;
+}
+
+.cc-button--purchase .cc-button__text {
+    flex-grow: 1;
+}
+
+.cc-button__num-block {
+    padding: .4rem .8rem;
+}
+
+.cc-button__num-block,.cc-root--dark .cc-button__num-block,.cc-root--light .cc-button__num-block {
+    background: rgba(0,0,0,.25);
+}
+
+.cc-button-icon {
+    align-items: center;
+    color: #dad8de;
+    display: inline-flex;
+    font-size: 1.2rem;
+    justify-content: center;
+    line-height: 2rem;
+    outline: none;
+    position: relative;
+    text-decoration: none;
+    user-select: none;
+    vertical-align: middle;
+    white-space: nowrap;
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+.cc-button-icon,.cc-root--dark .cc-button-icon {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.cc-root--dark .cc-button-icon {
+    color: #dad8de;
+}
+
+.cc-root--light .cc-button-icon {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #6441a4;
+}
+
+.cc-button-icon:before {
+    content: "\200B";
+}
+
+.cc-root--hover .cc-button-icon:hover {
+    background: hsla(0,0%,100%,.05);
+    border-color: transparent;
+    color: #efeef1;
+}
+
+.cc-root--dark.cc-root--hover .cc-button-icon:hover {
+    background: hsla(0,0%,100%,.05);
+    border-color: transparent;
+    color: #efeef1;
+}
+
+.cc-root--light.cc-root--hover .cc-button-icon:hover {
+    background: rgba(100,65,164,.05);
+    border-color: transparent;
+    color: #2c2541;
+}
+
+.cc-root--touch .cc-button-icon:hover {
+    background: hsla(0,0%,100%,.05);
+    border-color: transparent;
+    color: #efeef1;
+}
+
+.cc-root--dark.cc-root--touch .cc-button-icon:hover {
+    background: hsla(0,0%,100%,.05);
+    border-color: transparent;
+    color: #efeef1;
+}
+
+.cc-root--light.cc-root--touch .cc-button-icon:hover {
+    background: rgba(100,65,164,.05);
+    border-color: transparent;
+    color: #2c2541;
+}
+
+.cc-button-icon:focus {
+    background: hsla(0,0%,100%,.05);
+    border-color: #6441a4;
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #efeef1;
+}
+
+.cc-root--dark .cc-button-icon:focus {
+    background: hsla(0,0%,100%,.05);
+    border-color: #6441a4;
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #efeef1;
+}
+
+.cc-root--light .cc-button-icon:focus {
+    background: rgba(100,65,164,.05);
+    border-color: rgba(100,65,164,.5);
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #2c2541;
+}
+
+.cc-button-icon:active {
+    background: rgba(100,65,164,.1);
+    border-color: #7d5bbe;
+    color: #efeef1;
+}
+
+.cc-root--dark .cc-button-icon:active {
+    background: rgba(100,65,164,.1);
+    border-color: #7d5bbe;
+    color: #efeef1;
+}
+
+.cc-root--light .cc-button-icon:active {
+    background: transparent;
+    border-color: rgba(100,65,164,.6);
+    color: #2c2541;
+}
+
+.cc-button-icon--disabled,.cc-button-icon:disabled {
+    background: hsla(0,0%,100%,.05);
+    border-color: hsla(0,0%,100%,.05);
+    color: #898395;
+    cursor: not-allowed;
+}
+
+.cc-root--dark .cc-button-icon--disabled,.cc-root--dark .cc-button-icon:disabled {
+    background: hsla(0,0%,100%,.05);
+    border-color: hsla(0,0%,100%,.05);
+    color: #898395;
+}
+
+.cc-root--light .cc-button-icon--disabled,.cc-root--light .cc-button-icon:disabled {
+    background: rgba(0,0,0,.05);
+    border-color: rgba(0,0,0,.05);
+    color: #6e6779;
+}
+
+.cc-root--hover .cc-button-icon:disabled:hover {
+    background: hsla(0,0%,100%,.05);
+    border-color: hsla(0,0%,100%,.05);
+    box-shadow: none;
+    color: #898395;
+}
+
+.cc-root--dark.cc-root--hover .cc-button-icon:disabled:hover {
+    background: hsla(0,0%,100%,.05);
+    border-color: hsla(0,0%,100%,.05);
+    box-shadow: none;
+    color: #898395;
+}
+
+.cc-root--light.cc-root--hover .cc-button-icon:disabled:hover {
+    background: rgba(0,0,0,.05);
+    border-color: rgba(0,0,0,.05);
+    box-shadow: none;
+    color: #6e6779;
+}
+
+.cc-button-icon--disabled:focus,.cc-button-icon:disabled:focus {
+    background: hsla(0,0%,100%,.05);
+    border-color: hsla(0,0%,100%,.05);
+    box-shadow: none;
+    color: #898395;
+}
+
+.cc-root--dark .cc-button-icon--disabled:focus,.cc-root--dark .cc-button-icon:disabled:focus {
+    background: hsla(0,0%,100%,.05);
+    border-color: hsla(0,0%,100%,.05);
+    box-shadow: none;
+    color: #898395;
+}
+
+.cc-root--light .cc-button-icon--disabled:focus,.cc-root--light .cc-button-icon:disabled:focus {
+    background: rgba(0,0,0,.05);
+    border-color: rgba(0,0,0,.05);
+    box-shadow: none;
+    color: #6e6779;
+}
+
+.cc-button-icon--primary,.cc-root--dark .cc-button-icon--primary,.cc-root--light .cc-button-icon--primary {
+    background: #6441a4;
+    border: 1px solid transparent;
+    color: #fff;
+}
+
+.cc-root--hover .cc-button-icon--primary:hover,.cc-root--dark.cc-root--hover .cc-button-icon--primary:hover,.cc-root--light.cc-root--hover .cc-button-icon--primary:hover {
+    background: #7d5bbe;
+    border-color: #7d5bbe;
+    color: #fff;
+}
+
+.cc-button-icon--primary:focus,.cc-root--dark .cc-button-icon--primary:focus,.cc-root--light .cc-button-icon--primary:focus {
+    background: #7d5bbe;
+    border-color: #9a7fcc;
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #fff;
+}
+
+.cc-button-icon--primary:active,.cc-root--dark .cc-button-icon--primary:active,.cc-root--light .cc-button-icon--primary:active {
+    background: #6441a4;
+    border-color: #7d5bbe;
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #fff;
+}
+
+.cc-button-icon--hollow {
+    background: transparent;
+    border: 1px solid #b19dd8;
+    color: #6441a4;
+}
+
+.cc-root--dark .cc-button-icon--hollow {
+    background: transparent;
+    border: 1px solid #4b367c;
+    color: #dad8de;
+}
+
+.cc-root--light .cc-button-icon--hollow {
+    background: transparent;
+    border: 1px solid #b19dd8;
+    color: #6441a4;
+}
+
+.cc-root--hover .cc-button-icon--hollow:hover {
+    background: hsla(0,0%,100%,.05);
+    border-color: #6441a4;
+    color: #efeef1;
+}
+
+.cc-root--dark.cc-root--hover .cc-button-icon--hollow:hover {
+    background: hsla(0,0%,100%,.05);
+    border-color: #6441a4;
+    color: #efeef1;
+}
+
+.cc-root--light.cc-root--hover .cc-button-icon--hollow:hover {
+    background: rgba(100,65,164,.05);
+    border-color: rgba(100,65,164,.5);
+    color: #2c2541;
+}
+
+.cc-button-icon--hollow:focus {
+    background: hsla(0,0%,100%,.05);
+    border-color: #6441a4;
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #efeef1;
+}
+
+.cc-root--dark .cc-button-icon--hollow:focus {
+    background: hsla(0,0%,100%,.05);
+    border-color: #6441a4;
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #efeef1;
+}
+
+.cc-root--light .cc-button-icon--hollow:focus {
+    background: rgba(100,65,164,.05);
+    border-color: rgba(100,65,164,.5);
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #2c2541;
+}
+
+.cc-button-icon--hollow:active {
+    background: rgba(100,65,164,.1);
+    border-color: #7d5bbe;
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #efeef1;
+}
+
+.cc-root--dark .cc-button-icon--hollow:active {
+    background: rgba(100,65,164,.1);
+    border-color: #7d5bbe;
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #efeef1;
+}
+
+.cc-root--light .cc-button-icon--hollow:active {
+    background: transparent;
+    border-color: rgba(100,65,164,.6);
+    box-shadow: 0 0 6px 0 #7d5bbe;
+    color: #2c2541;
+}
+
+.cc-button-icon--alert,.cc-root--dark .cc-button-icon--alert,.cc-root--light .cc-button-icon--alert {
+    background: #ec1313;
+    border-color: #ec1313;
+    color: #fff;
+}
+
+.cc-button-icon--alert:focus,.cc-root--hover .cc-button-icon--alert:hover,.cc-root--dark .cc-button-icon--alert:focus,.cc-root--dark.cc-root--hover .cc-button-icon--alert:hover,.cc-root--light .cc-button-icon--alert:focus,.cc-root--light.cc-root--hover .cc-button-icon--alert:hover {
+    background: #bd0f0f;
+    border-color: #bd0f0f;
+    color: #fff;
+}
+
+.cc-button-icon--alert:active,.cc-root--dark .cc-button-icon--alert:active,.cc-root--light .cc-button-icon--alert:active {
+    background: #ec1313;
+    border-color: #ec1313;
+    color: #fff;
+}
+
+.cc-button-icon--success,.cc-root--dark .cc-button-icon--success,.cc-root--light .cc-button-icon--success {
+    background: #14b866;
+    border-color: #14b866;
+    color: #fff;
+}
+
+.cc-button-icon--success:focus,.cc-root--hover .cc-button-icon--success:hover,.cc-root--dark .cc-button-icon--success:focus,.cc-root--dark.cc-root--hover .cc-button-icon--success:hover,.cc-root--light .cc-button-icon--success:focus,.cc-root--light.cc-root--hover .cc-button-icon--success:hover {
+    background: #12a159;
+    border-color: #14b866;
+    color: #fff;
+}
+
+.cc-button-icon--success:active,.cc-root--dark .cc-button-icon--success:active,.cc-root--light .cc-button-icon--success:active {
+    background: #14b866;
+    border-color: #14b866;
+    color: #fff;
+}
+
+.cc-button-icon--overlay,.cc-root--dark .cc-button-icon--overlay,.cc-root--light .cc-button-icon--overlay {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #fff;
+}
+
+.cc-root--hover .cc-button-icon--overlay:hover,.cc-root--dark.cc-root--hover .cc-button-icon--overlay:hover,.cc-root--light.cc-root--hover .cc-button-icon--overlay:hover {
+    background: hsla(0,0%,100%,.05);
+    border-color: transparent;
+    color: #fff;
+}
+
+.cc-button-icon--overlay:focus,.cc-root--dark .cc-button-icon--overlay:focus,.cc-root--light .cc-button-icon--overlay:focus {
+    background: hsla(0,0%,100%,.05);
+    border-color: hsla(0,0%,100%,.3);
+    box-shadow: 0 0 6px 0 hsla(0,0%,100%,.3);
+    color: #fff;
+}
+
+.cc-button-icon--overlay:active {
+    background: transparent;
+    border-color: hsla(0,0%,100%,.6);
+    box-shadow: 0 0 6px 0 hsla(0,0%,100%,.3);
+    color: #fff;
+}
+
+.cc-root--dark .cc-button-icon--overlay:active {
+    background: transparent;
+    border-color: hsla(0,0%,100%,.6);
+    box-shadow: 0 0 6px 0 hsla(0,0%,100%,.3);
+    color: #fff;
+}
+
+.cc-root--light .cc-button-icon--overlay:active {
+    background: hsla(0,0%,100%,.1);
+    border-color: hsla(0,0%,100%,.6);
+    box-shadow: 0 0 6px 0 hsla(0,0%,100%,.3);
+    color: #fff;
+}
+
+.cc-button-icon--overlay.cc-button-icon--hollow,.cc-root--hover .cc-button-icon--overlay.cc-button-icon--hollow:hover,.cc-root--dark .cc-button-icon--overlay.cc-button-icon--hollow,.cc-root--dark.cc-root--hover .cc-button-icon--overlay.cc-button-icon--hollow:hover,.cc-root--light .cc-button-icon--overlay.cc-button-icon--hollow,.cc-root--light.cc-root--hover .cc-button-icon--overlay.cc-button-icon--hollow:hover {
+    border-color: #fff;
+}
+
+.cc-button-icon--overlay.cc-button-icon--disabled,.cc-button-icon--overlay.cc-button-icon--disabled:focus,.cc-button-icon--overlay:disabled,.cc-button-icon--overlay:disabled:focus,.cc-root--hover .cc-button-icon--overlay.cc-button-icon--disabled:hover,.cc-root--hover .cc-button-icon--overlay:disabled:hover,.cc-root--dark .cc-button-icon--overlay.cc-button-icon--disabled,.cc-root--dark .cc-button-icon--overlay.cc-button-icon--disabled:focus,.cc-root--dark .cc-button-icon--overlay:disabled,.cc-root--dark .cc-button-icon--overlay:disabled:focus,.cc-root--dark.cc-root--hover .cc-button-icon--overlay:disabled:hover,.cc-root--light .cc-button-icon--overlay.cc-button-icon--disabled,.cc-root--light .cc-button-icon--overlay.cc-button-icon--disabled:focus,.cc-root--light .cc-button-icon--overlay:disabled,.cc-root--light .cc-button-icon--overlay:disabled:focus,.cc-root--light.cc-root--hover .cc-button-icon--overlay:disabled:hover {
+    background-color: transparent;
+    color: hsla(0,0%,100%,.5);
+}
+
+.cc-button-icon--status {
+    transition-duration: .12s;
+    transition-property: background,border,text;
+    transition-timing-function: ease;
+}
+
+.cc-button-icon--status .cc-button-icon__alert-icon {
+    left: -2rem;
+    margin-right: -2rem;
+    opacity: 0;
+    position: relative;
+}
+
+.cc-button-icon--status:focus,.cc-root--hover .cc-button-icon--status:hover,.cc-root--dark .cc-button-icon--status:focus,.cc-root--dark.cc-root--hover .cc-button-icon--status:hover,.cc-root--light .cc-button-icon--status:focus,.cc-root--light.cc-root--hover .cc-button-icon--status:hover {
+    background: #bd0f0f;
+    border-color: #bd0f0f;
+    color: #fff;
+}
+
+.cc-button-icon--status:active,.cc-root--dark .cc-button-icon--status:active,.cc-root--light .cc-button-icon--status:active {
+    background: #ec1313;
+    border-color: #ec1313;
+    color: #fff;
+}
+
+.cc-button-icon--status:active .cc-button-icon__alert-icon,.cc-button-icon--status:focus .cc-button-icon__alert-icon,.cc-button-icon--status:hover .cc-button-icon__alert-icon {
+    opacity: 1;
+}
+
+.cc-button-icon--status:active .cc-button-icon__primary-icon,.cc-button-icon--status:focus .cc-button-icon__primary-icon,.cc-button-icon--status:hover .cc-button-icon__primary-icon {
+    opacity: 0;
+}
+
+.cc-button-icon--status.cc-button-icon--disabled .cc-button-icon__primary-icon {
+    opacity: 1;
+}
+
+.cc-button-icon--status.cc-button-icon--disabled .cc-button-icon__alert-icon {
+    display: none;
+}
+
+.cc-button-icon__icon {
+    display: inline-flex;
+    padding: .4rem;
+}
+
+.cc-button-icon__icon--left {
+    padding-right: 0;
+}
+
+.cc-button-icon__icon--right {
+    padding-left: 0;
+}
+
+.cc-button-icon--secondary {
+    color: #6e6779;
+}
+
+.cc-root--dark .cc-button-icon--secondary {
+    color: #898395;
+}
+
+.cc-root--light .cc-button-icon--secondary {
+    color: #6e6779;
+}
+
+.cc-root--hover .cc-button-icon--secondary:hover {
+    color: #a49fad;
+}
+
+.cc-root--dark.cc-root--hover .cc-button-icon--secondary:hover {
+    color: #575260;
+}
+
+.cc-button-icon--secondary:focus,.cc-root--light.cc-root--hover .cc-button-icon--secondary:hover {
+    color: #a49fad;
+}
+
+.cc-root--dark .cc-button-icon--secondary:focus {
+    color: #575260;
+}
+
+.cc-button-icon--secondary:active,.cc-root--light .cc-button-icon--secondary:focus {
+    color: #a49fad;
+}
+
+.cc-root--dark .cc-button-icon--secondary:active {
+    color: #575260;
+}
+
+.cc-root--light .cc-button-icon--secondary:active {
+    color: #a49fad;
+}
+
+.cc-button-icon--small {
+    border-radius: 2px;
+    font-size: 1.1rem;
+    line-height: 1.4rem;
+}
+
+.cc-root--dark .cc-button-icon--small,.cc-root--light .cc-button-icon--small {
+    border-radius: 2px;
+}
+
+.cc-button-icon--small .cc-button-icon__icon {
+    padding: .3rem;
+}
+
+.cc-button-icon--small .cc-button-icon__alert-icon {
+    left: -1.6rem;
+    margin-right: -1.6rem;
+}
+
+.cc-button-icon--large {
+    border-radius: 6px;
+    font-size: 1.6rem;
+    line-height: 2.6rem;
+}
+
+.cc-root--dark .cc-button-icon--large,.cc-root--light .cc-button-icon--large {
+    border-radius: 6px;
+}
+
+.cc-button-icon--large .cc-button-icon__icon {
+    padding: .5rem;
+}
+
+.cc-button-icon--large .cc-button-icon__alert-icon {
+    left: -2.4rem;
+    margin-right: -2.4rem;
+}

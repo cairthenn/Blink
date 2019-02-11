@@ -1,0 +1,66 @@
+.cc-svg {
+    align-items: center;
+    display: inline-flex;
+}
+
+.cc-svg__asset {
+    fill: #19171c;
+}
+
+.cc-root--dark .cc-svg__asset--inherit,.cc-root--light .cc-svg__asset--inherit,.cc-svg__asset--inherit {
+    fill: currentColor;
+}
+
+.cc-root--dark .cc-svg__asset--live,.cc-root--light .cc-svg__asset--live,.cc-svg__asset--live {
+    fill: #ec1313;
+}
+
+.cc-root--dark .cc-svg__asset--warn,.cc-root--light .cc-svg__asset--warn,.cc-svg__asset--warn {
+    fill: #ff5b24;
+}
+
+.cc-root--dark .cc-svg__asset--alert,.cc-root--light .cc-svg__asset--alert,.cc-svg__asset--alert {
+    fill: #e71313;
+}
+
+.cc-root--dark .cc-svg__asset--success,.cc-root--light .cc-svg__asset--success,.cc-svg__asset--success {
+    fill: #0f855e;
+}
+
+.cc-root--dark .cc-svg__asset--prime,.cc-root--light .cc-svg__asset--prime,.cc-svg__asset--prime {
+    fill: #0e9bd8;
+}
+
+.cc-svg__asset--alt {
+    fill: #322f37;
+}
+
+.cc-svg__asset--alt-2 {
+    fill: #6e6779;
+}
+
+.cc-svg__asset--brand {
+    fill: #6441a4;
+}
+
+.cc-svg__asset--placeholder {
+    fill: rgba(0,0,0,.05);
+}
+
+.cc-root--dark .cc-svg__asset--overlay-placeholder,.cc-root--light .cc-svg__asset--overlay-placeholder,.cc-svg__asset--overlay-placeholder {
+    fill: hsla(0,0%,100%,.15);
+}
+
+.cc-icon {
+    height: 2rem;
+    width: 2rem;
+}
+
+.cc-icon--fill {
+    height: 100%;
+    width: 100%;
+}
+
+.cc-icon__svg {
+    fill: currentColor;
+}

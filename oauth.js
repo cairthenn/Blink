@@ -65,7 +65,7 @@ module.exports.get_login = function(force_verify) {
             return { user: user, token: auth.access_token };
         })
     }).catch(err => {
-        console.log(`Unable to authenticate Twitch Account: ${err}`);
+        throw err;
     });
 }
 

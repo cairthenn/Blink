@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
 import { TwitchApiComponent } from './twitch-api/twitch-api.component';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { TwitchApiComponent } from './twitch-api/twitch-api.component';
     FormsModule,
     BrowserModule,
     AppRoutingModule,
+    NgScrollbarModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

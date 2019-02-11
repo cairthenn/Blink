@@ -8,7 +8,7 @@ module.exports.IRC = class {
     constructor() {
         this.connected = false;
         this.callbacks = [];
-        this.channels = {};
+        this.channels = [];
         this.on(/^PING \:(.*)$/i, (match) => {
             this.send(`PONG :${match[1]}`);
         })
@@ -38,6 +38,9 @@ module.exports.IRC = class {
                 self.send(`NICK ${user}`);
                 self.send(`CAP REQ :twitch.tv/tags`);
                 self.send(`CAP REQ :twitch.tv/commands`);
+                for(var c in self.channels) {
+                    self.join(self.channels[c], true);
+                }
                 resolve();
             });
     
@@ -61,25 +64,26 @@ module.exports.IRC = class {
         this.socket.end();
     }
 
-    join(channel) {
-        if(channel in this.channels){
+    join(channel, force = false) {
+        if(!force && this.channels.includes(channel)){
             return;
         }
-        this.channels[channel] = true;
+        this.channels.push(channel);
         this.send(`JOIN #${channel}`);
     }
 
     part(channel) {
-        if(!(channel in this.channels)) {
+        if(!this.channels.includes(channel)) {
             return;
         }
-        delete this.channels[channel];
+        
+        this.channels = this.channels.filter(x => x != channel);
+
         this.send(`PART #${channel}`);
     }
 
     send_message(channel, message) {
-        console.log(channel, message, channel in this.channels);
-        if(!(channel in this.channels)) {
+        if(!this.channels.includes(channel)) {
             return;
         }
         this.send(`:${this.user}!${this.user}@${this.user}.tmi.twitch.tv PRIVMSG #${channel} :${message}`);
@@ -94,7 +98,6 @@ module.exports.IRC = class {
     }
 
     receive(data) {
-        console.log(data);
         for(var i = 0; i < this.callbacks.length; i++) {
             const cb = this.callbacks[i];
             const match = cb[0].exec(data);

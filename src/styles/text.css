@@ -1,0 +1,199 @@
+.cc-font-size-1 {
+    font-size: 4rem!important;
+}
+
+.cc-font-size-2 {
+    font-size: 2.8rem!important;
+}
+
+.cc-font-size-3 {
+    font-size: 2.4rem!important;
+}
+
+.cc-font-size-4 {
+    font-size: 1.6rem!important;
+}
+
+.cc-font-size-5 {
+    font-size: 1.4rem!important;
+}
+
+.cc-font-size-6 {
+    font-size: 1.2rem!important;
+}
+
+.cc-font-size-7 {
+    font-size: 1.1rem!important;
+}
+
+.cc-font-size-8 {
+    font-size: 1rem!important;
+}
+
+.cc-font-size-base {
+    font-size: 1.2rem!important;
+}
+
+.cc-align-text-top {
+    vertical-align: text-top!important;
+}
+
+.cc-align-text-bottom {
+    vertical-align: text-bottom!important;
+}
+
+.cc-text-base {
+    color: #dad8de!important;
+}
+
+.cc-root--dark .cc-text-base {
+    color: #dad8de!important;
+}
+
+.cc-root--light .cc-text-base {
+    color: #19171c!important;
+}
+
+.cc-text-alt {
+    color: #b8b5c0!important;
+}
+
+.cc-root--dark .cc-text-alt {
+    color: #b8b5c0!important;
+}
+
+.cc-root--light .cc-text-alt {
+    color: #322f37!important;
+}
+
+.cc-text-alt-2 {
+    color: #898395!important;
+}
+
+.cc-root--dark .cc-text-alt-2 {
+    color: #898395!important;
+}
+
+.cc-root--light .cc-text-alt-2 {
+    color: #6e6779!important;
+}
+
+.cc-text-link {
+    color: #b19dd8!important;
+}
+
+.cc-root--light .cc-text-link {
+    color: #6441a4!important;
+}
+
+.cc-text-link-hover,.cc-root--dark .cc-text-link {
+    color: #b19dd8!important;
+}
+
+.cc-root--light .cc-text-link-hover {
+    color: #6441a4!important;
+}
+
+.cc-text-link-active,.cc-root--dark .cc-text-link-hover {
+    color: #b19dd8!important;
+}
+
+.cc-root--light .cc-text-link-active {
+    color: #6441a4!important;
+}
+/* was light active,  */
+.cc-text-link-focus,.cc-root--dark .cc-text-link-active { 
+    color: #b19dd8!important;
+}
+
+.cc-root--light .cc-text-link-focus {
+    color: #6441a4!important;
+}
+
+.cc-text-link-visited,.cc-root--light .cc-text-link-focus {
+    color: #6441a4!important;
+}
+
+.cc-root--dark .cc-text-link-visited {
+    color: #b19dd8!important;
+}
+
+.cc-root--light .cc-text-link-visited {
+    color: #6441a4!important;
+}
+
+.cc-text-alert,.cc-text-live,.cc-root--dark .cc-text-alert,.cc-root--dark .cc-text-live,.cc-root--light .cc-text-alert,.cc-root--light .cc-text-live {
+    color: #ec1313!important;
+}
+
+.cc-text-prime,.cc-root--dark .cc-text-prime,.cc-root--light .cc-text-prime {
+    color: #0e9bd8!important;
+}
+
+.cc-text-inherit,.cc-root--dark .cc-text-inherit,.cc-root--light .cc-text-inherit {
+    color: inherit!important;
+}
+
+.cc-text-hint {
+    color: #898395!important;
+}
+
+.cc-root--dark .cc-text-hint {
+    color: #898395!important;
+}
+
+.cc-root--light .cc-text-hint {
+    color: #6e6779!important;
+}
+
+.cc-text-error,.cc-root--dark .cc-text-error,.cc-root--light .cc-text-error {
+    color: #ec1313!important;
+}
+
+.cc-text-tooltip {
+    color: #0e0c13!important;
+}
+
+.cc-root--dark .cc-text-tooltip {
+    color: #0e0c13!important;
+}
+
+.cc-root--light .cc-text-tooltip {
+    color: #ffffff!important;
+}
+
+.cc-text-overlay,.cc-root--dark .cc-text-overlay,.cc-root--light .cc-text-overlay {
+    color: #faf9fa!important;
+}
+
+.cc-text-overlay-alt,.cc-root--dark .cc-text-overlay-alt,.cc-root--light .cc-text-overlay-alt {
+    color: #dad8de!important;
+}
+
+.cc-text-overlay-link,.cc-text-overlay-link-active,.cc-text-overlay-link-focus,.cc-text-overlay-link-hover,.cc-text-overlay-link-visited,.cc-root--dark .cc-text-overlay-link,.cc-root--dark .cc-text-overlay-link-active,.cc-root--dark .cc-text-overlay-link-focus,.cc-root--dark .cc-text-overlay-link-hover,.cc-root--dark .cc-text-overlay-link-visited,.cc-root--light .cc-text-overlay-link,.cc-root--light .cc-text-overlay-link-active,.cc-root--light .cc-text-overlay-link-focus,.cc-root--light .cc-text-overlay-link-hover,.cc-root--light .cc-text-overlay-link-visited {
+    color: #b19dd8!important;
+}
+
+.cc-text-chat-line-mentioning {
+    color: #ffffff!important;
+}
+
+.cc-root--dark .cc-text-chat-line-mentioning {
+    color: #ffffff!important;
+}
+
+.cc-root--light .cc-text-chat-line-mentioning {
+    color: #19171c!important;
+}
+
+.cc-text-chat-line-mentioned {
+    color: #19171c!important;
+}
+
+.cc-root--dark .cc-text-chat-line-mentioned {
+    color: #19171c!important;
+}
+
+.cc-root--light .cc-text-chat-line-mentioned {
+    color: #ffffff!important;
+}

@@ -81,8 +81,9 @@ server.on('connect', (socket) => {
 
 app.on('ready', function() {
     window = new BrowserWindow( {
+        minWidth: 250,
+        height: 500,
         show: false,
-        backgroundColor: '#202020',
         icon: './dist/assets/icon.png',
     });
     
@@ -95,6 +96,7 @@ app.on('ready', function() {
     
     window.on('ready-to-show', () => { 
         window.show();
+        window.webContents.toggleDevTools();
     });
 
     window.loadFile('dist/index.html');
@@ -108,19 +110,19 @@ const standard_template = [ {
             click() {
                 auth.get_login(true).then((login) => {
                     irc.connect(login.user, login.token).then(() => {
+                        client_socket.emit('irc-connected', true);
                         console.log('connected');
                     }).catch(err => {
-                        console.log(err);
+                        client_socket.emit('irc-connected', false);
+                        console.log(`Error connecting to IRC: ${err}`);
                     });
+                }).catch(err => {
+                    console.log(`Error connecting to IRC: ${err}`);
                 });
             }
         },
     ]
 } ];
-
-function handle_login(login) {
-
-}
 
 // The first menu slot on Mac OS is reserved by the application
 const mac_template = [ { label : 'Dawrin Placeholder' } ].concat(standard_template);
