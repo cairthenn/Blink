@@ -82,7 +82,8 @@ server.on('connect', (socket) => {
 app.on('ready', function() {
     window = new BrowserWindow( {
         minWidth: 250,
-        height: 500,
+        height: 650,
+        width: 400,
         show: false,
         icon: './dist/assets/icon.png',
     });
@@ -97,6 +98,8 @@ app.on('ready', function() {
     window.on('ready-to-show', () => { 
         window.show();
     });
+
+    window.webContents.toggleDevTools();
 
     window.loadFile('dist/index.html');
 });

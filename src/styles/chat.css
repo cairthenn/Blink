@@ -201,7 +201,6 @@
 
 .chat-list__lines {
     line-height: 2rem;
-    overflow: hidden;
 }
 
 .chat-list__more-messages-placeholder {

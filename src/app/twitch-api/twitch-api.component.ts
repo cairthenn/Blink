@@ -13,7 +13,7 @@ export class TwitchApiComponent implements OnInit {
 
 	
 	public username: string;
-	public show_settings: boolean = true;
+	public show_settings: boolean = false;
 	private ipcRenderer: IpcRenderer;
 
   	constructor() { 
@@ -34,7 +34,7 @@ export class TwitchApiComponent implements OnInit {
 		this.ipcRenderer = window.require('electron').ipcRenderer;		
 		IrcService.init(username => {
 			this.ipcRenderer.send('IRCReady');
-			this.chat.init('vanityfox');
+			this.chat.init('autocair');
 			this.username = username;
 		}, () => {
 
