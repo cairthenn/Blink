@@ -76,6 +76,9 @@ server.on('connect', (socket) => {
             client_socket.emit('irc-connection-failed');
             console.log(`Error connecting to IRC: ${err}`);
         });
+    }).catch(err => {
+        client_socket.emit('irc-connection-failed');
+        console.log(`Error connecting to IRC: ${err}`);
     });
 });
 
