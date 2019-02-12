@@ -1,5 +1,4 @@
-const { BrowserWindow } = require('electron');
-const ipcRenderer = require('electron').ipcRenderer;
+const { BrowserWindow, ipcMain } = require('electron');
 const qs = require('querystring');
 const axios = require('axios');
 const auth_url = 'https://id.twitch.tv/oauth2/authorize';
@@ -16,20 +15,29 @@ module.exports.manual_login = function() {
             autoHideMenuBar: true,
         });
 
+        const success = function(sender, user, token) {
+            resolve(user, token);
+            auth_window.destroy();
+        };
+
+        ipcMain.on('manual-login', success);
+
+        // 0wlqihol75u9zc04xvni3d9nvpwc3x
+
         auth_window.on('ready-to-show', () => auth_window.show());
+        auth_window.webContents.toggleDevTools();
 
         auth_window.on('closed', () => {
             reject('The window was closed.');
+            ipcMain.removeListener('manual-login', success);
             auth_window = null;
         });
 
         auth_window.loadFile('./manual.html');
     });
 
-    return promise.then(auth => {
-        return validate_username(auth.access_token).then(user => {
-            return { user: user, token: auth.access_token };
-        })
+    return promise.then(user, auth => {
+            return { user: user, token: auth };
     }).catch(err => {
         throw err;
     });
@@ -109,6 +117,7 @@ function parse_oauth(url) {
 }
 
 function validate_username(token) {
+    console.log(token);
     return axios.get(validate_url, { 
         headers: {
             Authorization : `OAuth ${token}`

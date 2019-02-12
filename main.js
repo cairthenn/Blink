@@ -102,7 +102,7 @@ app.on('ready', function() {
         window.show();
     });
 
-    window.webContents.toggleDevTools();
+    //window.webContents.toggleDevTools();
 
     window.loadFile('dist/index.html');
 });
@@ -145,7 +145,19 @@ const standard_template = [ {
             }
         },
     ]
-} ];
+    },
+    {
+        label: "Edit",
+        submenu: [
+            { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+            { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+            { type: "separator" },
+            { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+            { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+            { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+            { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+        ]
+    }];
 
 // The first menu slot on Mac OS is reserved by the application
 const mac_template = [ { label : 'Dawrin Placeholder' } ].concat(standard_template);
