@@ -7,24 +7,24 @@ import { Component, OnInit, Input, Output } from '@angular/core';
 })
 export class SettingsComponent implements OnInit {
 
-  @Input() public light_theme: boolean = false;
-  @Input() public alternate: boolean = false;
-  @Input() public separators: boolean = false;
-  @Input() public flash: boolean = false;
-  
-  @Input() public timestamps: boolean = false;
-  @Input() public char_count: boolean = true;
-  @Input() public subs: boolean = true;
-  @Input() public bits: boolean = true;
+  public light_theme: boolean = false;
+  public alternate: boolean = false;
+  public separators: boolean = true;
+  public flash: boolean = false;
 
-  @Input() public twitch_emotes: boolean = true;
-  @Input() public bttv: boolean = true;
-  @Input() public ffz: boolean = true;
-  @Input() public gifs: boolean = false;
+  public timestamps: boolean = false;
+  public char_count: boolean = true;
+  public subs: boolean = true;
+  public bits: boolean = true;
 
-  @Input() public duplicates: boolean = false;
-  @Input() public emote_priority: boolean = false;
-  @Input() public anonymous: boolean = false;
+  public twitch_emotes: boolean = true;
+  public bttv: boolean = true;
+  public ffz: boolean = true;
+  public gifs: boolean = false;
+
+  public duplicates: boolean = false;
+  public emote_priority: boolean = false;
+  public anonymous: boolean = false;
 
   private _highlight: string = "";
   private _blacklist: string = "";
@@ -38,18 +38,18 @@ export class SettingsComponent implements OnInit {
 
 
   private comma_delimiter(words: string) {
-    return words.split(',').map(s => s.trim()).filter(s => { /^\s*$/.test(s) })
+    return words.split(',').map(s => s.trim()).filter(s => !/^\s*$/.test(s));
   }
 
-  @Input() set highlight(words: string) {
+  set highlight(words: string) {
     this._highlight = words;
     this.highlight_words = this.comma_delimiter(words);
-    console.log(words);
+    console.log(this.highlight_words);
   }
   
   get highlight() { return this._highlight; }
 
-  @Input() set blacklist(words: string) {
+  set blacklist(words: string) {
     this._blacklist = words;
     this.blacklist_words = this.comma_delimiter(words);
 
@@ -57,7 +57,7 @@ export class SettingsComponent implements OnInit {
 
   get blacklist() { return this._blacklist; }
 
-  @Input() set ignored(words: string) {
+  set ignored(words: string) {
     this._ignored = words;
     this.ignored_users = this.comma_delimiter(words);
   }
