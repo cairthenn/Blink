@@ -8,6 +8,33 @@ const client_id = 'ut8pnp247zcvfj7gga2lxo8kp2d9lz';
 
 let auth_window;
 
+module.exports.manual_login = function() {
+
+    var promise = new Promise(function(resolve, reject) {
+        auth_window = new BrowserWindow({
+            show: false,
+            autoHideMenuBar: true,
+        });
+
+        auth_window.on('ready-to-show', () => auth_window.show());
+
+        auth_window.on('closed', () => {
+            reject('The window was closed.');
+            auth_window = null;
+        });
+
+        auth_window.loadFile('./manual.html');
+    });
+
+    return promise.then(auth => {
+        return validate_username(auth.access_token).then(user => {
+            return { user: user, token: auth.access_token };
+        })
+    }).catch(err => {
+        throw err;
+    });
+}
+
 module.exports.get_login = function(force_verify) {
     
     const url_params = {

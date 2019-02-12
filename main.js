@@ -127,6 +127,23 @@ const standard_template = [ {
                 });
             }
         },
+        {
+            label: 'Login with token',
+            click() {
+                auth.manual_login().then(login => {
+                    irc.connect(login.user, login.token).then(() => {
+                        client_socket.emit('irc-connected', login.user);
+                        console.log('connected');
+                    }).catch(err => {
+                        client_socket.emit('irc-connection-failed');
+                        console.log(`Error connecting to IRC: ${err}`);
+                    });
+                }).catch(err => {
+                    client_socket.emit('irc-connection-failed');
+                    console.log(`Error connecting to IRC: ${err}`);
+                })
+            }
+        },
     ]
 } ];
 

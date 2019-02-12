@@ -24,7 +24,7 @@
                         </button>
                     </div>
                 </div>
-                <app-settings *ngIf="show_settings" class="cc-full-width">
+                <app-settings [hidden]="!show_settings" class="cc-full-width">
                 </app-settings>
                 <app-chat class="chat-room cc-flex cc-flex-column cc-flex-grow-1 cc-flex-shrink-1 cc-full-width"></app-chat>        
             </div>
