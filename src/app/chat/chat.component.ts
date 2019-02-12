@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { IrcService } from './irc.service';
+import { Component, OnInit } from '@angular/core';
+import { IrcService } from '../irc.service';
 
 export interface ChatMessage {
   username: string;
@@ -18,10 +18,12 @@ export interface Info {
   views: number;
 }
 
-@Injectable({
-  providedIn: 'root'
+@Component({
+  selector: 'app-chat',
+  templateUrl: './chat.component.html',
+  styleUrls: ['./chat.component.css']
 })
-export class ChatService {
+export class ChatComponent implements OnInit {
 
   public username: string;
   public color: string;
@@ -62,7 +64,8 @@ export class ChatService {
     };
     console.log(this.messages, message);
     this.messages.push(message);
-	}
+  }
+  
   
   public init(name :string) {
     this.channel = name;
@@ -87,6 +90,8 @@ export class ChatService {
 
     IrcService.send_message(this.channel, text);
   }
-
   
+  ngOnInit() {
+  }
+
 }

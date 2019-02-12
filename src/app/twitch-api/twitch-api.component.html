@@ -1,27 +1,14 @@
-<!-- <table *ngIf="active_chat" class="chat-container" >
-    <tr class="chat-row"><td>
-        <ul *ngIf="active_chat" class="chat-messages" >
-            <li *ngFor="let msg of active_chat.messages" class="chat-message">
-                <span><span [style.color]="msg.color">{{msg.username}}:</span> {{msg.message}}</span>
-            </li>
-        </ul>
-    </td></tr>
-    <tr class="input-row"><td>
-        <input class="chat-input" #current_input
-        (keyup.enter)="active_chat.send(current_input.value); current_input.value=''">
-    </td></tr>
-</table> -->
 <div class="cc-absolute cc-bottom-0 cc-left-0 cc-right-0 cc-top-0 cc-overflow-hidden">
     <div class="cc-flex cc-full-height cc-full-width cc-root--hover cc-root--dark">
         <div class="chat-page cc-flex cc-flex-grow-0 cc-flex-shrink-0 cc-full-height cc-full-width cc-overflow-hidden">
             <div class="chat-container cc-flex cc-flex-column cc-flex-grow-1 cc-flex-nowrap cc-full-height cc-full-width cc-relative">
                 <div class="chat-container__header cc-align-items-center cc-border-b cc-border-l cc-border-r cc-background-alt cc-flex cc-flex-shrink-0 cc-full-width cc-justify-content-between cc-pd-l-2 cc-pd-r-1">
                     <div id="chat-room-header-label">
-                        <p class="cc-text-alt">Stream Chat</p>
+                        <p class="cc-text-alt">{{username}}</p>
                     </div>
                     <div class="cc-relative">
-                        <button class="cc-interactive cc-button cc-button--text">
-                            <span class="cc-button__text" data-a-target="cc-button-text">
+                        <button class="cc-interactive cc-button cc-button--text" (click)="toggle_settings()">
+                            <span class="cc-button__text">
                             <div class="cc-align-items-center cc-flex">
                                 Settings
                                 <div class="cc-align-items-center cc-flex">
@@ -37,97 +24,10 @@
                         </button>
                     </div>
                 </div>
-                <section class="chat-room cc-flex cc-flex-column cc-flex-grow-1 cc-flex-shrink-1 cc-full-width" data-a-target="chat-theme-dark">
+                <app-settings *ngIf="show_settings" class="cc-align-items-center cc-border-b cc-border-l cc-border-r cc-background-alt cc-flex cc-flex-shrink-0 cc-full-width cc-justify-content-between cc-pd-l-2 cc-pd-r-1">
                     
-                    <!-- Chat Messages -->
-                    
-                    <div class="chat-room__content cc-border-l cc-text-base cc-flex cc-flex-column cc-flex-grow-1 cc-flex-nowrap cc-full-height cc-relative">
-                        <div class="chat-list cc-flex cc-flex-column cc-flex-grow-1 cc-flex-nowrap cc-overflow-hidden cc-relative">
-                            <ng-scrollbar class="chat-list__lines cc-flex-grow-1">
-                                <div style="padding-bottom: 17px;">
-                                    <div role="log" class="cc-flex-grow-1 cc-full-height cc-pd-b-1">
-                                        <div data-a-target="chat-welcome-message" class="chat-line__status">
-                                            <span class="">Welcome to the chat room!</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </ng-scrollbar>
-                            <div class="chat-list__more-messages-placeholder cc-mg-x-2 cc-relative"></div>
-                        </div>
-                    </div>
-
-                    <!-- Notifications -->
-
-                    <div class="chat-room__notifications cc-absolute cc-full-width cc-z-default">
-                        <div class="">
-                            <div class="share-to-chat__space--hidden"></div>
-                            <div class="share-to-chat__space--hidden"></div>
-                        </div>
-                    </div>
-
-                    <!-- Chat Input -->
-
-                    <div class="chat-input cc-block cc-pd-b-2 cc-pd-x-2">
-                        <div class="cc-block cc-relative cc-z-default">
-                            <div class="">
-                                <textarea class="cc-block cc-border-radius-medium cc-font-size-6 cc-full-width cc-textarea" placeholder="Send a message" style="padding-right: 6rem;"></textarea>
-                            </div>
-                        </div>
-                        <div class="chat-input__buttons-container cc-flex cc-justify-content-between cc-mg-t-1">
-                            <div class="cc-flex cc-flex-row">
-                                <div class="cc-relative">
-                                    <div data-toggle-balloon-id="d930ba52-0828-43c4-8733-79380835afeb" class="cc-relative">
-                                        <div data-test-selector="toggle-balloon-wrapper__mouse-enter-detector" style="display: inherit;">
-                                            <button aria-label="Chat settings" class="cc-interactive cc-button-icon" data-a-target="chat-settings">
-                                                <span class="cc-button-icon__icon">
-                                                    <div style="width: 2rem; height: 2rem;">
-                                                        <div class="cc-align-items-center cc-full-width cc-icon cc-icon--fill cc-inline-flex">
-                                                            <div class="cc-aspect cc-aspect--1x1 cc-aspect--align-top">
-                                                                <svg class="cc-icon__svg" width="100%" height="100%" version="1.1" viewBox="0 0 20 20" x="0px" y="0px">
-                                                                    <path d="M9.97 13.395a3.37 3.37 0 1 1 .001-6.741 3.37 3.37 0 0 1 0 6.74m7.3-4.915a48.16 48.16 0 0 0-.926-.127c-.037-.005-.071-.03-.081-.065a6.553 6.553 0 0 0-.615-1.48.09.09 0 0 1 .007-.1c.19-.247.377-.497.558-.74a.844.844 0 0 0-.083-1.091L15.12 3.863a.842.842 0 0 0-1.09-.081c-.245.18-.494.368-.741.557a.092.092 0 0 1-.1.01 6.415 6.415 0 0 0-1.481-.614.09.09 0 0 1-.064-.078c-.04-.308-.084-.63-.13-.93a.856.856 0 0 0-.828-.729h-1.43a.856.856 0 0 0-.83.728c-.044.3-.088.615-.128.925-.005.036-.03.07-.064.08a6.53 6.53 0 0 0-1.481.615.091.091 0 0 1-.1-.008 53.22 53.22 0 0 0-.74-.558.843.843 0 0 0-1.091.083L3.81 4.875a.843.843 0 0 0-.082 1.091c.18.244.369.494.558.74.023.03.026.07.009.1a6.504 6.504 0 0 0-.614 1.481.09.09 0 0 1-.077.064c-.308.04-.604.083-.905.128a.833.833 0 0 0-.7.83v1.43c0 .412.294.768.7.83.3.044.604.088.912.128.037.006.064.03.073.065.142.515.348 1.013.612 1.48a.09.09 0 0 1-.01.1c-.19.246-.377.495-.558.74a.843.843 0 0 0 .082 1.09l1.01 1.012a.844.844 0 0 0 1.092.082c.245-.18.493-.367.74-.558a.09.09 0 0 1 .1-.008c.466.264.964.47 1.48.614a.09.09 0 0 1 .065.076c.04.31.084.607.129.907a.833.833 0 0 0 .829.703h1.43a.833.833 0 0 0 .829-.703c.045-.3.089-.604.129-.913a.088.088 0 0 1 .064-.073 6.544 6.544 0 0 0 1.48-.613.09.09 0 0 1 .1.01c.248.19.497.377.742.559a.84.84 0 0 0 1.089-.084l1.012-1.01a.844.844 0 0 0 .082-1.091c-.18-.245-.37-.494-.558-.74a.088.088 0 0 1-.008-.1c.264-.467.47-.965.613-1.48a.09.09 0 0 1 .077-.065c.308-.04.633-.083.934-.128a.858.858 0 0 0 .729-.83V9.31a.859.859 0 0 0-.73-.83" fill-rule="evenodd"></path>
-                                                                </svg>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button aria-label="Users in Chat" class="cc-interactive cc-button-icon" data-a-target="chat-viewer-list" data-test-selector="chat-viewer-list">
-                                    <span class="cc-button-icon__icon">
-                                        <div style="width: 2rem; height: 2rem;">
-                                            <div class="cc-align-items-center cc-full-width cc-icon cc-icon--fill cc-inline-flex">
-                                                <div class="cc-aspect cc-aspect--1x1 cc-aspect--align-top">
-                                                    <svg class="cc-icon__svg" width="100%" height="100%" version="1.1" viewBox="0 0 20 20" x="0px" y="0px">
-                                                        <path d="M2 11V9a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm0-6V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm0 12v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm15 0H8a1 1 0 1 1 0-2h9a1 1 0 1 1 0 2zm0-6H8a1 1 0 1 1 0-2h9a1 1 0 1 1 0 2zm0-6H8a1 1 0 1 1 0-2h9a1 1 0 1 1 0 2z" fill-rule="evenodd"></path>
-                                                    </svg>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </span>
-                                </button>
-                            </div>
-                            <div class="cc-align-content-center cc-align-items-center cc-flex cc-flex-row">
-                                <div class="cc-mg-r-1">
-                                    <p class="cc-text-alt-2"></p>
-                                </div>
-                                <button class="cc-interactive cc-button" data-a-target="chat-send-button" data-test-selector="chat-send-button">
-                                    <span class="cc-button__text" data-a-target="cc-button-text">Send Message</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- User Card -->
-
-                    <div data-a-target="chat-user-card" class="chat-room__viewer-card cc-absolute cc-full-height cc-full-width">
-                        <div class="cc-full-height cc-full-width cc-relative cc-z-above viewer-card-layer">
-
-                        </div>
-                    </div>
-
-                </section>
+                </app-settings>
+                <app-chat class="chat-room cc-flex cc-flex-column cc-flex-grow-1 cc-flex-shrink-1 cc-full-width"></app-chat>        
             </div>
         </div>
     </div>

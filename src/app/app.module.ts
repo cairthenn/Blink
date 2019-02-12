@@ -6,11 +6,15 @@ import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
 import { TwitchApiComponent } from './twitch-api/twitch-api.component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { ChatComponent } from './chat/chat.component';
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TwitchApiComponent,
+    ChatComponent,
+    SettingsComponent,
   ],
   imports: [
     FormsModule,

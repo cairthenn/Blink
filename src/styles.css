@@ -9,6 +9,7 @@
 @import url("styles/svg.css");
 @import url("styles/textarea.css");
 @import url("styles/chat.css");
+@import url("styles/scrollbar.css");
 
 app-twitch-api {
     width: 100%;

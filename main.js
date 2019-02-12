@@ -71,9 +71,9 @@ server.on('connect', (socket) => {
 
     auth.get_login().then((login) => {
         irc.connect(login.user, login.token).then(() => {
-            socket.emit('irc-connected', true);
+            socket.emit('irc-connected', login.user);
         }).catch(err => {
-            socket.emit('irc-connected', false);
+            client_socket.emit('irc-connection-failed');
             console.log(`Error connecting to IRC: ${err}`);
         });
     });
@@ -96,7 +96,6 @@ app.on('ready', function() {
     
     window.on('ready-to-show', () => { 
         window.show();
-        window.webContents.toggleDevTools();
     });
 
     window.loadFile('dist/index.html');
@@ -110,13 +109,14 @@ const standard_template = [ {
             click() {
                 auth.get_login(true).then((login) => {
                     irc.connect(login.user, login.token).then(() => {
-                        client_socket.emit('irc-connected', true);
+                        client_socket.emit('irc-connected', login.user);
                         console.log('connected');
                     }).catch(err => {
-                        client_socket.emit('irc-connected', false);
+                        client_socket.emit('irc-connection-failed');
                         console.log(`Error connecting to IRC: ${err}`);
                     });
                 }).catch(err => {
+                    client_socket.emit('irc-connection-failed');
                     console.log(`Error connecting to IRC: ${err}`);
                 });
             }

@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { ChatService} from '../chat.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { IrcService } from '../irc.service';
 import { IpcRenderer } from 'electron';
+import { ChatComponent } from '../chat/chat.component';
+import { settings } from 'cluster';
 
 @Component({
 	selector: 'app-twitch-api',
@@ -10,35 +11,33 @@ import { IpcRenderer } from 'electron';
 })
 export class TwitchApiComponent implements OnInit {
 
-	public chats : Array<ChatService> = [];
-	public user : string;
-	private ipcRenderer : IpcRenderer;
-	public active_chat : ChatService;
+	
+	public username: string;
+	public show_settings: boolean = true;
+	private ipcRenderer: IpcRenderer;
 
   	constructor() { 
 
 	}
 
-	add_channel(name: string) {
-		const chat = new ChatService();
-		chat.init(name);
-		this.chats.push(chat);
-		this.active_chat = chat;
-	}
+	@ViewChild(ChatComponent) chat: ChatComponent;
 
 	connect() {
 		
 	}
 
+	toggle_settings() {
+		this.show_settings = !this.show_settings;
+	}
+
 	ngOnInit() {
 		this.ipcRenderer = window.require('electron').ipcRenderer;		
-		IrcService.init(sucesss => {
-			if(sucesss) {
-				this.ipcRenderer.send('IRCReady');
-				if(this.active_chat == undefined) {
-					this.add_channel('autocair');
-				}
-			}
+		IrcService.init(username => {
+			this.ipcRenderer.send('IRCReady');
+			this.chat.init('vanityfox');
+			this.username = username;
+		}, () => {
+
 		});
 	}
 

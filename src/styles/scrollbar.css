@@ -1,0 +1,22 @@
+.scrollbar {
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.scrollbar::-webkit-scrollbar-track
+{
+	background: inherit;
+	border-radius: 10px;
+}
+
+.scrollbar::-webkit-scrollbar
+{
+	width: 10px;
+	background: inherit;
+}
+
+.scrollbar::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	background: #201c2b;
+}
