@@ -8,7 +8,10 @@
                     <span class="">Welcome to the chat room!</span>
                 </div>
                 <div #messages *ngFor="let msg of messages" class="chat-line__message">
-                    <span><span [style.color]="msg.color">{{msg.username}}:</span> {{msg.message}}</span>
+                    <div>
+                        <span *ngIf="settings.badges"><img *ngFor="let badge of msg.badges" class="chat-badge" src="{{badge}}"/></span>
+                        <span class="message-author__display-name" [style.color]="msg.color">{{msg.username}}: </span><span [innerHtml]="msg.message"></span>
+                    </div>
                 </div>
             </div>
         </div>

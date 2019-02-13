@@ -5,9 +5,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
 import { TwitchApiComponent } from './twitch-api/twitch-api.component';
-import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ChatComponent } from './chat/chat.component';
 import { SettingsComponent } from './settings/settings.component';
+import { ChatTabsComponent } from './chat-tabs/chat-tabs.component';
 
 @NgModule({
   declarations: [
@@ -15,12 +15,12 @@ import { SettingsComponent } from './settings/settings.component';
     TwitchApiComponent,
     ChatComponent,
     SettingsComponent,
+    ChatTabsComponent,
   ],
   imports: [
     FormsModule,
     BrowserModule,
     AppRoutingModule,
-    NgScrollbarModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

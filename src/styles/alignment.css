@@ -100,6 +100,10 @@
     justify-content: space-around!important;
 }
 
+.cc-justify-content-evenly {
+    justify-content: space-evenly!important;
+}
+
 .cc-align-content-start {
     align-content: flex-start!important;
 }

@@ -26,7 +26,7 @@
                 </div>
                 <app-settings [hidden]="!show_settings" class="cc-full-width">
                 </app-settings>
-                <app-chat class="chat-room cc-flex cc-flex-column cc-flex-grow-1 cc-flex-shrink-1 cc-full-width"></app-chat>        
+                <app-chat-tabs [settings]="settings" [attr.disabled]="!connected" class="cc-flex cc-flex-column cc-flex-grow-1 cc-flex-shrink-1 cc-full-width"></app-chat-tabs>
             </div>
         </div>
     </div>

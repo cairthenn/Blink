@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IrcService } from '../irc.service';
 import { IpcRenderer } from 'electron';
-import { ChatComponent } from '../chat/chat.component';
-import { settings } from 'cluster';
+import { SettingsComponent } from '../settings/settings.component';
+import { ChatTabsComponent } from '../chat-tabs/chat-tabs.component';
 
 @Component({
 	selector: 'app-twitch-api',
@@ -13,6 +13,7 @@ export class TwitchApiComponent implements OnInit {
 
 	
 	public username: string;
+	public connected: boolean = false;
 	public show_settings: boolean = false;
 	private ipcRenderer: IpcRenderer;
 
@@ -20,7 +21,8 @@ export class TwitchApiComponent implements OnInit {
 
 	}
 
-	@ViewChild(ChatComponent) chat: ChatComponent;
+	@ViewChild(ChatTabsComponent) chat_tabs: ChatTabsComponent;
+	@ViewChild(SettingsComponent) settings: SettingsComponent;
 
 	connect() {
 		
@@ -31,11 +33,13 @@ export class TwitchApiComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		this.connected = false;
 		this.ipcRenderer = window.require('electron').ipcRenderer;		
 		IrcService.init(username => {
 			this.ipcRenderer.send('IRCReady');
-			this.chat.init('autocair');
+			this.chat_tabs.add('popesquidward');
 			this.username = username;
+			this.connected = true;
 		}, () => {
 
 		});

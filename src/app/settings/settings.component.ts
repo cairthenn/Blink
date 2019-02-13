@@ -16,6 +16,7 @@ export class SettingsComponent implements OnInit {
   public char_count: boolean = true;
   public subs: boolean = true;
   public bits: boolean = true;
+  public badges: boolean = true;
 
   public twitch_emotes: boolean = true;
   public bttv: boolean = true;

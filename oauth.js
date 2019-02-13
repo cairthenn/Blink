@@ -7,42 +7,6 @@ const client_id = 'ut8pnp247zcvfj7gga2lxo8kp2d9lz';
 
 let auth_window;
 
-module.exports.manual_login = function() {
-
-    var promise = new Promise(function(resolve, reject) {
-        auth_window = new BrowserWindow({
-            show: false,
-            autoHideMenuBar: true,
-        });
-
-        const success = function(sender, user, token) {
-            resolve(user, token);
-            auth_window.destroy();
-        };
-
-        ipcMain.on('manual-login', success);
-
-        // 0wlqihol75u9zc04xvni3d9nvpwc3x
-
-        auth_window.on('ready-to-show', () => auth_window.show());
-        auth_window.webContents.toggleDevTools();
-
-        auth_window.on('closed', () => {
-            reject('The window was closed.');
-            ipcMain.removeListener('manual-login', success);
-            auth_window = null;
-        });
-
-        auth_window.loadFile('./manual.html');
-    });
-
-    return promise.then(user, auth => {
-            return { user: user, token: auth };
-    }).catch(err => {
-        throw err;
-    });
-}
-
 module.exports.get_login = function(force_verify) {
     
     const url_params = {
@@ -117,7 +81,6 @@ function parse_oauth(url) {
 }
 
 function validate_username(token) {
-    console.log(token);
     return axios.get(validate_url, { 
         headers: {
             Authorization : `OAuth ${token}`
