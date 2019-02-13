@@ -53,8 +53,8 @@
 }
 
 body, html {
-  min-height: 100%;
-  min-width: 100%;
-  width:100%;
-  overflow-x:hidden;
+    min-height: 100%;
+     min-width: 100%;
+    width:100%;
+    overflow-x:hidden;
 }

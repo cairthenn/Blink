@@ -3,26 +3,26 @@ import { ChatComponent } from '../chat/chat.component';
 import { SettingsComponent } from '../settings/settings.component';
 
 @Component({
-  selector: 'app-chat-tabs',
-  templateUrl: './chat-tabs.component.html',
-  styleUrls: ['./chat-tabs.component.css']
+    selector: 'app-chat-tabs',
+    templateUrl: './chat-tabs.component.html',
+    styleUrls: ['./chat-tabs.component.css']
 })
 export class ChatTabsComponent implements OnInit {
 
-  @ViewChild(ChatComponent) active : ChatComponent;
+    @ViewChild(ChatComponent) active : ChatComponent;
 
-  public chat_rooms : ChatComponent[];
-  
-  @Input() public settings : SettingsComponent;
+    public chat_rooms : ChatComponent[];
+    
+    @Input() public settings : SettingsComponent;
 
-  constructor() { }
+    constructor() { }
 
-  public add(name: string) {
-    this.active.init(name);
-  }
+    public add(name: string) {
+        this.active.init(name);
+    }
 
-  ngOnInit() {
-    this.chat_rooms = [];
-  }
+    ngOnInit() {
+        this.chat_rooms = [];
+    }
 
 }

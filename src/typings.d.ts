@@ -1,5 +1,5 @@
 declare var window: Window;
 interface Window {
-  process: any;
-  require: any;
+    process: any;
+    require: any;
 }

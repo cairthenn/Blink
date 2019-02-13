@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TwitchApiComponent } from './twitch-api.component';
+import { TabContainerComponent } from './tab-container.component';
 
-describe('TwitchApiComponent', () => {
-    let component: TwitchApiComponent;
-    let fixture: ComponentFixture<TwitchApiComponent>;
+describe('TabContainerComponent', () => {
+    let component: TabContainerComponent;
+    let fixture: ComponentFixture<TabContainerComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [ TwitchApiComponent ]
+            declarations: [ TabContainerComponent ]
         })
         .compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(TwitchApiComponent);
+        fixture = TestBed.createComponent(TabContainerComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
