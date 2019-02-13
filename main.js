@@ -6,7 +6,7 @@ const io = require('socket.io'),
       server = io.listen(8000);
 
 let window;
-let client_socket;
+let clientSocket;
 
 const irc = new IRC();
 
@@ -15,14 +15,14 @@ ipcMain.on('IRCReady', () => {
 });
 
 const msg = /^@badges=([^;]*);color=([^;]*);display-name=([^;]*);(?:emote-only=([\d]*);)?emotes=([^;]*);flags=([^;]*);id=([^;]*);.*PRIVMSG #(\w*) :(.*)$/iu
-const user_state = /^@badges=([^;]*);color=([^;]*);display-name=([^;]*);emote-sets=([^;]*);mod=([^;]*);subscriber=([^;]*);user-type=(.*) :tmi.twitch.tv USERSTATE #(\w*)$/iu
-const room_state = /^@broadcaster-lang=([^;]*);emote-only=([^;]*);followers-only=([^;]*);r9k=([^;]*);rituals=([^;]*);room-id=([^;]*);slow=(.*);subs-only=(.*) :tmi.twitch.tv ROOMSTATE #(\w*)$/iu
+const userState = /^@badges=([^;]*);color=([^;]*);display-name=([^;]*);emote-sets=([^;]*);mod=([^;]*);subscriber=([^;]*);user-type=(.*) :tmi.twitch.tv USERSTATE #(\w*)$/iu
+const roomState = /^@broadcaster-lang=([^;]*);emote-only=([^;]*);followers-only=([^;]*);r9k=([^;]*);rituals=([^;]*);room-id=([^;]*);slow=(.*);subs-only=(.*) :tmi.twitch.tv ROOMSTATE #(\w*)$/iu
 
 
 
 server.on('connect', (socket) => {
-    client_socket = socket;
-    socket.on('outgoing-chat', (channel, message) => irc.send_message(channel, message));
+    clientSocket = socket;
+    socket.on('outgoing-chat', (channel, message) => irc.sendMessage(channel, message));
     socket.on('join', (channel) => irc.join(channel));
     socket.on('part', (channel) => irc.part(channel));
 
@@ -31,7 +31,7 @@ server.on('connect', (socket) => {
             badges: info[1],
             color: info[2],
             username: info[3],
-            emote_only: info[4],
+            emoteOnly: info[4],
             emotes: info[5],
             flags: info[6],
             id: info[7],
@@ -42,42 +42,42 @@ server.on('connect', (socket) => {
         socket.emit('chat', info[8], message);
     })
 
-    irc.on(user_state, info => {
+    irc.on(userState, info => {
         const state = {
             badges: info[1],
             color: info[2],
             username: info[3],
-            emote_sets: info[4],
+            emoteSets: info[4],
             moderator: info[5],
             subscriber: info[6],
-            user_type: info[7]
+            userType: info[7]
         }
         socket.emit('user-state', info[8], state);
     });
 
-    irc.on(room_state, info => {
+    irc.on(roomState, info => {
         const state = {
             lang: info[1],
-            emote_only: info[2],
-            followers_only: info[3],
+            emoteOnly: info[2],
+            followersOnly: info[3],
             r9k: info[4],
             rituals: info[5],
-            room_id: info[6],
+            roomId: info[6],
             slow: info[7],
-            sub_only: info[8],
+            subOnly: info[8],
         }
         socket.emit('room-state', info[9], state);
     });
 
-    auth.get_login().then((login) => {
+    auth.getLogin().then((login) => {
         irc.connect(login.user, login.token).then(() => {
             socket.emit('irc-connected', login.user);
         }).catch(err => {
-            client_socket.emit('irc-connection-failed');
+            clientSocket.emit('irc-connection-failed');
             console.log(`Error connecting to IRC: ${err}`);
         });
     }).catch(err => {
-        client_socket.emit('irc-connection-failed');
+        clientSocket.emit('irc-connection-failed');
         console.log(`Error connecting to IRC: ${err}`);
     });
 });
@@ -107,23 +107,23 @@ app.on('ready', function() {
     window.loadFile('dist/index.html');
 });
 
-const standard_template = [
+const standardTemplate = [
     {
         label: 'Account',
         submenu: [
             {
                 label: 'Login',
                 click() {
-                    auth.get_login(true).then((login) => {
+                    auth.getLogin(true).then((login) => {
                         irc.connect(login.user, login.token).then(() => {
-                            client_socket.emit('irc-connected', login.user);
+                            clientSocket.emit('irc-connected', login.user);
                             console.log('connected');
                         }).catch(err => {
-                            client_socket.emit('irc-connection-failed');
+                            clientSocket.emit('irc-connection-failed');
                             console.log(`Error connecting to IRC: ${err}`);
                         });
                     }).catch(err => {
-                        client_socket.emit('irc-connection-failed');
+                        clientSocket.emit('irc-connection-failed');
                         console.log(`Error connecting to IRC: ${err}`);
                     });
                 }
@@ -144,6 +144,6 @@ const standard_template = [
     }];
 
 // The first menu slot on Mac OS is reserved by the application
-const mac_template = [ { label : 'Dawrin Placeholder' } ].concat(standard_template);
-const main_menu = Menu.buildFromTemplate( platform == 'darwin' ? mac_template : standard_template );
-Menu.setApplicationMenu(main_menu);
+const macTemplate = [ { label : 'Dawrin Placeholder' } ].concat(standardTemplate);
+const mainMenu = Menu.buildFromTemplate( platform == 'darwin' ? macTemplate : standardTemplate );
+Menu.setApplicationMenu(mainMenu);

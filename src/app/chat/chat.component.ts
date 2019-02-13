@@ -17,6 +17,20 @@ export interface Info {
   views: number;
 }
 
+
+const image_classes = "cc-chat-image cc-inline-block .chat-line__message--emote"
+
+const ffzHtml = function(id: string, name: string) {
+  return `<img src="https://cdn.frankerfacez.com/emoticon/${id}/1" class="${image_classes}" alt="${name}" [style.hidden]="!settings.ffz"/> `
+}
+const bttvHtml = function(id: string, name: string) {
+  return `<img src="https://cdn.betterttv.net/emote/${id}/1x" class="${image_classes}" alt="${name}" [style.hidden]="!settings.bttv"/> `
+}
+const twitchHtml = function(id: string, name: string) {
+  return `<img src="https://static-cdn.jtvnw.net/emoticons/v1/${id}/1.0" class="${image_classes}" alt="${name}" [style.hidden]="!settings.twitchEmotes"/> `
+}
+
+
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -26,76 +40,92 @@ export class ChatComponent implements OnInit {
 
   @Input() public settings : SettingsComponent;
 
-  public room_setup: boolean = false;
+  public roomSetup: boolean = false;
 
   public username: string = '';
   public color: string = '#FFFFFF';
   public moderator: boolean = false;
   public subscriber: boolean = false;
-  public emote_sets: string = '';
+  public emoteSets: string = '';
   public badges: string = '';
 
   public lang: string = '';
-  public emote_only: boolean = false;
-  public followers_only: boolean = false;
+  public emoteOnly: boolean = false;
+  public followersOnly: boolean = false;
   public r9k: boolean = false;
   public rituals: string = '';
-  public room_id: string = '';
+  public roomId: string = '';
   public slow: number = 0;
-  public sub_only: boolean = false;
+  public subOnly: boolean = false;
   
+  public channelDisplay: string = '';
   public channel: string = '';
 
   public messages: ChatMessage[] = [];
   
   private BTTVEmotes = {};
   private FFZEmotes = {};
+  private TwitchEmotes = {};
   private Badges = {};
 
   constructor() { 
   }
 
-  private user_state(state: any) {
+  private userState(state: any) {
     this.username = state.username;
     this.color = state.color;
     this.badges = state.badges;
     this.moderator = state.moderator != '0';
     this.subscriber = state.subscriber != '0';
-    this.emote_sets = state.emote_sets;
+    this.emoteSets = state.emoteSets;
   }
   
-  private room_state(state: any) {
+  private roomState(state: any) {
 
     this.lang = state.lang;
-    this.emote_only = state.emote_only == '1';
-    this.followers_only = state.followers_only == '1';
+    this.emoteOnly = state.emoteOnly == '1';
+    this.followersOnly = state.followersOnly == '1';
     this.r9k = state.r9k == '1';
     this.rituals = state.rituals;
     this.slow = state.slow;
-    this.sub_only = state.sub_only == '1';
-    this.room_id = state.room_id;
-    this.Badges = EmotesService.get_badges(state.room_id);
+    this.subOnly = state.subOnly == '1';
+    this.roomId = state.roomId;
+    EmotesService.getBadges(state.roomId).then(badges => {
+      this.Badges = badges;
+    })
   }
 
-  private on_message(msg: any) {
-    const message = this.process_incoming(msg);
+  private onMessage(msg: any) {
+    const message = this.processIncoming(msg);
 
-    this.messages.push(message);
+    this.addMessage(message);
   }
   
   
   public init(name: string) {
-    this.channel = name;
+    this.channelDisplay = name;
+    this.channel = name.toLowerCase();
+
+    EmotesService.getBttvEmotes(this.channel).then(emotes => {
+      console.log(emotes);
+      this.BTTVEmotes = emotes;
+    })
+
+    EmotesService.getFfzEmotes(this.channel).then(emotes => {
+      console.log(emotes);
+      this.FFZEmotes = emotes;
+    })
+
     IrcService.join(name, (msg: any) => {
-      this.on_message(msg);
+      this.onMessage(msg);
     }, (state: any) => {
-      this.user_state(state);
+      this.userState(state);
     }, (state: any) => {
-      this.room_state(state);
+      this.roomState(state);
     });
   }
 
-  private parse_twitch_emotes(str: string) {
+  private parseTwitchEmotes(str: string) {
 
     if(str.length == 0) {
       return {};
@@ -121,7 +151,7 @@ export class ChatComponent implements OnInit {
   }
 
 
-  private parse_badges(str: string) {
+  private parseBadges(str: string) {
 
     if(str.length == 0) {
       return [];
@@ -129,68 +159,108 @@ export class ChatComponent implements OnInit {
 
     return str.split(',').map(x => {
       const badge_info = x.split('/');
-      return badge_info[0] in this.Badges ? this.Badges[badge_info[0]][badge_info[1]] : null;
+      return badge_info[0] in this.Badges ? this.Badges[badge_info[0]].versions[badge_info[1]].image_url_1x : null;
     })
 
   }
 
-  private process_incoming(msg: any) : ChatMessage {
+  private processIncoming(msg: any) : ChatMessage {
     
-    const emote_locations = this.parse_twitch_emotes(msg.emotes);
-    console.log(this.settings);
+    const emote_locations = this.parseTwitchEmotes(msg.emotes);
+
     var cursor = 0;
     const text = msg.message.split(' ').reduce((builder, word) => {
-      if(cursor in emote_locations && this.settings.twitch_emotes) {
-        builder += `<img src="https://static-cdn.jtvnw.net/emoticons/v1/${emote_locations[cursor]}/1.0" class="cc-chat-image cc-inline-block" alt="${word}" style="hidden:{{!settings.twitch_emotes}}"/> `
-      } else if(word in this.BTTVEmotes && this.settings.bttv) {
-        const emote = this.BTTVEmotes[word];
-        if(!this.settings.gifs && emote.type == '.gif'){
-          builder += `${word} `;
-        } else {
-          builder += `<img src="https://cdn.betterttv.net/emote/${emote.id}/1x" class="cc-chat-image cc-inline-block" alt="${word}" style="hidden:{{!settings.bttv}}"/> `
-        }
-      } else if(word in this.FFZEmotes && this.settings.ffz) {
-        const emote = this.FFZEmotes[word];
-        builder += `<img src="https://cdn.frankerfacez.com/emoticon/${emote.id}/1" class="cc-chat-image cc-inline-block" alt="${word}" style="hidden:{{!settings.ffz}}"/> `
-      } else {
-        builder += `${word} `;
-      }
-
+      const check = cursor;
       cursor += Array.from(word).length + 1;
-      return builder;
+      if(check in emote_locations) {
+        return `${builder}${twitchHtml(emote_locations[cursor], word)}`;
+      } else if(word in this.BTTVEmotes) {
+        return `${builder}${bttvHtml(this.BTTVEmotes[word].id, word)}`;
+      } else if(word in this.FFZEmotes) {
+        return `${builder}${ffzHtml(this.FFZEmotes[word].id, word)}`;
+      } 
+      return `${builder}${word} `;
     }, '').trim();
 
     const message = {
       username: msg.username, 
       color: msg.color,
       message: text,
-      badges: this.parse_badges(this.badges),
+      badges: this.parseBadges(msg.badges),
     };
 
     return message;
   }
 
-  private process_outgoing(text: string) : ChatMessage {
+  private processOutgoing(text: string) : ChatMessage {
+    
+    const html = text.split(' ').reduce((builder, word) => {
+      if(word in this.TwitchEmotes) {
+        return `${builder}${twitchHtml(this.TwitchEmotes[word].id, word)}`;
+      } else if(word in this.BTTVEmotes) {
+        return `${builder}${bttvHtml(this.BTTVEmotes[word].id, word)}`;
+      } else if(word in this.FFZEmotes) {
+        return `${builder}${ffzHtml(this.FFZEmotes[word].id, word)}`;
+      }
+      return `${builder}${word} `;
+    }, '');
+
     const message = {
       username: this.username, 
       color: this.color,
-      message: text,
-      badges: this.parse_badges(this.badges),
+      message: html,
+      badges: this.parseBadges(this.badges),
     };
 
     return message;
   }
 
   public send(text: string) {
+    const trimmed = text.trim();
+    if(trimmed.length > 0) {
+      const message = this.processOutgoing(trimmed);
+      this.addMessage(message);
+      IrcService.sendMessage(this.channel, trimmed);
+    }
+  }
 
-    const message = this.process_outgoing(text);
+  public addMessage(message: ChatMessage) {
+
+    if(this.messages.length > this.settings.maxHistory) {
+      this.messages.shift();
+    }
 
     this.messages.push(message);
+  }
 
-    IrcService.send_message(this.channel, text);
+  // Scrolling
+
+  public wantsToScroll : boolean = false;
+  private _scrollHeight: number;
+  private _scrollTop: number;
+
+  get scrollHeight() {
+    return this._scrollHeight;
+  }
+
+  @Input() set scrollHeight (n: number) {
+    this._scrollHeight = n;
+  }
+
+  get scroll_top() {
+    return this._scrollTop;
+  }
+
+  @Input() set scrollTop (n: number) {
+    this._scrollTop = n;
+  }
+
+  public handleScroll(event: any) {
+
   }
   
   ngOnInit() {
+
   }
 
 }

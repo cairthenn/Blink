@@ -47,7 +47,7 @@ module.exports.IRC = class {
             self.socket.on('data', function(data) {
                 const msgs = String(data).split('\n');
                 msgs.forEach(msg => {
-                    console.log(`< ${msg}`);
+                    // console.log(`< ${msg}`);
                     if(msg.length > 0) {
                         self.receive(msg.trim());
                     }
@@ -82,7 +82,7 @@ module.exports.IRC = class {
         this.send(`PART #${channel}`);
     }
 
-    send_message(channel, message) {
+    sendMessage(channel, message) {
         if(!this.channels.includes(channel)) {
             return;
         }

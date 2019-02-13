@@ -14,22 +14,22 @@ export class TwitchApiComponent implements OnInit {
 	
 	public username: string;
 	public connected: boolean = false;
-	public show_settings: boolean = false;
+	public showSettings: boolean = false;
 	private ipcRenderer: IpcRenderer;
 
   	constructor() { 
 
 	}
 
-	@ViewChild(ChatTabsComponent) chat_tabs: ChatTabsComponent;
+	@ViewChild(ChatTabsComponent) chatTabs: ChatTabsComponent;
 	@ViewChild(SettingsComponent) settings: SettingsComponent;
 
 	connect() {
 		
 	}
 
-	toggle_settings() {
-		this.show_settings = !this.show_settings;
+	toggleSettings() {
+		this.showSettings = !this.showSettings;
 	}
 
 	ngOnInit() {
@@ -37,7 +37,7 @@ export class TwitchApiComponent implements OnInit {
 		this.ipcRenderer = window.require('electron').ipcRenderer;		
 		IrcService.init(username => {
 			this.ipcRenderer.send('IRCReady');
-			this.chat_tabs.add('popesquidward');
+			this.chatTabs.add('autocair');
 			this.username = username;
 			this.connected = true;
 		}, () => {

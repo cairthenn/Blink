@@ -1,25 +1,26 @@
 const { BrowserWindow, ipcMain } = require('electron');
 const qs = require('querystring');
 const axios = require('axios');
-const auth_url = 'https://id.twitch.tv/oauth2/authorize';
-const validate_url = 'https://id.twitch.tv/oauth2/validate';
-const client_id = 'ut8pnp247zcvfj7gga2lxo8kp2d9lz';
 
-let auth_window;
+const authUrl = 'https://id.twitch.tv/oauth2/authorize';
+const validateUrl = 'https://id.twitch.tv/oauth2/validate';
+const clientId = 'ut8pnp247zcvfj7gga2lxo8kp2d9lz';
 
-module.exports.get_login = function(force_verify) {
+let authWindow;
+
+module.exports.getLogin = function(forceVerify) {
     
-    const url_params = {
-        client_id : client_id,
+    const urlParams = {
+        client_id : clientId,
         response_type : 'token',
         redirect_uri : 'https://cairthenn.com',
         scope : 'chat:edit chat:read whispers:edit whispers:read user_subscriptions',
-        force_verify : force_verify || false,
+        force_verify : forceVerify || false,
     };
 
     var promise = new Promise(function(resolve, reject) {
         var success = false;
-        auth_window = new BrowserWindow({
+        authWindow = new BrowserWindow({
             show: false,
             webPreferences: {
                 nodeIntegration: false
@@ -27,40 +28,40 @@ module.exports.get_login = function(force_verify) {
             autoHideMenuBar: true,
         });
 
-        auth_window.on('ready-to-show', () => auth_window.show());
+        authWindow.on('ready-to-show', () => authWindow.show());
 
         // Cleaner cancel
-        auth_window.webContents.on('did-frame-navigate', (event, url) => {
-            if(url == auth_url) {
+        authWindow.webContents.on('did-frame-navigate', (event, url) => {
+            if(url == authUrl) {
                 reject('Authorization was canceled.');
-                auth_window.destroy();
+                authWindow.destroy();
             }
         });
 
-        auth_window.on('closed', () => {
+        authWindow.on('closed', () => {
             if(!success) {
                 reject('The window was closed.');
             }
-            auth_window = null;
+            authWindow = null;
         });
 
-        auth_window.webContents.on('will-redirect', (event, url) => {
+        authWindow.webContents.on('will-redirect', (event, url) => {
             try {
-                const auth = parse_oauth(url);
+                const auth = parseOauth(url);
                 resolve(auth);
                 success = true;
             } 
             catch(err) {
                 reject('The response token was not valid.');
             }
-            auth_window.destroy();
+            authWindow.destroy();
         });
 
-        auth_window.loadURL(`${auth_url}?${qs.stringify(url_params)}`);
+        authWindow.loadURL(`${authUrl}?${qs.stringify(urlParams)}`);
     });
 
     return promise.then(auth => {
-        return validate_username(auth.access_token).then(user => {
+        return validateUsername(auth.access_token).then(user => {
             return { user: user, token: auth.access_token };
         })
     }).catch(err => {
@@ -68,7 +69,7 @@ module.exports.get_login = function(force_verify) {
     });
 }
 
-function parse_oauth(url) {
+function parseOauth(url) {
     const regex = /[#&](?<name>[^=]*)=(?<value>[^#&]*)/g;
     var match;
     var matches = {};
@@ -80,8 +81,8 @@ function parse_oauth(url) {
     return matches;
 }
 
-function validate_username(token) {
-    return axios.get(validate_url, { 
+function validateUsername(token) {
+    return axios.get(validateUrl, { 
         headers: {
             Authorization : `OAuth ${token}`
         }

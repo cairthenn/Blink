@@ -7,52 +7,53 @@ import { Component, OnInit, Input, Output } from '@angular/core';
 })
 export class SettingsComponent implements OnInit {
 
-  public light_theme: boolean = false;
+  public lightTheme: boolean = false;
   public alternate: boolean = false;
   public separators: boolean = true;
   public flash: boolean = false;
 
   public timestamps: boolean = false;
-  public char_count: boolean = true;
+  public charCount: boolean = true;
   public subs: boolean = true;
   public bits: boolean = true;
   public badges: boolean = true;
 
-  public twitch_emotes: boolean = true;
+  public twitchEmotes: boolean = true;
   public bttv: boolean = true;
   public ffz: boolean = true;
   public gifs: boolean = false;
 
   public duplicates: boolean = false;
-  public emote_priority: boolean = false;
+  public emotePriority: boolean = false;
   public anonymous: boolean = false;
+  public maxHistory: number = 200;
 
   private _highlight: string = "";
   private _blacklist: string = "";
   private _ignored: string = "";
 
-  public highlight_words: string[] = [];
-  public blacklist_words: string[] = [];
-  public ignored_users: string[] = [];
+  public highlightWords: string[] = [];
+  public blacklistWords: string[] = [];
+  public ignoredUsers: string[] = [];
 
   constructor() { }
 
 
-  private comma_delimiter(words: string) {
+  private commaDelimiter(words: string) {
     return words.split(',').map(s => s.trim()).filter(s => !/^\s*$/.test(s));
   }
 
   set highlight(words: string) {
     this._highlight = words;
-    this.highlight_words = this.comma_delimiter(words);
-    console.log(this.highlight_words);
+    this.highlightWords = this.commaDelimiter(words);
+    console.log(this.highlightWords);
   }
   
   get highlight() { return this._highlight; }
 
   set blacklist(words: string) {
     this._blacklist = words;
-    this.blacklist_words = this.comma_delimiter(words);
+    this.blacklistWords = this.commaDelimiter(words);
 
   }
 
@@ -60,7 +61,7 @@ export class SettingsComponent implements OnInit {
 
   set ignored(words: string) {
     this._ignored = words;
-    this.ignored_users = this.comma_delimiter(words);
+    this.ignoredUsers = this.commaDelimiter(words);
   }
 
   get ignored() { return this._ignored; }
