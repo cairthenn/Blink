@@ -1,6 +1,6 @@
 <!-- Chat Messages -->
                     
-<div class="chat-room__content cc-border-l cc-text-base cc-flex cc-flex-column cc-flex-grow-1 cc-flex-nowrap cc-full-height cc-relative">
+<div class="chat-room__content cc-text-base cc-flex cc-flex-column cc-flex-grow-1 cc-flex-nowrap cc-full-height cc-relative">
     <div class="chat-list cc-flex cc-flex-column cc-flex-grow-1 cc-flex-nowrap cc-overflow-hidden cc-relative">
         <div class="chat-list__lines cc-flex-grow-1 cc-flex-grow-1 scrollbar" (scroll)="handleScroll($event)" [attr.scrollHeight]="scrollHeight"  [attr.scrollTop]="scrollTop">
             <div class="cc-flex cc-flex-column cc-flex-grow-1 cc-pd-b-1" >
@@ -36,12 +36,12 @@
     <div class="cc-block cc-relative cc-z-default">
         <div class="">
             <textarea class="cc-block cc-border-radius-medium cc-font-size-6 cc-full-width cc-textarea" placeholder="Send a message" style="padding-right: 6rem;max-height: 200px; min-height: 45px" 
-                #messageBox (keydown.enter)="send(messageBox.value); messageBox.value=''; $event.preventDefault();"></textarea>
+                #messageBox (keydown.enter)="service.send(messageBox.value); messageBox.value=''; $event.preventDefault();"></textarea>
         </div>
     </div>
     <div class="chat-input__buttons-container cc-flex cc-justify-content-between cc-mg-t-1">
         <div class="cc-flex cc-flex-row">
-            <button aria-label="Users in Chat" class="cc-interactive cc-button-icon" data-a-target="chat-viewer-list" data-test-selector="chat-viewer-list">
+            <button class="cc-button-icon" data-a-target="chat-viewer-list" data-test-selector="chat-viewer-list">
                 <span class="cc-button-icon__icon">
                     <div style="width: 2rem; height: 2rem;">
                         <div class="cc-align-items-center cc-full-width cc-icon cc-icon--fill cc-inline-flex">
@@ -59,7 +59,7 @@
             <div class="cc-mg-r-1">
                 <p class="cc-text-alt-2"></p>
             </div>
-            <button class="cc-interactive cc-button" data-a-target="chat-send-button" data-test-selector="chat-send-button" (click)="send(messageBox.value); messageBox.value='';">
+            <button class="cc-button" data-a-target="chat-send-button" (click)="service.send(messageBox.value); messageBox.value='';">
                 <span class="cc-button__text" data-a-target="cc-button-text">Send Message</span>
             </button>
         </div>

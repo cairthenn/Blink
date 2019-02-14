@@ -16,6 +16,10 @@ module.exports.IRC = class {
 
     
     send(data) {
+        if(!this.connected) {
+            return;
+        }
+
         this.socket.write(`${data}\n`, 'utf-8', function() {
             console.log(`> ${data}`);
         });
@@ -47,7 +51,7 @@ module.exports.IRC = class {
             self.socket.on('data', function(data) {
                 const msgs = String(data).split('\n');
                 msgs.forEach(msg => {
-                    // console.log(`< ${msg}`);
+                    console.log(`< ${msg}`);
                     if(msg.length > 0) {
                         self.receive(msg.trim());
                     }
@@ -59,6 +63,9 @@ module.exports.IRC = class {
     }
     
     disconnect() {
+        if(!this.connected) {
+            return;
+        }
         this.connected = false;
         this.send('QUIT');
         this.socket.end();

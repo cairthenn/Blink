@@ -61,6 +61,11 @@
     text-align: center;
 }
 
+.cc-button--square {
+    border: 0!important;;
+    border-radius: 0!important;
+}
+
 .cc-button--text {
     background: transparent;
     color: #dad8de;

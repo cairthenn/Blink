@@ -8,8 +8,10 @@ import { TwitchApiComponent } from './twitch-api/twitch-api.component';
 import { ChatComponent } from './chat/chat.component';
 import { SettingsComponent } from './settings/settings.component';
 import { ChatTabsComponent } from './chat-tabs/chat-tabs.component';
-import { TabContainerComponent } from './tab-container/tab-container.component';
-import { TabComponent } from './tab/tab.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ChannelDialogComponent } from './channel-dialog/channel-dialog.component';
+import { MatFormFieldModule, MatDialogModule, MatInputModule } from '@angular/material';
 
 @NgModule({
     declarations: [
@@ -18,13 +20,20 @@ import { TabComponent } from './tab/tab.component';
         ChatComponent,
         SettingsComponent,
         ChatTabsComponent,
-        TabContainerComponent,
-        TabComponent,
+        ChannelDialogComponent,
     ],
     imports: [
         FormsModule,
         BrowserModule,
         AppRoutingModule,
+        DragDropModule,
+        MatFormFieldModule,
+        MatDialogModule,
+        MatInputModule,
+        BrowserAnimationsModule,
+    ],
+    entryComponents:[
+        ChannelDialogComponent,
     ],
     providers: [],
     bootstrap: [AppComponent]

@@ -17,135 +17,135 @@ app-twitch-api {
 }
 
 .cc-line-height-body {
-    line-height: 1.5!important;
+    line-height: 1.5;
 }
 
 .cc-line-height-heading {
-    line-height: 1.2!important;
+    line-height: 1.2;
 }
 
 .cc-regular {
-    font-weight: 400!important;
+    font-weight: 400;
 }
 
 .cc-strong {
-    font-weight: 600!important;
+    font-weight: 600;
 }
 
 .cc-italic {
-    font-style: italic!important;
+    font-style: italic;
 }
 
 .cc-strikethrough {
-    text-decoration: line-through!important;
+    text-decoration: line-through;
 }
 
 .cc-nowrap {
-    white-space: nowrap!important;
+    white-space: nowrap;
 }
 
 .cc-underline {
-    text-decoration: underline!important;
+    text-decoration: underline;
 }
 
 .cc-upcase {
-    text-transform: uppercase!important;
+    text-transform: uppercase;
 }
 
 .cc-capcase {
-    text-transform: capitalize!important;
+    text-transform: capitalize;
 }
 
 .cc-word-break-normal {
-    word-break: normal!important;
+    word-break: normal;
 }
 
 .cc-word-break-all {
-    word-break: break-all!important;
+    word-break: break-all;
 }
 
 .cc-word-break-keep-all {
-    word-break: keep-all!important;
+    word-break: keep-all;
 }
 
 .cc-word-break-word {
-    word-break: break-word!important;
+    word-break: break-word;
 }
 
 .cc-align-center {
-    text-align: center!important;
+    text-align: center;
 }
 
 .cc-align-left {
-    text-align: left!important;
+    text-align: left;
 }
 
 .cc-align-right {
-    text-align: right!important;
+    text-align: right;
 }
 
 .cc-align-justify {
-    text-align: justify!important;
+    text-align: justify;
 }
 
 .cc-inline {
-    display: inline!important;
+    display: inline;
 }
 
 .cc-inline-block {
-    display: inline-block!important;
+    display: inline-block;
 }
 
 .cc-block {
-    display: block!important;
+    display: block;
 }
 
 .cc-hide {
-    display: none!important;
+    display: none;
 }
 
 .cc-overflow-hidden {
-    overflow: hidden!important;
+    overflow: hidden;
 }
 
 .cc-overflow-auto {
-    overflow: auto!important;
+    overflow: auto;
 }
 
 .cc-overflow-scroll {
-    overflow: scroll!important;
+    overflow: scroll;
 }
 
 .cc-overflow-visible {
-    overflow: visible!important;
+    overflow: visible;
 }
 
 .cc-resize-none {
-    resize: none!important;
+    resize: none;
 }
 
 .cc-resize-x {
-    resize: horizontal!important;
+    resize: horizontal;
 }
 
 .cc-resize-y {
-    resize: vertical!important;
+    resize: vertical;
 }
 
 .cc-full-width {
-    width: 100%!important;
+    width: 100%;
 }
 
 .cc-full-height {
-    height: 100%!important;
+    height: 100%;
 }
 
 .cc-visible {
-    visibility: visible!important;
+    visibility: visible;
 }
 
 .cc-hidden {
-    visibility: hidden!important;
+    visibility: hidden;
 }
 
 .cc-clearfix:after {
@@ -317,3 +317,5 @@ h6,p {
     font-size: 1.2rem;
     line-height: 1.5;
 }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

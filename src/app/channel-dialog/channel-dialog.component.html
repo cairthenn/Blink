@@ -1,0 +1,5 @@
+<div class="cc-dialog" mat-dialog-content>
+    <mat-form-field>
+      <input #input matInput [(ngModel)]="channel" placeholder="Enter a channel" (keydown.enter)="dialogRef.close(channel)" cdkFocusInitial>
+    </mat-form-field>
+</div>

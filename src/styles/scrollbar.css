@@ -3,6 +3,15 @@
     overflow-x: hidden;
 }
 
+.scrollbar--hidden {
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+.scrollbar--hidden::-webkit-scrollbar {
+	width: 0!important;
+}
+
 .scrollbar::-webkit-scrollbar-track
 {
 	background: inherit;

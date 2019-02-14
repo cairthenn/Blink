@@ -10,10 +10,6 @@ let clientSocket;
 
 const irc = new IRC();
 
-ipcMain.on('IRCReady', () => { 
-    console.log('Received Init From Angular');
-});
-
 const msg = /^@badges=([^;]*);color=([^;]*);display-name=([^;]*);(?:emote-only=([\d]*);)?emotes=([^;]*);flags=([^;]*);id=([^;]*);.*PRIVMSG #(\w*) :(.*)$/iu
 const userState = /^@badges=([^;]*);color=([^;]*);display-name=([^;]*);emote-sets=([^;]*);mod=([^;]*);subscriber=([^;]*);user-type=(.*) :tmi.twitch.tv USERSTATE #(\w*)$/iu
 const roomState = /^@broadcaster-lang=([^;]*);emote-only=([^;]*);followers-only=([^;]*);r9k=([^;]*);rituals=([^;]*);room-id=([^;]*);slow=(.*);subs-only=(.*) :tmi.twitch.tv ROOMSTATE #(\w*)$/iu
@@ -71,7 +67,7 @@ server.on('connect', (socket) => {
 
     auth.getLogin().then((login) => {
         irc.connect(login.user, login.token).then(() => {
-            socket.emit('irc-connected', login.user);
+            socket.emit('irc-connected', login.user, login.token);
         }).catch(err => {
             clientSocket.emit('irc-connection-failed');
             console.log(`Error connecting to IRC: ${err}`);
