@@ -1,17 +1,13 @@
 <!-- Chat Messages -->
                     
 <div class="chat-room__content cc-text-base cc-flex cc-flex-column cc-flex-grow-1 cc-flex-nowrap cc-full-height cc-relative">
-    <div class="chat-list cc-flex cc-flex-column cc-flex-grow-1 cc-flex-nowrap cc-overflow-hidden cc-relative">
-        <div class="chat-list__lines cc-flex-grow-1 cc-flex-grow-1 scrollbar" (scroll)="handleScroll($event)" [attr.scrollHeight]="scrollHeight"  [attr.scrollTop]="scrollTop">
-            <div class="cc-flex cc-flex-column cc-flex-grow-1 cc-pd-b-1" >
-                <div data-a-target="chat-welcome-message" class="chat-line__status">
-                    <span class="">Welcome to the chat room!</span>
-                </div>
-                <div #messages *ngFor="let msg of messages" class="chat-line__message">
-                    <div>
-                        <span *ngIf="settings.badges"><img *ngFor="let badge of msg.badges" class="chat-badge" src="{{badge}}"/></span>
-                        <span class="message-author__display-name" [style.color]="msg.color">{{msg.username}}: </span><span [innerHtml]="msg.message"></span>
-                    </div>
+    <div class="chat-list cc-flex cc-flex-column cc-flex-grow-1 cc-flex-nowrap cc-overflow-hidden cc-relative cc-pd-t-1">
+        <div #scrollBox class="chat-list__lines cc-flex-grow-1 scrollbar" (scroll)="handleScroll($event)" (mouseover)="active=true" (mouseout)="active=false">
+            <div #messageList *ngFor="let msg of messages" class="chat-line__message">
+                <div #message>
+                    <span *ngIf="settings.badges"><img *ngFor="let badge of msg.badges" class="chat-badge" src="{{badge}}"/></span>
+                    <span class="message-author__display-name" [style.color]="msg.color">{{msg.username}}: </span><span [innerHtml]="msg.message"></span>
+                    <hr *ngIf="settings.separators">
                 </div>
             </div>
         </div>
@@ -24,24 +20,23 @@
 <!-- Notifications -->
 
 <div class="chat-room__notifications cc-absolute cc-full-width cc-z-default">
-    <div class="">
-        <div class="share-to-chat__space--hidden"></div>
-        <div class="share-to-chat__space--hidden"></div>
-    </div>
+
 </div>
 
 <!-- Chat Input -->
 
-<div class="chat-input cc-block cc-pd-b-2 cc-pd-x-2">
+<div class="chat-input cc-block cc-pd-2 cc-flex-shrink-1" >
     <div class="cc-block cc-relative cc-z-default">
         <div class="">
-            <textarea class="cc-block cc-border-radius-medium cc-font-size-6 cc-full-width cc-textarea" placeholder="Send a message" style="padding-right: 6rem;max-height: 200px; min-height: 45px" 
-                #messageBox (keydown.enter)="service.send(messageBox.value); messageBox.value=''; $event.preventDefault();"></textarea>
+            <textarea #messageBox class="cc-block cc-border-radius-medium cc-font-size-6 cc-full-width cc-textarea" placeholder="Send a message" style="padding-right: 6rem;max-height: 200px; min-height: 45px"
+                (keydown.enter)="service.send(messageBox.value); messageBox.value=''; $event.preventDefault();"  
+                (keydown.tab)="tabcomplete(messageBox.value, messageBox.selectionStart, messageBox.selectionEnd); $event.preventDefault()"
+                [disabled]="!service.initialized" cdkFocusInitial></textarea>
         </div>
     </div>
     <div class="chat-input__buttons-container cc-flex cc-justify-content-between cc-mg-t-1">
         <div class="cc-flex cc-flex-row">
-            <button class="cc-button-icon" data-a-target="chat-viewer-list" data-test-selector="chat-viewer-list">
+            <button class="cc-button-icon" data-a-target="chat-viewer-list" data-test-selector="chat-viewer-list" [disabled]="!service.initialized">
                 <span class="cc-button-icon__icon">
                     <div style="width: 2rem; height: 2rem;">
                         <div class="cc-align-items-center cc-full-width cc-icon cc-icon--fill cc-inline-flex">
@@ -59,7 +54,7 @@
             <div class="cc-mg-r-1">
                 <p class="cc-text-alt-2"></p>
             </div>
-            <button class="cc-button" data-a-target="chat-send-button" (click)="service.send(messageBox.value); messageBox.value='';">
+            <button class="cc-button" data-a-target="chat-send-button" (click)="service.send(messageBox.value); messageBox.value='';" [disabled]="!service.initialized">
                 <span class="cc-button__text" data-a-target="cc-button-text">Send Message</span>
             </button>
         </div>

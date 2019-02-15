@@ -10,7 +10,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "electron": "electron .",
-    "electron-build": "ng build --prod && electron ."
+    "electron-build": "ng build --prod && electron .",
+    "fast-build": "ng build --source-map=false && electron ."
   },
   "private": true,
   "dependencies": {
@@ -25,6 +26,8 @@
     "@angular/platform-browser-dynamic": "~7.2.0",
     "@angular/router": "~7.2.0",
     "core-js": "^2.5.4",
+    "crypto-js": "^3.1.9-1",
+    "electron-settings": "^3.2.0",
     "hammerjs": "^2.0.8",
     "lodash": "^4.17.11",
     "ngx-scrollbar": "^4.1.1",

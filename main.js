@@ -14,8 +14,6 @@ const msg = /^@badges=([^;]*);color=([^;]*);display-name=([^;]*);(?:emote-only=(
 const userState = /^@badges=([^;]*);color=([^;]*);display-name=([^;]*);emote-sets=([^;]*);mod=([^;]*);subscriber=([^;]*);user-type=(.*) :tmi.twitch.tv USERSTATE #(\w*)$/iu
 const roomState = /^@broadcaster-lang=([^;]*);emote-only=([^;]*);followers-only=([^;]*);r9k=([^;]*);rituals=([^;]*);room-id=([^;]*);slow=(.*);subs-only=(.*) :tmi.twitch.tv ROOMSTATE #(\w*)$/iu
 
-
-
 server.on('connect', (socket) => {
     clientSocket = socket;
     socket.on('outgoing-chat', (channel, message) => irc.sendMessage(channel, message));
@@ -69,11 +67,11 @@ server.on('connect', (socket) => {
         irc.connect(login.user, login.token).then(() => {
             socket.emit('irc-connected', login.user, login.token);
         }).catch(err => {
-            clientSocket.emit('irc-connection-failed');
+            socket.emit('irc-connection-failed');
             console.log(`Error connecting to IRC: ${err}`);
         });
     }).catch(err => {
-        clientSocket.emit('irc-connection-failed');
+        socket.emit('irc-connection-failed');
         console.log(`Error connecting to IRC: ${err}`);
     });
 });

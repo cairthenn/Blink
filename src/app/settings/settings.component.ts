@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
+import { ElectronService } from '../electron.service';
 
 @Component({
     selector: 'app-settings',
@@ -36,7 +37,9 @@ export class SettingsComponent implements OnInit {
     public blacklistWords: string[] = [];
     public ignoredUsers: string[] = [];
 
-    constructor() { }
+    constructor() { 
+        this.load();
+    }
 
 
     private commaDelimiter(words: string) {
@@ -64,7 +67,60 @@ export class SettingsComponent implements OnInit {
         this.ignoredUsers = this.commaDelimiter(words);
     }
 
+    
     get ignored() { return this._ignored; }
+
+    load() {
+        console.log('loading settings');
+        const electronSettings = ElectronService.settings;
+
+        this.lightTheme = electronSettings.get('lightTheme');
+        this.alternate = electronSettings.alternate
+        this.separators = electronSettings.get('separators');
+        this.flash = electronSettings.get('flash');
+        this.timestamps = electronSettings.get('timestamps');
+        this.charCount = electronSettings.get('charCount');
+        this.subs = electronSettings.get('subs');
+        this.bits = electronSettings.get('bits');
+        this.badges = electronSettings.get('badges');
+        this.twitchEmotes = electronSettings.get('twitchEmotes');
+        this.bttv = electronSettings.get('bttv');
+        this.ffz = electronSettings.get('ffz');
+        this.gifs = electronSettings.get('gifs');
+        this.duplicates = electronSettings.get('duplicates');
+        this.emotePriority = electronSettings.get('emotePriority');
+        this.anonymous = electronSettings.get('anonymous');
+        this.maxHistory = electronSettings.get('maxHistory');
+        this.highlight = electronSettings.get('highlight');
+        this.blacklist = electronSettings.get('blacklist');
+        this.ignored = electronSettings.get('ignored');
+    }
+
+    save() {
+        console.log('saving settings');
+        ElectronService.settings.setAll({
+            lightTheme: this.lightTheme,
+            alternate: this.alternate,
+            separators: this.separators,
+            flash: this.flash,
+            timestamps: this.timestamps,
+            charCount: this.charCount,
+            subs: this.subs,
+            bits: this.bits,
+            badges: this.badges,
+            twitchEmotes: this.twitchEmotes,
+            bttv: this.bttv,
+            ffz: this.ffz,
+            gifs: this.gifs,
+            duplicates: this.duplicates,
+            emotePriority: this.emotePriority,
+            anonymous: this.anonymous,
+            maxHistory: this.maxHistory,
+            highlight: this._highlight,
+            blacklist: this._blacklist,
+            ignored: this._ignored,
+        });
+    }
 
     ngOnInit() {
     }

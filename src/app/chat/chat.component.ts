@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ElementRef, QueryList, ViewChildren, ViewChild } from '@angular/core';
 import { SettingsComponent } from '../settings/settings.component';
 import { ChatService } from '../chat.service';
 
@@ -26,43 +26,76 @@ export class ChatComponent implements OnInit {
 
     @Input() public settings: SettingsComponent;
     @Input() public service: ChatService;
-    @ViewChild('join-popup') selectChannel: ElementRef;
 
-    get active() {
-        return this.service.active;
-    }
+    @ViewChildren('message') messageList: QueryList<ElementRef>;
+    @ViewChild('scrollBox') scrollBox: ElementRef;
 
     constructor() {
     }
 
     // Scrolling
+    private _active: boolean = false;
+    public scrollHeight: number;
+    public scrollTop: number;
+    public wantsToScroll: boolean = false;
 
-    public wantsToScroll : boolean = false;
-    private _scrollHeight: number;
-    private _scrollTop: number;
-
-    get scrollHeight() {
-        return this._scrollHeight;
-    }
-
-    @Input() set scrollHeight (n: number) {
-        this._scrollHeight = n;
-    }
-
-    get scroll_top() {
-        return this._scrollTop;
-    }
-
-    @Input() set scrollTop (n: number) {
-        this._scrollTop = n;
-    }
+    private userScrolled: boolean = false;
 
     public handleScroll(event: any) {
+        if(this.active) {
+            this.userScrolled = true;
+        }
+    }
 
+
+    set active(val : boolean) {
+
+        if(!val && this.wantsToScroll) {
+            const difference = this.scrollBox.nativeElement.scrollHeight - (this.scrollBox.nativeElement.scrollTop + this.scrollBox.nativeElement.clientHeight);
+            if(difference < 100) {
+                this.scrollBox.nativeElement.scrollTop = this.scrollBox.nativeElement.scrollHeight;
+                this.wantsToScroll = false;
+            }
+        }
+
+        this._active = val;
+    }
+
+    get active() {
+        return this._active;
     }
 
     get messages() {
         return this.service.messages;
+    }
+
+    public tabcomplete(message: string, selectionStart: string, selectionEnd: string) {
+
+        console.log(message, selectionStart, selectionEnd);
+    }
+
+    ngAfterViewInit() {
+        this.messageList.changes.subscribe(x => {
+
+            // Mouse not in window
+            if(!this.active)
+            {
+                const difference = this.scrollBox.nativeElement.scrollHeight - (this.scrollBox.nativeElement.scrollTop + this.scrollBox.nativeElement.clientHeight);
+                
+                console.log(difference, x.last.nativeElement.scrollHeight, this.scrollBox.nativeElement.clientHeight);
+                // See if user scrolled themselves
+                if(this.userScrolled && difference * 2 > this.scrollBox.nativeElement.clientHeight){
+                    return;
+                }
+                this.userScrolled = false;
+                this.wantsToScroll = false;    
+                this.scrollBox.nativeElement.scrollTop = this.scrollBox.nativeElement.scrollHeight;
+
+            } else {
+                this.wantsToScroll = true;
+            }
+
+        });
     }
     
     ngOnInit() {

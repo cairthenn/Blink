@@ -34,7 +34,9 @@ export class IrcService {
         }
     }
 
-    public static init(success: (name: string, token: string) => any, failure: () => any) {
+    public static init(success: (name: string, token: string) => any, 
+                        failure: (err: string) => any) {
+
         this.socket = io(IrcService.server);
         this.socket.on('chat', (channel: string, message: Object) => {
             this.handleMessage(channel, message);
@@ -52,9 +54,10 @@ export class IrcService {
             success(username, token);
         });
 
-        this.socket.on('irc-connection-failed', () => {
-            failure();
+        this.socket.on('irc-connection-failed', (err) => {
+            failure(err);
         });
+
     }
 
     public static join(channel: string, message: (n: Object) => any, user: (n: Object) => any, room: (n: Object) => any) {
@@ -77,6 +80,10 @@ export class IrcService {
 
     public static sendMessage(channel: string, message: string) {
         this.socket.emit('outgoing-chat', channel, message);
+    }
+
+    public static saveSettings(vals) {
+        this.socket.emit('save-settings', vals);
     }
 
 }

@@ -12,8 +12,8 @@ const ffz_channel = 'https://api.frankerfacez.com/v1/room/';
 const badges_channel = 'https://badges.twitch.tv/v1/badges/channels/';
 const badges_global = 'https://badges.twitch.tv/v1/badges/global/display';
 
-const twitch_emotes = 'https://api.twitch.tv/kraken/chat/emoticon_images?client_id=ut8pnp247zcvfj7gga2lxo8kp2d9lz&emotesets='
-
+const twitch_emotes = 'https://api.twitch.tv/kraken/chat/emoticon_images?emotesets='
+const tmi_info = 'https://tmi.twitch.tv/group/user/'
 
 
 @Injectable({
@@ -29,6 +29,15 @@ export class EmotesService {
 
     constructor() { }
 
+    public static getUserList(room: string) {
+        return this.get(`${tmi_info}${room}/chatters`).then(info => {
+            return info.chatters;
+        }).catch(err => {
+            console.log(`Error fetching channel user list: ${err}`);
+            return {};
+        });
+    }
+    
     public static getBttvEmotes(room: string, update: boolean = false) : Promise<any> {
 
         const room_promise = !update && this.bttv[room] || this.get(`${bttv_channel}${room}`).then(channel => {
@@ -85,24 +94,23 @@ export class EmotesService {
 
     }
 
-    public static getTwitchEmotes(sets: string, update: boolean = false) : Promise<any> {
+    public static getTwitchEmotes(sets: string, key: string, update: boolean = false) : Promise<any> {
 
         const promises = sets.split(',').map(id => {
-            return id in this.twitch ? this.twitch[id] : this.get(`${twitch_emotes}${id}`).then(emotes => {
-                return this.twitch[id] = emotes.emoticon_sets[id].reduce((obj, item) => {
-                    obj[item.code] = item;
-                    return obj;
-                }, {});
+            return id in this.twitch ? this.twitch[id] : this.get(`${twitch_emotes}${id}`, { 
+                headers: {
+                    Authorization : `OAuth ${key}`
+                }
+            }).then(emotes => {
+                return this.twitch[id] = emotes.emoticon_sets[id];
             });
         });
 
-        return Promise.all(promises).then(results => {
-            return results.reduce((obj, item) => {
-                return { ...obj, ...item};
-            });
+        return Promise.all(promises).then((results: any) => {
+            return results.flat();
         }).catch(err => {
             console.log(`Error fetching Twitch emotes: ${err}`);
-            return {};
+            return [];
         });
     }
 
@@ -130,11 +138,11 @@ export class EmotesService {
         
     }
 
-    public static get(url: string) {
-        return axios.get(url).then((response) => {
-                return response.data;
+    public static get(url: string, config: object = {}) {
+        return axios.get(url, config).then((response) => {
+            return response.data;
         }).catch(err => {
-                throw err;
+            throw err;
         });
     }
 }

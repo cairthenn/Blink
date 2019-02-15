@@ -417,14 +417,6 @@
     float: right;
 }
 
-.chat-list__lines {
-    line-height: 2rem;
-}
-
-.chat-list__more-messages-placeholder {
-    height: 0;
-}
-
 .chat-list__more-messages {
     cursor: pointer;
 }

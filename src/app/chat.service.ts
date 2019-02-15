@@ -3,6 +3,7 @@ import { IrcService } from './irc.service';
 import { ChatMessage } from './chat/chat.component';
 import { EmotesService } from './emotes.service';
 import { SettingsComponent } from './settings/settings.component';
+import CryptoJS from 'crypto-js';
 
 
 const image_classes = "cc-chat-image cc-inline-block .chat-line__message--emote"
@@ -22,14 +23,14 @@ const twitchHtml = function(id: string, name: string) {
 })
 export class ChatService {
 
-    public roomSetup: boolean = false;
 
+    public roomSetup: boolean = false;
     public username: string = '';
     public color: string = '#FFFFFF';
     public moderator: boolean = false;
     public subscriber: boolean = false;
     public emoteSets: string = '';
-    public badges: string = '';
+    public badgeSets: string = '';
 
     public lang: string = '';
     public emoteOnly: boolean = false;
@@ -45,11 +46,13 @@ export class ChatService {
     public active: boolean = false;
     public initialized: boolean = false;
 
-    
-    private BTTVEmotes = {};
-    private FFZEmotes = {};
-    private TwitchEmotes = {};
-    private Badges = {};
+    private token: string;
+
+    private bttvEmotes = {};
+    private ffzEmotes = {};
+    private twitchEmotes = [];
+    private badges = {};
+    private users = {};
 
     
     public messages: ChatMessage[] = [];
@@ -57,22 +60,36 @@ export class ChatService {
     constructor(public settings: SettingsComponent) { }
 
     private userState(state: any) {
-        this.username = state.username;
+        //this.username = state.username;
         this.color = state.color;
-        this.badges = state.badges;
+        this.badgeSets = state.badges;
         this.moderator = state.moderator != '0';
         this.subscriber = state.subscriber != '0';
         if(this.emoteSets !== state.emoteSets) {
-            EmotesService.getTwitchEmotes(state.emoteSets).then(emotes => {
-                console.log(emotes);
-                this.TwitchEmotes = emotes;
+        
+            const bytes = CryptoJS.AES.decrypt(this.token, this.username);
+            const key = bytes.toString(CryptoJS.enc.Utf8);
+            EmotesService.getTwitchEmotes(state.emoteSets, key).then(emotes => {
+                this.twitchEmotes = emotes;
             })
         }
         this.emoteSets = state.emoteSets;
     }
 
-    private roomState(state: any) {
+    private updateUserList() {
+        EmotesService.getUserList(this.channel).then(users => {
+            this.users = users;
+        });
+    }
 
+    private updateBadges() {
+        EmotesService.getBadges(this.roomId).then(badges => {
+            this.badges = badges;
+        })
+    }
+
+    private roomState(state: any) {
+        this.initialized = true;
         this.lang = state.lang;
         this.emoteOnly = state.emoteOnly == '1';
         this.followersOnly = state.followersOnly == '1';
@@ -81,9 +98,8 @@ export class ChatService {
         this.slow = state.slow;
         this.subOnly = state.subOnly == '1';
         this.roomId = state.roomId;
-        EmotesService.getBadges(state.roomId).then(badges => {
-            this.Badges = badges;
-        })
+        this.updateBadges();
+        this.updateUserList();
     }
 
     private onMessage(msg: any) {
@@ -93,21 +109,23 @@ export class ChatService {
     }
 
 
-    public init(name: string) {
+    public init(channel: string, username: string, token: string) {
 
         if(this.initialized) {
             IrcService.part(this.channel);
         }
 
-        this.channelDisplay = name;
-        this.channel = name.toLowerCase();
+        this.username = username;
+        this.token = token;
+        this.channelDisplay = channel;
+        this.channel = channel.toLowerCase();
 
         EmotesService.getBttvEmotes(this.channel).then(emotes => {
-            this.BTTVEmotes = emotes;
+            this.bttvEmotes = emotes;
         })
 
         EmotesService.getFfzEmotes(this.channel).then(emotes => {
-            this.FFZEmotes = emotes;
+            this.ffzEmotes = emotes;
         })
 
         IrcService.join(this.channel, (msg: any) => {
@@ -117,8 +135,12 @@ export class ChatService {
         }, (state: any) => {
             this.roomState(state);
         });
+    }
 
-        this.initialized = true;
+    public close() {
+        if(this.initialized) {
+            IrcService.part(this.channel);
+        }
     }
 
     private parseTwitchEmotes(str: string) {
@@ -155,7 +177,7 @@ export class ChatService {
 
         return str.split(',').map(x => {
             const badge_info = x.split('/');
-            return badge_info[0] in this.Badges ? this.Badges[badge_info[0]].versions[badge_info[1]].image_url_1x : null;
+            return badge_info[0] in this.badges ? this.badges[badge_info[0]].versions[badge_info[1]].image_url_1x : null;
         })
 
     }
@@ -170,10 +192,10 @@ export class ChatService {
             cursor += Array.from(word).length + 1;
             if(check in emote_locations) {
                 return `${builder}${twitchHtml(emote_locations[check], word)}`;
-            } else if(word in this.BTTVEmotes) {
-                return `${builder}${bttvHtml(this.BTTVEmotes[word].id, word)}`;
-            } else if(word in this.FFZEmotes) {
-                return `${builder}${ffzHtml(this.FFZEmotes[word].id, word)}`;
+            } else if(word in this.bttvEmotes) {
+                return `${builder}${bttvHtml(this.bttvEmotes[word].id, word)}`;
+            } else if(word in this.ffzEmotes) {
+                return `${builder}${ffzHtml(this.ffzEmotes[word].id, word)}`;
             } 
             return `${builder}${word} `;
         }, '').trim();
@@ -189,14 +211,23 @@ export class ChatService {
     }
 
     private processOutgoing(text: string) : ChatMessage {
-        
+
         const html = text.split(' ').reduce((builder, word) => {
-            if(word in this.TwitchEmotes) {
-                return `${builder}${twitchHtml(this.TwitchEmotes[word].id, word)}`;
-            } else if(word in this.BTTVEmotes) {
-                return `${builder}${bttvHtml(this.BTTVEmotes[word].id, word)}`;
-            } else if(word in this.FFZEmotes) {
-                return `${builder}${ffzHtml(this.FFZEmotes[word].id, word)}`;
+            // Probably a more efficient way to handle this,
+            // twitch passes back regex for base emotes like :)
+            // to allow for :-), etc.
+            const match = this.twitchEmotes.find(element => {
+                return new RegExp(element.code).test(word);
+            });
+
+            if(match != undefined) {
+                return `${builder}${twitchHtml(match.id, word)}`;
+            }
+            
+            if(word in this.bttvEmotes) {
+                return `${builder}${bttvHtml(this.bttvEmotes[word].id, word)}`;
+            } else if(word in this.ffzEmotes) {
+                return `${builder}${ffzHtml(this.ffzEmotes[word].id, word)}`;
             }
             return `${builder}${word} `;
         }, '');
@@ -205,7 +236,7 @@ export class ChatService {
             username: this.username, 
             color: this.color,
             message: html,
-            badges: this.parseBadges(this.badges),
+            badges: this.parseBadges(this.badgeSets),
         };
 
         return message;
@@ -214,9 +245,15 @@ export class ChatService {
     public send(text: string) {
         const trimmed = text.trim();
         if(trimmed.length > 0) {
-            const message = this.processOutgoing(trimmed);
-            this.addMessage(message);
             IrcService.sendMessage(this.channel, trimmed);
+            
+            new Promise((resolve) => {
+                resolve(this.processOutgoing(trimmed));
+            }).then((msg: ChatMessage) => {
+                this.addMessage(msg);
+            }).catch(err => {
+                console.log(`Error processing message: ${err}`);
+            })
         }
     }
 
