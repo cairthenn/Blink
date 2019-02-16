@@ -24,94 +24,120 @@ const twitchHtml = function(id: string, name: string) {
 export class ChatService {
 
 
-    public roomSetup: boolean = false;
+    public joined: boolean = false;
     public username: string = '';
-    public color: string = '#FFFFFF';
-    public moderator: boolean = false;
-    public subscriber: boolean = false;
-    public emoteSets: string = '';
-    public badgeSets: string = '';
-
-    public lang: string = '';
-    public emoteOnly: boolean = false;
-    public followersOnly: boolean = false;
-    public r9k: boolean = false;
-    public rituals: string = '';
-    public roomId: string = '';
-    public slow: number = 0;
-    public subOnly: boolean = false;
     
     public channelDisplay: string = '';
     public channel: string = '';
     public active: boolean = false;
-    public initialized: boolean = false;
 
     private token: string;
 
+    private userState: any = {};
+    private roomState: any = {};
+
+    private userEmotes = [];
     private bttvEmotes = {};
     private ffzEmotes = {};
-    private twitchEmotes = [];
-    private badges = {};
-    private users = {};
-
+    private userList = {};
+    public badges = {};
     
     public messages: ChatMessage[] = [];
 
     constructor(public settings: SettingsComponent) { }
 
-    private userState(state: any) {
-        //this.username = state.username;
-        this.color = state.color;
-        this.badgeSets = state.badges;
-        this.moderator = state.moderator != '0';
-        this.subscriber = state.subscriber != '0';
-        if(this.emoteSets !== state.emoteSets) {
-        
-            const bytes = CryptoJS.AES.decrypt(this.token, this.username);
-            const key = bytes.toString(CryptoJS.enc.Utf8);
-            EmotesService.getTwitchEmotes(state.emoteSets, key).then(emotes => {
-                this.twitchEmotes = emotes;
-            })
-        }
-        this.emoteSets = state.emoteSets;
-    }
-
     private updateUserList() {
         EmotesService.getUserList(this.channel).then(users => {
-            this.users = users;
+            this.userList = users;
         });
     }
+    
 
-    private updateBadges() {
-        EmotesService.getBadges(this.roomId).then(badges => {
+    private updateBadges(state) {
+        EmotesService.getBadges(state).then(badges => {
             this.badges = badges;
         })
     }
 
-    private roomState(state: any) {
-        this.initialized = true;
-        this.lang = state.lang;
-        this.emoteOnly = state.emoteOnly == '1';
-        this.followersOnly = state.followersOnly == '1';
-        this.r9k = state.r9k == '1';
-        this.rituals = state.rituals;
-        this.slow = state.slow;
-        this.subOnly = state.subOnly == '1';
-        this.roomId = state.roomId;
-        this.updateBadges();
+    private updateEmotes(sets: string) {
+        const bytes = CryptoJS.AES.decrypt(this.token, this.username);
+        const key = bytes.toString(CryptoJS.enc.Utf8);
+        EmotesService.getTwitchEmotes(sets, key).then(emotes => {
+            this.userEmotes = emotes;
+        })
+    }
+
+    private onUserState(state: any) {
+        if(this.userState['emote-sets'] !== state['emote-sets']) {
+            this.updateEmotes(state['emote-sets']);
+        }
+
+        this.userState = state;
+    }
+
+    private onJoin() {
+        this.addStatus('Welcome to the chat!');
+        this.joined = true;
+    }
+
+    private onRoomState(state: any) {
+        this.roomState = state;
+        this.updateBadges(state['room-id']);
         this.updateUserList();
     }
 
-    private onMessage(msg: any) {
-        const message = this.processIncoming(msg);
+    private onMessage(params: any, text: string) {
+        const message = this.processIncoming(params, text);
 
         this.addMessage(message);
+    }
+
+    private onUserNotice(params: any, text: string) {
+        //const message = this.processIncoming(params, text);
+        //this.addMessage(message);
+        if(text) {
+            this.addStatus(`[TODO]: ${text}`);
+        }
+
+        console.log('user notice', text, params);
+    }
+
+    private onNotice(params: any, text: string) {
+        this.addStatus(text);
+    }
+
+    private addStatus(text: string) {
+        this.addMessage({
+            isStatus: true,
+            text: text,
+        });
+    }
+
+    private purge(params, user: string) {
+        console.log('purge', params);
+        this.messages.forEach(msg => {
+            if(!user || msg.username == user) {
+                msg.deleted = true;
+            }
+        })
+
+        if(!user) {
+            this.addStatus('Chat was cleared by a moderator.')
+        }
+    }
+
+    private deleteMessage(messageId: string) {
+        console.log(`Attemping to delete: ${messageId}`);
+    }
+
+    private globalUserState(state: any) {
+        console.log(`Global user state:`, state);
     }
 
 
     public init(channel: string, username: string, token: string) {
 
-        if(this.initialized) {
+        if(this.joined) {
             IrcService.part(this.channel);
         }
 
@@ -128,17 +154,21 @@ export class ChatService {
             this.ffzEmotes = emotes;
         })
 
-        IrcService.join(this.channel, (msg: any) => {
-            this.onMessage(msg);
-        }, (state: any) => {
-            this.userState(state);
-        }, (state: any) => {
-            this.roomState(state);
+        IrcService.join(this.channel, {
+            'CLEARCHAT' : (params, msg) => { this.purge(params, msg); },
+            'CLEARMSG' : (_, msg) => { this.deleteMessage(msg); },
+            'GLOBALUSERSTATE': (params) => { this.globalUserState(params); },
+            'PRIVMSG': (params, msg) => { this.onMessage(params, msg); },
+            'ROOMSTATE': (params) => { this.onRoomState(params); },
+            'NOTICE': (params, msg) => { this.onNotice(params, msg); },
+            'USERNOTICE': (params, msg) => { this.onUserNotice(params, msg); },
+            'USERSTATE': (params) => { this.onUserState(params); },
+            'JOIN': () => { this.onJoin(); },
         });
     }
 
     public close() {
-        if(this.initialized) {
+        if(this.joined) {
             IrcService.part(this.channel);
         }
     }
@@ -171,23 +201,20 @@ export class ChatService {
 
     private parseBadges(str: string) {
 
-        if(str.length == 0) {
+        if(str == undefined || str.length == 0) {
             return [];
         }
 
-        return str.split(',').map(x => {
-            const badge_info = x.split('/');
-            return badge_info[0] in this.badges ? this.badges[badge_info[0]].versions[badge_info[1]].image_url_1x : null;
-        })
+        return str.split(',').map(x => x.split('/'))
 
     }
 
-    private processIncoming(msg: any) : ChatMessage {
+    private processIncoming(params: any, text: string) : any {
         
-        const emote_locations = this.parseTwitchEmotes(msg.emotes);
+        const emote_locations = this.parseTwitchEmotes(params['emotes']);
 
         var cursor = 0;
-        const text = msg.message.split(' ').reduce((builder, word) => {
+        const html = text.split(' ').reduce((builder, word) => {
             const check = cursor;
             cursor += Array.from(word).length + 1;
             if(check in emote_locations) {
@@ -201,30 +228,23 @@ export class ChatService {
         }, '').trim();
 
         const message = {
-            username: msg.username, 
-            color: msg.color,
-            message: text,
-            badges: this.parseBadges(msg.badges),
+            username: params['display-name'], 
+            isChat: true,
+            color: params['color'],
+            text: text,
+            html: html,
+            badges: this.parseBadges(params['badges']),
         };
 
         return message;
     }
 
-    private processOutgoing(text: string) : ChatMessage {
+    private processOutgoing(text: string) : any {
 
         const html = text.split(' ').reduce((builder, word) => {
-            // Probably a more efficient way to handle this,
-            // twitch passes back regex for base emotes like :)
-            // to allow for :-), etc.
-            const match = this.twitchEmotes.find(element => {
-                return new RegExp(element.code).test(word);
-            });
-
-            if(match != undefined) {
-                return `${builder}${twitchHtml(match.id, word)}`;
-            }
-            
-            if(word in this.bttvEmotes) {
+            if(word in this.userEmotes) {
+                return `${builder}${twitchHtml(this.userEmotes[word].id, word)}`;
+            } else if(word in this.bttvEmotes) {
                 return `${builder}${bttvHtml(this.bttvEmotes[word].id, word)}`;
             } else if(word in this.ffzEmotes) {
                 return `${builder}${ffzHtml(this.ffzEmotes[word].id, word)}`;
@@ -234,31 +254,33 @@ export class ChatService {
 
         const message = {
             username: this.username, 
-            color: this.color,
-            message: html,
-            badges: this.parseBadges(this.badgeSets),
+            isChat: true,
+            color: this.userState['color'],
+            text: text,
+            html: html,
+            badges: this.parseBadges(this.userState['badges']),
         };
 
         return message;
     }
 
     public send(text: string) {
-        const trimmed = text.trim();
+        const trimmed = text.trim().replace(/\r?\n/, ' ');
         if(trimmed.length > 0) {
-            IrcService.sendMessage(this.channel, trimmed);
             
-            new Promise((resolve) => {
-                resolve(this.processOutgoing(trimmed));
-            }).then((msg: ChatMessage) => {
-                this.addMessage(msg);
-            }).catch(err => {
-                console.log(`Error processing message: ${err}`);
-            })
+            if(text[0] == '/' || text[0] == '.') {
+                IrcService.sendMessage(this.channel, `.${trimmed.substr(1)}`);
+                return;
+            }
+            
+            IrcService.sendMessage(this.channel, trimmed);
+            const msg = this.processOutgoing(trimmed);
+            this.addMessage(msg);
         }
     }
 
-    public addMessage(message: ChatMessage) {
-
+    private _odd: boolean = false;
+    public addMessage(message: any) {
         if(this.messages.length > this.settings.maxHistory) {
             this.messages.shift();
         }

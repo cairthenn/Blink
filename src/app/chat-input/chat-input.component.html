@@ -1,0 +1,23 @@
+<textarea #messageBox class="cc-block cc-border-radius-medium cc-font-size-6 cc-full-width cc-textarea" placeholder="Send a message" style="padding-right: 6rem;max-height: 200px; min-height: 45px"
+(keydown.enter)="service.send(messageBox.value); messageBox.value=''; $event.preventDefault();"  
+(keydown.tab)="tabcomplete(messageBox.value, messageBox.selectionStart, messageBox.selectionEnd); $event.preventDefault()"
+></textarea>
+
+<div class="chat-input__buttons-container cc-flex cc-justify-content-between cc-mg-t-1">
+    <div>
+        <button class="cc-button-icon" data-a-target="chat-viewer-list" data-test-selector="chat-viewer-list">
+            <span class="cc-button-icon__icon">
+                <div style="width: 2rem; height: 2rem;">
+                    <div class="cc-align-items-center cc-full-width cc-icon cc-icon--fill cc-inline-flex">
+                        <svg class="cc-icon__svg" width="100%" height="100%" version="1.1" viewBox="0 0 20 20" x="0px" y="0px">
+                            <path d="M2 11V9a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm0-6V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm0 12v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm15 0H8a1 1 0 1 1 0-2h9a1 1 0 1 1 0 2zm0-6H8a1 1 0 1 1 0-2h9a1 1 0 1 1 0 2zm0-6H8a1 1 0 1 1 0-2h9a1 1 0 1 1 0 2z" fill-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                </div>
+            </span>
+        </button>
+    </div>
+    <button class="cc-button" data-a-target="chat-send-button" (click)="service.send(messageBox.value); messageBox.value='';">
+        <span class="cc-button__text" data-a-target="cc-button-text">Send Message</span>
+    </button>
+</div>

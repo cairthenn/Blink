@@ -2,6 +2,8 @@ const { Socket } = require('net');
 
 const host = 'irc.chat.twitch.tv';
 const port = 6667;
+const messageFormat = /^@?(?<params>.*):.*tmi.twitch.tv (?<message>.*)/;
+const paramsFormat = /([^=]*)=([^;]*);?/g;
 
 module.exports.IRC = class {
 
@@ -9,9 +11,6 @@ module.exports.IRC = class {
         this.connected = false;
         this.callbacks = [];
         this.channels = [];
-        this.on(/^PING \:(.*)$/i, (match) => {
-            this.send(`PONG :${match[1]}`);
-        })
     }
 
     
@@ -21,7 +20,7 @@ module.exports.IRC = class {
         }
 
         this.socket.write(`${data}\n`, 'utf-8', function() {
-            console.log(`> ${data}`);
+            console.log(`< ${data}`);
         });
     }
 
@@ -31,34 +30,40 @@ module.exports.IRC = class {
             this.disconnect();
         }
 
-        const self = this;
         this.socket = new Socket();
         this.user = user;
 
-        return new Promise(function(resolve, reject) {
-           self.socket.on('connect', function() {
-                self.connected = true;
-                self.send(`PASS oauth:${token}`);
-                self.send(`NICK ${user}`);
-                self.send(`CAP REQ :twitch.tv/tags`);
-                self.send(`CAP REQ :twitch.tv/commands`);
-                for(var c in self.channels) {
-                    self.join(self.channels[c], true);
-                }
+        return new Promise((resolve, reject) => {
+           this.socket.on('connect', () => {
+                this.connected = true;
+                this.send(`PASS oauth:${token}`);
+                this.send(`NICK ${user}`);
+                this.send(`CAP REQ :twitch.tv/tags`);
+                this.send(`CAP REQ :twitch.tv/commands`);
+                this.channels.forEach(c => {
+                    this.join(c, true);
+                })
                 resolve();
             });
     
-            self.socket.on('data', function(data) {
-                const msgs = String(data).split('\n');
+            this.socket.on('data', (data) => {
+                const msgs = String(data).split(/\r?\n/);
                 msgs.forEach(msg => {
-                    console.log(`< ${msg}`);
                     if(msg.length > 0) {
-                        self.receive(msg.trim());
+                        if(msg === 'PING :tmi.twitch.tv') {
+                            this.send('PONG :tmi.twitch.tv');
+                        } else {
+                            // TEMPORARY: prevent logging message if handled
+                            if(this.receive(msg)) {
+                                return;
+                            }
+                        }
+                        console.log(`> ${msg}`);
                     }
                 });
             });
     
-            self.socket.connect(port, host);
+            this.socket.connect(port, host);
         });
     }
     
@@ -66,8 +71,8 @@ module.exports.IRC = class {
         if(!this.connected) {
             return;
         }
-        this.connected = false;
         this.send('QUIT');
+        this.connected = false;
         this.socket.end();
     }
 
@@ -105,14 +110,30 @@ module.exports.IRC = class {
     }
 
     receive(data) {
+
+        const split = messageFormat.exec(data);
+
+        if(!split) {
+            console.log("Unable to parse incoming IRC message:" + data);
+            return;
+        }
+
+
+        const params = {}
+        var match;
+        while(match = paramsFormat.exec(split.groups.params)) {
+            params[match[1]] = match[2];
+        }
+
         for(var i = 0; i < this.callbacks.length; i++) {
             const cb = this.callbacks[i];
-            const match = cb[0].exec(data);
+            const match = cb[0].exec(split.groups.message);
             if(match) {
-                cb[1](match, data);
+                cb[1](match[1], match[2], params, match[3]);
                 if(cb[2]) {
                     this.callbacks.splice(i, 1);
                 }
+                return true;
             }
         }
     }

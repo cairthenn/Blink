@@ -314,6 +314,11 @@
     width: 3.4rem;
 }
 
+.cc-chat-image {
+    margin: -.5rem 0;
+    vertical-align: middle;
+}
+
 .chat-line--inline {
     display: inline;
 }

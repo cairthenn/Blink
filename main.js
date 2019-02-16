@@ -10,9 +10,7 @@ let clientSocket;
 
 const irc = new IRC();
 
-const msg = /^@badges=([^;]*);color=([^;]*);display-name=([^;]*);(?:emote-only=([\d]*);)?emotes=([^;]*);flags=([^;]*);id=([^;]*);.*PRIVMSG #(\w*) :(.*)$/iu
-const userState = /^@badges=([^;]*);color=([^;]*);display-name=([^;]*);emote-sets=([^;]*);mod=([^;]*);subscriber=([^;]*);user-type=(.*) :tmi.twitch.tv USERSTATE #(\w*)$/iu
-const roomState = /^@broadcaster-lang=([^;]*);emote-only=([^;]*);followers-only=([^;]*);r9k=([^;]*);rituals=([^;]*);room-id=([^;]*);slow=(.*);subs-only=(.*) :tmi.twitch.tv ROOMSTATE #(\w*)$/iu
+
 
 server.on('connect', (socket) => {
     clientSocket = socket;
@@ -20,48 +18,13 @@ server.on('connect', (socket) => {
     socket.on('join', (channel) => irc.join(channel));
     socket.on('part', (channel) => irc.part(channel));
 
-    irc.on(msg, info => {
-        const message = {
-            badges: info[1],
-            color: info[2],
-            username: info[3],
-            emoteOnly: info[4],
-            emotes: info[5],
-            flags: info[6],
-            id: info[7],
-            channel: info[8],
-            message: info[9],
-        }
-
-        socket.emit('chat', info[8], message);
+    irc.on(/(\w*) #(\w*)(?: :(.*))?$/, (type, channel, params, message)  => {
+        socket.emit('irc-data', type, channel, params, message);
     })
 
-    irc.on(userState, info => {
-        const state = {
-            badges: info[1],
-            color: info[2],
-            username: info[3],
-            emoteSets: info[4],
-            moderator: info[5],
-            subscriber: info[6],
-            userType: info[7]
-        }
-        socket.emit('user-state', info[8], state);
-    });
-
-    irc.on(roomState, info => {
-        const state = {
-            lang: info[1],
-            emoteOnly: info[2],
-            followersOnly: info[3],
-            r9k: info[4],
-            rituals: info[5],
-            roomId: info[6],
-            slow: info[7],
-            subOnly: info[8],
-        }
-        socket.emit('room-state', info[9], state);
-    });
+    // irc.on(/RECONNECT/, (channel) => {
+    //     socket.emit('reconnect', channel);
+    // });
 
     auth.getLogin().then((login) => {
         irc.connect(login.user, login.token).then(() => {
@@ -87,8 +50,8 @@ app.on('ready', function() {
     
     window.on('closed', () => {
         irc.disconnect();
-        app.quit();
         server.close();
+        app.quit();
         window = null;
     });
     

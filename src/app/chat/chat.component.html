@@ -1,70 +1,40 @@
-<!-- Chat Messages -->
-                    
-<div class="chat-room__content cc-text-base cc-flex cc-flex-column cc-flex-grow-1 cc-flex-nowrap cc-full-height cc-relative">
-    <div class="chat-list cc-flex cc-flex-column cc-flex-grow-1 cc-flex-nowrap cc-overflow-hidden cc-relative cc-pd-t-1">
-        <div #scrollBox class="chat-list__lines cc-flex-grow-1 scrollbar" (scroll)="handleScroll($event)" (mouseover)="active=true" (mouseout)="active=false">
-            <div #messageList *ngFor="let msg of messages" class="chat-line__message">
-                <div #message>
-                    <span *ngIf="settings.badges"><img *ngFor="let badge of msg.badges" class="chat-badge" src="{{badge}}"/></span>
-                    <span class="message-author__display-name" [style.color]="msg.color">{{msg.username}}: </span><span [innerHtml]="msg.message"></span>
-                    <hr *ngIf="settings.separators">
-                </div>
-            </div>
-        </div>
-    </div>
-    <div *ngIf="wantsToScroll" class="chat-list__scroll-bottom cc-mg-x-2 cc-relative">
-
-    </div>
-</div>
-
 <!-- Notifications -->
 
-<div class="chat-room__notifications cc-absolute cc-full-width cc-z-default">
+<div class="chat-room__notifications cc-absolute cc-full-width">
 
 </div>
 
-<!-- Chat Input -->
-
-<div class="chat-input cc-block cc-pd-2 cc-flex-shrink-1" >
-    <div class="cc-block cc-relative cc-z-default">
-        <div class="">
-            <textarea #messageBox class="cc-block cc-border-radius-medium cc-font-size-6 cc-full-width cc-textarea" placeholder="Send a message" style="padding-right: 6rem;max-height: 200px; min-height: 45px"
-                (keydown.enter)="service.send(messageBox.value); messageBox.value=''; $event.preventDefault();"  
-                (keydown.tab)="tabcomplete(messageBox.value, messageBox.selectionStart, messageBox.selectionEnd); $event.preventDefault()"
-                [disabled]="!service.initialized" cdkFocusInitial></textarea>
-        </div>
-    </div>
-    <div class="chat-input__buttons-container cc-flex cc-justify-content-between cc-mg-t-1">
-        <div class="cc-flex cc-flex-row">
-            <button class="cc-button-icon" data-a-target="chat-viewer-list" data-test-selector="chat-viewer-list" [disabled]="!service.initialized">
-                <span class="cc-button-icon__icon">
-                    <div style="width: 2rem; height: 2rem;">
-                        <div class="cc-align-items-center cc-full-width cc-icon cc-icon--fill cc-inline-flex">
-                            <div class="cc-aspect cc-aspect--1x1 cc-aspect--align-top">
-                                <svg class="cc-icon__svg" width="100%" height="100%" version="1.1" viewBox="0 0 20 20" x="0px" y="0px">
-                                    <path d="M2 11V9a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm0-6V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm0 12v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm15 0H8a1 1 0 1 1 0-2h9a1 1 0 1 1 0 2zm0-6H8a1 1 0 1 1 0-2h9a1 1 0 1 1 0 2zm0-6H8a1 1 0 1 1 0-2h9a1 1 0 1 1 0 2z" fill-rule="evenodd"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </span>
-            </button>
-        </div>
-        <div class="cc-align-content-center cc-align-items-center cc-flex cc-flex-row">
-            <div class="cc-mg-r-1">
-                <p class="cc-text-alt-2"></p>
+<div class="chat-room__content chat-lines">
+    <div #messageArea class="chat-list__lines cc-pd-t-1">
+        <div #message *ngFor="let msg of messages">
+            <div *ngIf="msg.isStatus" class="chat-line__status">
+                <span>{{msg.text}}</span>
             </div>
-            <button class="cc-button" data-a-target="chat-send-button" (click)="service.send(messageBox.value); messageBox.value='';" [disabled]="!service.initialized">
-                <span class="cc-button__text" data-a-target="cc-button-text">Send Message</span>
-            </button>
+            <div *ngIf="msg.isChat" class="chat-line__message">
+                <span *ngIf="settings.badges"><img *ngFor="let badge of msg.badges" class="chat-badge" 
+                    [src]="service.badges[badge[0]] ? service.badges[badge[0]].versions[badge[1]].image_url_1x : null"
+                    /></span>
+                <span class="message-author__display-name" [style.color]="msg.color">{{msg.username}}: </span>
+                <div [innerHtml]="msg.html" class="cc-inline"></div>
+            </div>
+            <div *ngIf="msg.isBits && settings.bits" class="chat-line__message">
+                <span *ngIf="settings.badges"><img *ngFor="let badge of msg.badges" class="chat-badge" 
+                    [src]="badges[badge[0]] ? badges[badge[0]].versions[badge[1]].image_url_1x : null"
+                    /></span>
+                <span class="message-author__display-name" [style.color]="msg.color">{{msg.username}}: </span>
+                <div [innerHtml]="msg.html"></div>
+            </div>
+            <div *ngIf="msg.isSub && settings.subs" class="chat-line__message">
+                <div [innerHtml]="msg.html"></div>
+            </div>
+            <hr *ngIf="settings.separators" class="chat-line__separator">
         </div>
     </div>
 </div>
 
-<!-- User Card -->
 
-<div class="chat-room__viewer-card cc-absolute cc-full-height cc-full-width">
-    <div class="cc-full-height cc-full-width cc-relative cc-z-above viewer-card-layer">
-
+<!-- <div [hidden]="!wantsToScroll" class="chat-list__scroll-bottom cc-absolute cc-bottom-0 cc-mg-x-2">
+    <div class="cc-align-items-center cc-full-width cc-pd-x-2"> 
+        <span style="text-align: center">More Messages Below</span>
     </div>
-</div>
+</div> -->

@@ -12,6 +12,9 @@ export class IrcService {
     private static userHandlers : any = {};
     private static roomHandlers : any = {};
 
+
+    private static handlers : Object = {};
+
     constructor() { 
 
     }
@@ -34,21 +37,27 @@ export class IrcService {
         }
     }
 
+    static handleDelete(channel: string, message: string): any {
+        throw new Error("Method not implemented.");
+    }
+
     public static init(success: (name: string, token: string) => any, 
                         failure: (err: string) => any) {
 
         this.socket = io(IrcService.server);
-        this.socket.on('chat', (channel: string, message: Object) => {
-            this.handleMessage(channel, message);
-        })
+        
+        this.socket.on('irc-data', (type: string, channel: string, params: any, message: string) => {
+            if(!(channel in this.handlers)) {
+                console.log(`Message for unjoined channel: ${channel} - ${message}`);
+                return;
+            }
+            if(!(type in this.handlers[channel])) {
+                console.log(`No handler available for message type: ${type} - ${message}`);
+                return;
+            }
 
-        this.socket.on('user-state', (channel: string, message: Object) => {
-            this.handleUserState(channel, message);
-        })
-
-        this.socket.on('room-state', (channel: string, message: Object) => {
-            this.handleRoomState(channel, message);
-        })
+            this.handlers[channel][type](params, message);
+        });
 
         this.socket.on('irc-connected', (username : string, token: string) => {
             success(username, token);
@@ -60,21 +69,13 @@ export class IrcService {
 
     }
 
-    public static join(channel: string, message: (n: Object) => any, user: (n: Object) => any, room: (n: Object) => any) {
-
-        this.chatHandlers[channel] = message;
-        this.userHandlers[channel] = user;
-        this.roomHandlers[channel] = room;
-
+    public static join(channel: string, handlers: Object) {
+        this.handlers[channel] = handlers;
         this.socket.emit('join', channel);
     }
 
     public static part(channel: string) {
-
-        delete this.chatHandlers[channel]
-        delete this.userHandlers[channel]
-        delete this.roomHandlers[channel]
-
+        delete this.handlers[channel];
         this.socket.emit('part', channel);
     }
 

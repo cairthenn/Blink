@@ -15,6 +15,80 @@ const badges_global = 'https://badges.twitch.tv/v1/badges/global/display';
 const twitch_emotes = 'https://api.twitch.tv/kraken/chat/emoticon_images?emotesets='
 const tmi_info = 'https://tmi.twitch.tv/group/user/'
 
+/*
+    Twitch is Really Dumb For Real and provides RegEx for like 12 emotes which
+    is stupidly inefficient because everything else can just check for key existence 
+    :-?)
+*/
+const fixes = {
+    "R-?\\)": [
+        `R-)`,
+        `R)`,
+    ],
+    "\\:-?(p|P)": [
+        `:-p`,
+        `:-P`,
+        `:P`,
+        `:p`,
+    ],
+    "\\;-?\\)":[
+        `;-)`,
+        `;)`,
+    ],
+    "\\:-?[\\\\/]":[
+        `:-\\`,
+        `:-/`,
+        `:\\`,
+        `:/`,
+    ],
+    "\\\u0026lt\\;3":[
+        `<3`,
+    ],
+    "\\:-?(o|O)":[
+        `:-o`,
+        `:-O`,
+        `:o`,
+        `:O`,
+    ],
+    "B-?\\)":[
+        `B-)`,
+        `B)`,
+    ],
+    "[oO](_|\\.)[oO]":[
+        `o.o`,
+        `O.O`,
+        `o.O`,
+        `O.o`,
+        `o_o`,
+        `O_O`,
+        `o_O`,
+        `O_o`,
+    ],
+    "\\:-?[z|Z|\\|]":[
+        `:-z`,
+        `:-Z`,
+        `:-|`,
+        `:z`,
+        `:Z`,
+        `:|`,
+    ],
+    "\\\u0026gt\\;\\(":[
+        `>(`
+    ],
+    "\\:-?D":[
+        `:-D`,
+        `:D`,
+    ],
+    "\\:-?\\(":[
+        `:-(`,
+        `:(`,
+    ],
+    "\\:-?\\)":[
+        `:-)`,
+        `:)`,
+    ],
+}
+
 
 @Injectable({
     providedIn: 'root'
@@ -107,10 +181,19 @@ export class EmotesService {
         });
 
         return Promise.all(promises).then((results: any) => {
-            return results.flat();
+            return results.flat().reduce(function(obj, item) {
+                if(item.code in fixes) {
+                    fixes[item.code].forEach(element => {
+                        obj[element] = item;
+                    });
+                } else {
+                    obj[item.code] = item;
+                }
+                return obj;
+            }, {});
         }).catch(err => {
             console.log(`Error fetching Twitch emotes: ${err}`);
-            return [];
+            return {};
         });
     }
 

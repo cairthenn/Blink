@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { SettingsComponent } from '../settings/settings.component';
 import { ChatService } from '../chat.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -16,13 +16,14 @@ import { AES } from 'crypto-js';
 export class ChatTabsComponent implements OnInit {
 
     @ViewChild(SettingsComponent) settings: SettingsComponent;
-    
+
     public tabs : ChatService[] = [];
     public username: string;
     public connected: boolean = false;
     public showSettings: boolean = false;
     public viewReady: boolean = false;
     private token: string;
+    
 
     constructor(private dialog: MatDialog, private ref: ChangeDetectorRef) { }
 
@@ -45,7 +46,6 @@ export class ChatTabsComponent implements OnInit {
         for(var i in names) {
             this.createChannel(names[i]);
         }
-        this.ref.detectChanges();
     }
 
     public toggleSettings() {
@@ -120,11 +120,12 @@ export class ChatTabsComponent implements OnInit {
             this.username = username;
             this.connected = true;
             this.token = AES.encrypt(token, username);
-            console.log('Aferview:', token, this.token, this.username);
             this.loadChannels();
+            this.ref.detectChanges();
         }, (err) => {
             console.log(`Failed to connect to local server: ${err}`);
         });
+
     }
 
     ngOnInit() {

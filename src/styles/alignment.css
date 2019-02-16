@@ -8,6 +8,10 @@
     flex-wrap: wrap;
 }
 
+.cc-flex-none {
+    flex: none;
+}
+
 .cc-flex-nowrap {
     flex-wrap: nowrap;
 }

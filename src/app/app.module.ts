@@ -11,6 +11,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChannelDialogComponent } from './channel-dialog/channel-dialog.component';
 import { MatFormFieldModule, MatDialogModule, MatInputModule } from '@angular/material';
+import { ChatInputComponent } from './chat-input/chat-input.component';
 
 @NgModule({
     declarations: [
@@ -19,6 +20,7 @@ import { MatFormFieldModule, MatDialogModule, MatInputModule } from '@angular/ma
         SettingsComponent,
         ChatTabsComponent,
         ChannelDialogComponent,
+        ChatInputComponent,
     ],
     imports: [
         FormsModule,
