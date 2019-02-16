@@ -5,7 +5,7 @@
 </div>
 
 <div class="chat-room__content chat-lines">
-    <div #messageArea class="chat-list__lines cc-pd-t-1">
+    <div class="chat-list__lines cc-pd-t-1">
         <div #message *ngFor="let msg of messages">
             <div *ngIf="msg.isStatus" class="chat-line__status">
                 <span>{{msg.text}}</span>

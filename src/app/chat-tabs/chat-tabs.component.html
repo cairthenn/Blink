@@ -64,11 +64,11 @@
             
             <!-- Chat -->
 
-            <div #scrollBox *ngFor="let tab of tabs" class="scrollbar chat-list__lines" style="flex:auto" [hidden]="!tab.active">
-                <app-chat [settings]="settings" [service]="tab" [scrollbox]="scrollBox">
+            <app-autoscroll #scrollbox *ngFor="let tab of tabs" class="scrollbar chat-list__lines" style="flex:auto" [hidden]="!tab.active">
+                <app-chat [settings]="settings" [service]="tab" [scrollbox]="scrollbox">
 
                 </app-chat>
-            </div>
+            </app-autoscroll>
             
         
             <!-- Chat Input Box -->

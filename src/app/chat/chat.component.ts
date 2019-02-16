@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ElementRef, QueryList, ViewChildren, ViewChild } from '@angular/core';
 import { SettingsComponent } from '../settings/settings.component';
 import { ChatService } from '../chat.service';
+import { AutoscrollComponent } from '../autoscroll/autoscroll.component';
 
 
 export class ChatMessage {
@@ -29,7 +30,7 @@ export class ChatComponent implements OnInit {
 
     @Input() public settings: SettingsComponent;
     @Input() public service: ChatService;
-    @Input() public scrollbox: ElementRef;
+    @Input() public scrollbox: AutoscrollComponent;
 
     @ViewChild('messageArea') messageArea: ElementRef;
     @ViewChildren('message') messageList: QueryList<ElementRef>;
@@ -38,8 +39,8 @@ export class ChatComponent implements OnInit {
     }
 
     // Scrolling
-    public scrollHeight: number;
-    public scrollTop: number;
+    @Input() public scrollHeight: number;
+    @Input() public scrollTop: number;
     public wantsToScroll: boolean = false;
     
     private _mouseActive: boolean = false;
@@ -64,10 +65,9 @@ export class ChatComponent implements OnInit {
     }
 
     ngAfterViewInit() {
-
         this.messageList.changes.subscribe(x => {
-            console.log(this.messageArea.nativeElement.scrollHeight, this.messageArea.nativeElement.scrollTop);
-        });
+            this.scrollbox.newItem(x);
+        })
     }
     
     ngOnInit() {
