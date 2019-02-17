@@ -64,19 +64,20 @@
             
             <!-- Chat -->
 
-            <app-autoscroll #scrollbox *ngFor="let tab of tabs" class="scrollbar chat-list__lines" style="flex:auto" [hidden]="!tab.active">
-                <app-chat [settings]="settings" [service]="tab" [scrollbox]="scrollbox">
+            <div *ngFor="let tab of tabs" class="cc-flex-auto cc-flex-column cc-full-height" [style.display]="tab.active ? 'flex' : 'none'">
+                <app-autoscroll class="cc-flex-auto scrollbar" #scrollbox>
+                    <app-chat class="cc-flex-auto scrollbar chat-list__lines" [settings]="settings" [service]="tab" [scrollbox]="scrollbox"></app-chat>
+                </app-autoscroll>
 
-                </app-chat>
-            </app-autoscroll>
+
+                <div class="cc-flex-none cc-pd-2">
+                    <app-chat-input class="chat-input cc-align-center" [service]="tab">
+                    </app-chat-input>
+                </div>
+            </div>
             
         
             <!-- Chat Input Box -->
-
-            <div class="cc-flex-none cc-pd-2">
-                <app-chat-input *ngFor="let tab of tabs" class="chat-input cc-align-center" [service]="tab" [hidden]="!tab.active">
-                </app-chat-input>
-            </div>
 
         </div>
     </div>

@@ -12,6 +12,10 @@
     flex: none;
 }
 
+.cc-flex-auto {
+    flex: auto;
+}
+
 .cc-flex-nowrap {
     flex-wrap: nowrap;
 }
@@ -243,7 +247,7 @@
 .cc-align-bottom {
     vertical-align: bottom;
 }
-
+ 
 .cc-align-baseline {
     vertical-align: baseline;
 }

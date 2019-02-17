@@ -12,7 +12,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChannelDialogComponent } from './channel-dialog/channel-dialog.component';
 import { MatFormFieldModule, MatDialogModule, MatInputModule } from '@angular/material';
 import { ChatInputComponent } from './chat-input/chat-input.component';
-import { ScrollDirective } from './scroll.directive';
 import { AutoscrollComponent } from './autoscroll/autoscroll.component';
 
 @NgModule({
@@ -23,7 +22,6 @@ import { AutoscrollComponent } from './autoscroll/autoscroll.component';
         ChatTabsComponent,
         ChannelDialogComponent,
         ChatInputComponent,
-        ScrollDirective,
         AutoscrollComponent,
     ],
     imports: [

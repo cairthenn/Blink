@@ -14,6 +14,10 @@ export class ChatInputComponent implements OnInit {
 
     }
 
+    public send(msg: string) {
+        this.service.send(msg.substr(0, 500));
+    }
+
     constructor() { }
 
     ngOnInit() {

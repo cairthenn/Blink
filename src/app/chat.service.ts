@@ -211,6 +211,13 @@ export class ChatService {
 
     private processIncoming(params: any, text: string) : any {
         
+        const isAction = /\u0001ACTION (.*)\u0001$/.exec(text);
+
+        if(isAction) {
+            text = isAction[1];
+        }
+        
+        
         const emote_locations = this.parseTwitchEmotes(params['emotes']);
 
         var cursor = 0;
@@ -229,6 +236,7 @@ export class ChatService {
 
         const message = {
             username: params['display-name'], 
+            isAction: isAction && true,
             isChat: true,
             color: params['color'],
             text: text,
@@ -239,7 +247,7 @@ export class ChatService {
         return message;
     }
 
-    private processOutgoing(text: string) : any {
+    private processOutgoing(text: string, action: boolean = false) : any {
 
         const html = text.split(' ').reduce((builder, word) => {
             if(word in this.userEmotes) {
@@ -253,6 +261,7 @@ export class ChatService {
         }, '');
 
         const message = {
+            isAction: action,
             username: this.username, 
             isChat: true,
             color: this.userState['color'],
@@ -279,7 +288,6 @@ export class ChatService {
         }
     }
 
-    private _odd: boolean = false;
     public addMessage(message: any) {
         if(this.messages.length > this.settings.maxHistory) {
             this.messages.shift();
