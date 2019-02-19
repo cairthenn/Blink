@@ -6,16 +6,16 @@ import { SettingsComponent } from './settings/settings.component';
 import CryptoJS from 'crypto-js';
 
 
-const image_classes = "cc-chat-image cc-inline-block .chat-line__message--emote"
+const image_classes = "cc-chat-image cc-inline-block chat-line__message--emote"
 
 const ffzHtml = function(id: string, name: string) {
-    return `<img src="https://cdn.frankerfacez.com/emoticon/${id}/1" class="${image_classes}" alt="${name}" [style.hidden]="!settings.ffz"/> `
+    return `<img src="https://cdn.frankerfacez.com/emoticon/${id}/1" class="${image_classes}" alt="${name}"/> `
 }
 const bttvHtml = function(id: string, name: string) {
-    return `<img src="https://cdn.betterttv.net/emote/${id}/1x" class="${image_classes}" alt="${name}" [style.hidden]="!settings.bttv"/> `
+    return `<img src="https://cdn.betterttv.net/emote/${id}/1x" class="${image_classes}" alt="${name}"/> `
 }
 const twitchHtml = function(id: string, name: string) {
-    return `<img src="https://static-cdn.jtvnw.net/emoticons/v1/${id}/1.0" class="${image_classes}" alt="${name}" [style.hidden]="!settings.twitchEmotes"/> `
+    return `<img src="https://static-cdn.jtvnw.net/emoticons/v1/${id}/1.0" class="${image_classes}" alt="${name}"/> `
 }
 
 @Injectable({
@@ -114,7 +114,7 @@ export class ChatService {
     }
 
     private purge(params, user: string) {
-        console.log('purge', params);
+        console.log('purge', params, user);
         this.messages.forEach(msg => {
             if(!user || msg.username == user) {
                 msg.deleted = true;

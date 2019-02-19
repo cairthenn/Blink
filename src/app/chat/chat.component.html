@@ -3,7 +3,7 @@
 <!-- <div class="chat-room__notifications cc-absolute cc-full-width">
 
 </div> -->
-<div class="chat-list__lines cc-pd-t-1">
+<div class="chat-list__lines cc-word-break-word">
     <div #message *ngFor="let msg of messages">
         <div *ngIf="msg.isStatus" class="chat-line__status">
             <span>{{msg.text}}</span>

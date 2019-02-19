@@ -3,7 +3,7 @@
             
         <!-- Chat Tab Area -->
             
-        <div class="cc-tab-control cc-flex cc-flex-column" style="min-width:200px">
+        <div class="cc-tab-control cc-flex cc-flex-column cc-border-r" style="min-width:200px">
             <div class="chat-container__header cc-background-alt cc-no-flex cc-border-b">
                 <div class="cc-button cc-button--square cc-full-width cc-full-height" (click)="addChannel()">
                     <div class="cc-button__text cc-flex cc-full-width cc-pd-x-2 cc-justify-content-between">
@@ -64,20 +64,21 @@
             
             <!-- Chat -->
 
-            <div *ngFor="let tab of tabs" class="cc-flex-auto cc-flex-column cc-full-height" [style.display]="tab.active ? 'flex' : 'none'">
-                <app-autoscroll class="cc-flex-auto scrollbar" #scrollbox>
-                    <app-chat class="cc-flex-auto scrollbar chat-list__lines" [settings]="settings" [service]="tab" [scrollbox]="scrollbox"></app-chat>
+            <div *ngFor="let tab of tabs" class="cc-flex-auto cc-flex-column cc-full-height cc-pd-y-05" [style.display]="tab.active ? 'flex' : 'none'">
+                <app-autoscroll #scroll class="cc-relative cc-flex-auto scrollbar" settings="settings" style="min-width: 340px;">
+                    <app-chat class="cc-flex-auto chat-list__lines" [settings]="settings" [service]="tab"></app-chat>
+                    <div class="chat-more-panel cc-sticky cc-bottom-0 cc-align-items-center cc-full-width" [style.display]="scroll.wantsToScroll ? 'block' : 'none'">
+                        <span style="text-align: center" (click)="scroll.continueScrolling()">New Messages Below</span>
+                    </div>
                 </app-autoscroll>
+        
+                <!-- Chat Input Box -->
 
-
-                <div class="cc-flex-none cc-pd-2">
+                <div class="cc-flex-none cc-pd-x-2 cc-pd-y-1">
                     <app-chat-input class="chat-input cc-align-center" [service]="tab">
                     </app-chat-input>
                 </div>
             </div>
-            
-        
-            <!-- Chat Input Box -->
 
         </div>
     </div>

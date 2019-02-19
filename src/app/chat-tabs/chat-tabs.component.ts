@@ -15,19 +15,26 @@ import { AES } from 'crypto-js';
 })
 export class ChatTabsComponent implements OnInit {
 
+    private loaded: boolean = false;
+    private token: string;
+    
+    
     @ViewChild(SettingsComponent) settings: SettingsComponent;
-
     public tabs : ChatService[] = [];
     public username: string;
     public connected: boolean = false;
     public showSettings: boolean = false;
     public viewReady: boolean = false;
-    private token: string;
     
 
     constructor(private dialog: MatDialog, private ref: ChangeDetectorRef) { }
 
     public saveChannels() {
+       
+        if(!this.loaded) {
+            return;
+        }
+
         const names = this.tabs.map(x => x.channelDisplay);
         ElectronService.settings.set('channels', names);
     }
@@ -46,6 +53,7 @@ export class ChatTabsComponent implements OnInit {
         for(var i in names) {
             this.createChannel(names[i]);
         }
+        this.loaded = true;
     }
 
     public toggleSettings() {
@@ -89,11 +97,7 @@ export class ChatTabsComponent implements OnInit {
         });
     }
 
-    public activeTabs() {
-        return this.tabs.filter(x => x.active);
-    }
-
-    addChannel() {
+    public addChannel() {
         const ref = this.dialog.open(ChannelDialogComponent);
         ref.afterClosed().subscribe(channel => {
             if(channel == undefined || channel.length == 0) {
@@ -110,7 +114,7 @@ export class ChatTabsComponent implements OnInit {
         });
     }
 
-    dropped(event: CdkDragDrop<ChatService[]>) {
+    public dropped(event: CdkDragDrop<ChatService[]>) {
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     }
 

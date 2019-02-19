@@ -1,7 +1,6 @@
-import { Component, OnInit, Input, ElementRef, QueryList, ViewChildren, ViewChild } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { SettingsComponent } from '../settings/settings.component';
 import { ChatService } from '../chat.service';
-import { AutoscrollComponent } from '../autoscroll/autoscroll.component';
 
 
 export class ChatMessage {
@@ -30,25 +29,8 @@ export class ChatComponent implements OnInit {
 
     @Input() public settings: SettingsComponent;
     @Input() public service: ChatService;
-    @Input() public scrollbox: AutoscrollComponent;
-
-    @ViewChild('messageArea') messageArea: ElementRef;
-    @ViewChildren('message') messageList: QueryList<ElementRef>;
 
     constructor() {
-    }
-
-    // Scrolling
-    @Input() public scrollHeight: number;
-    @Input() public scrollTop: number;
-    public wantsToScroll: boolean = false;
-    
-    private _mouseActive: boolean = false;
-    set mouseActive(val : boolean) {
-        this._mouseActive = val;
-    }
-    get mouseActive() {
-        return this._mouseActive;
     }
 
     get active() {
@@ -57,17 +39,6 @@ export class ChatComponent implements OnInit {
 
     get messages() {
         return this.service.messages;
-    }
-
-    public tabcomplete(message: string, selectionStart: string, selectionEnd: string) {
-
-        console.log(message, selectionStart, selectionEnd);
-    }
-
-    ngAfterViewInit() {
-        this.messageList.changes.subscribe(x => {
-            this.scrollbox.newItem(x);
-        })
     }
     
     ngOnInit() {

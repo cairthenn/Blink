@@ -27,6 +27,8 @@ export class SettingsComponent implements OnInit {
     public duplicates: boolean = false;
     public emotePriority: boolean = false;
     public anonymous: boolean = false;
+    public alwaysScroll: boolean = false;
+    public pauseOnHover: boolean = false;
     public maxHistory: number = 200;
 
     private _highlight: string = "";
@@ -49,7 +51,6 @@ export class SettingsComponent implements OnInit {
     set highlight(words: string) {
         this._highlight = words;
         this.highlightWords = this.commaDelimiter(words);
-        console.log(this.highlightWords);
     }
     
     get highlight() { return this._highlight; }
@@ -71,7 +72,6 @@ export class SettingsComponent implements OnInit {
     get ignored() { return this._ignored; }
 
     load() {
-        console.log('loading settings');
         const electronSettings = ElectronService.settings;
 
         this.lightTheme = electronSettings.get('lightTheme');
@@ -97,7 +97,6 @@ export class SettingsComponent implements OnInit {
     }
 
     save() {
-        console.log('saving settings');
         ElectronService.settings.setAll({
             lightTheme: this.lightTheme,
             alternate: this.alternate,

@@ -1,70 +1,82 @@
-import { Component, OnInit, HostListener, ElementRef, QueryList, ContentChildren, Input } from '@angular/core';
+import { Component, OnInit, Input, HostListener, ElementRef } from '@angular/core';
+import { SettingsComponent } from '../settings/settings.component';
 
 @Component({
-    selector: 'app-autoscroll',
-    templateUrl: './autoscroll.component.html',
-    styleUrls: ['./autoscroll.component.css']
+  selector: 'app-autoscroll',
+  templateUrl: './autoscroll.component.html',
+  styleUrls: ['./autoscroll.component.css']
 })
 export class AutoscrollComponent implements OnInit {
+    
+    ngOnInit(): void {
 
-    @ContentChildren('message') messages : QueryList<ElementRef>;
+    }
 
+    @Input() settings: SettingsComponent;
+        
+    private userActivity = false;
+    private isLocked: boolean = false;
+    private mutationObserver: MutationObserver;
+    public wantsToScroll: boolean;
+    
     constructor(private el: ElementRef) { }
 
-    private hovering: boolean = false;
-    private missedHeight: number = 0;
-    private wasNearEnd: boolean = false;
-    public wantsToScroll: boolean = false;
-    public _active: boolean = false;
+    @HostListener('click') onClick() {
+        this.userActivity = true;
+    }
 
     @HostListener('mouseenter') onMouseEnter() {
-        this.hovering = true;
+        if(this.settings.alwaysScroll) {
+            this.userActivity = true;
+        }
     }
 
-    @HostListener('mouseleave') onMouseLEave() {
-        this.hovering = false;
-        if(this.wantsToScroll && this.missedHeight < 75) {
+    @HostListener('mouseleave') onMouseLeave() {
+        if(this.wantsToScroll && this.distance < 30) {
             this.scrollToBottom();
         }
+
+        this.userActivity = false;
     }
 
-    get active() { return this._active; }
-
-    @Input() set active(val: boolean) {
-
-        if(!val) {
-            const difference = this.el.nativeElement.scrollHeight - this.el.nativeElement.scrollTop;
-        }
-
-        this._active = val;
+    @HostListener("scroll")
+    private scrollHandler(): void {
+        this.isLocked = this.distance > 20;
+        this.wantsToScroll = !this.isLocked && false || this.wantsToScroll;
     }
 
-    public newItem(changes: any) {
-
-        if(!this.active && this.wasNearEnd) {
-            
-        }
-
-        this.el.nativeElement.scrollTop += changes.last.nativeElement.scrollHeight;
-        // if(!this.hovering) {
-        //     this.scrollToBottom();
-        // } else {
-        //     this.wantsToScroll = true;
-        //     this.missedHeight += changes.last.scrollHeight;
-        // }
+    get distance() {
+        return this.el.nativeElement.scrollHeight - this.el.nativeElement.scrollTop - this.el.nativeElement.clientHeight;
     }
 
-    public scrollToBottom() {
+    public continueScrolling() {
+        this.scrollToBottom();
+        this.userActivity = false;
+    }
+
+    private scrollToBottom() {
         this.el.nativeElement.scrollTop = this.el.nativeElement.scrollHeight;
-        this.missedHeight = 0;
         this.wantsToScroll = false;
     }
-
+    
     ngAfterContentInit(): void {
+        
+        this.mutationObserver = new MutationObserver(() => {
+            if (this.isLocked || this.userActivity) {
+                this.wantsToScroll = true;
+                return
+            }
+            this.scrollToBottom();
+        });
 
+        this.mutationObserver.observe(this.el.nativeElement, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+        });
     }
 
-    ngOnInit() {
+    public ngOnDestroy(): void {
+        this.mutationObserver.disconnect();
     }
-
 }

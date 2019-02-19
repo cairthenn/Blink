@@ -8,9 +8,6 @@ export class IrcService {
 
     private static server: string = 'http://localhost:8000';
     private static socket : io.Socket;
-    private static chatHandlers : any = {};
-    private static userHandlers : any = {};
-    private static roomHandlers : any = {};
 
 
     private static handlers : Object = {};
@@ -19,32 +16,10 @@ export class IrcService {
 
     }
 
-    public static handleMessage(channel: string, message: any) {
-        if(this.chatHandlers[channel] !== undefined) {
-            this.chatHandlers[channel](message);
-        }
-    }
-
-    public static handleUserState(channel: string, state: any) {
-        if(this.userHandlers[channel] !== undefined) {
-            this.userHandlers[channel](state);
-        }
-    }
-
-    public static handleRoomState(channel: string, state: any) {
-        if(this.roomHandlers[channel] !== undefined) {
-            this.roomHandlers[channel](state);
-        }
-    }
-
-    static handleDelete(channel: string, message: string): any {
-        throw new Error("Method not implemented.");
-    }
-
     public static init(success: (name: string, token: string) => any, 
                         failure: (err: string) => any) {
 
-        this.socket = io(IrcService.server);
+        this.socket = io.connect(this.server)
         
         this.socket.on('irc-data', (type: string, channel: string, params: any, message: string) => {
             if(!(channel in this.handlers)) {

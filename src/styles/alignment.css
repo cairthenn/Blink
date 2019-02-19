@@ -204,6 +204,10 @@
     position: absolute;
 }
 
+.cc-sticky {
+    position: sticky;
+}
+
 .cc-fixed {
     position: fixed;
 }

@@ -2,8 +2,9 @@ const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const platform = require('os').platform();
 const auth = require('./oauth');
 const { IRC } = require('./irc');
-const io = require('socket.io'),
-      server = io.listen(8000);
+
+const server = require('https').createServer();
+const io = require('socket.io')(server);
 
 let window;
 let clientSocket;
@@ -11,8 +12,7 @@ let clientSocket;
 const irc = new IRC();
 
 
-
-server.on('connect', (socket) => {
+io.on('connect', (socket) => {
     clientSocket = socket;
     socket.on('outgoing-chat', (channel, message) => irc.sendMessage(channel, message));
     socket.on('join', (channel) => irc.join(channel));
@@ -41,10 +41,13 @@ server.on('connect', (socket) => {
 
 app.on('ready', function() {
     window = new BrowserWindow( {
-        minWidth: 250,
+        minWidth: 340,
         height: 650,
-        width: 400,
+        width: 540,
         show: false,
+        webPreferences: {
+            nodeIntegration: true,
+        },
         icon: './dist/assets/icon.png',
     });
     
@@ -59,6 +62,7 @@ app.on('ready', function() {
         window.show();
     });
 
+    io.listen(8000);
     window.webContents.toggleDevTools();
 
     window.loadFile('dist/index.html');
