@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, Input} from '@angular/core';
 import { SettingsComponent } from '../settings/settings.component';
 import { ChatService } from '../chat.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -19,6 +19,8 @@ export class ChatTabsComponent implements OnInit {
     private loaded: boolean = false;
     private token: string;
 
+    @Input() 
+    public settings : SettingsService;
     public tabWidth : number = 200;
     public contentWidth : number = 340;
 
@@ -30,7 +32,7 @@ export class ChatTabsComponent implements OnInit {
     public viewReady: boolean = false;
     
 
-    constructor(private dialog: MatDialog, private settings: SettingsService) { }
+    constructor(private dialog: MatDialog) { }
 
     public saveChannels() {
        
@@ -62,6 +64,7 @@ export class ChatTabsComponent implements OnInit {
     public toggleSettings() {
         const ref = this.dialog.open(SettingsComponent, {
             data: this.settings,
+            panelClass: "cc-dialog",
         });
         
         ref.afterClosed().subscribe(settings => {
@@ -93,7 +96,10 @@ export class ChatTabsComponent implements OnInit {
     }
 
     public rename(tab : ChatService) {
-        const ref = this.dialog.open(ChannelDialogComponent);
+        const ref = this.dialog.open(ChannelDialogComponent, {
+            panelClass: "cc-dialog",
+        });
+
         ref.afterClosed().subscribe(channel => {
             if(channel == undefined || channel.length == 0) {
                 return;
@@ -111,7 +117,10 @@ export class ChatTabsComponent implements OnInit {
     }
 
     public addChannel() {
-        const ref = this.dialog.open(ChannelDialogComponent);
+        const ref = this.dialog.open(ChannelDialogComponent, {
+            panelClass: "cc-dialog",
+        });
+        
         ref.afterClosed().subscribe(channel => {
             if(channel == undefined || channel.length == 0) {
                 return;

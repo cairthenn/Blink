@@ -31,7 +31,7 @@
 }
 
 .cc-root--light .cc-background-alt {
-    background-color: #faf9fa;
+    background-color: #cccccc;
 }
 
 .cc-background-alt-2 {
@@ -71,7 +71,7 @@
 }
 
 .cc-root--light .cc-background-accent-alt-2 {
-    background-color: #392e5c;
+    background-color: #2e365c;
 }
 
 .cc-background-placeholder, .cc-root--dark .cc-background-placeholder, .cc-root--light .cc-background-placeholder {
@@ -171,7 +171,7 @@
 }
 
 .cc-background-modal {
-    background-color: #fff;
+    background-color: #201c2b;
 }
 
 .cc-root--dark .cc-background-modal {

@@ -5,7 +5,11 @@
 
 <div class="chat-input__buttons-container cc-flex cc-justify-content-between cc-mg-t-1" style="min-width: 200px;">
     <div>
-        <button class="cc-button-icon" data-a-target="chat-viewer-list">
+        <mat-menu #appMenu="matMenu">
+            <div>Test</div>
+        </mat-menu>
+
+        <button class="cc-button-icon" [matMenuTriggerFor]="appMenu">
             <span class="cc-button-icon__icon">
                 <div style="width: 2rem; height: 2rem;">
                     <div class="cc-align-items-center cc-full-width cc-icon cc-icon--fill cc-inline-flex">

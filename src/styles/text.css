@@ -83,7 +83,7 @@
 }
 
 .cc-root--light .cc-text-link {
-    color: #6441a4;
+    color: #4750C0;
 }
 
 .cc-text-link-hover,.cc-root--dark .cc-text-link {
@@ -91,7 +91,7 @@
 }
 
 .cc-root--light .cc-text-link-hover {
-    color: #6441a4;
+    color: #4750C0;
 }
 
 .cc-text-link-active,.cc-root--dark .cc-text-link-hover {
@@ -99,7 +99,7 @@
 }
 
 .cc-root--light .cc-text-link-active {
-    color: #6441a4;
+    color: #4750C0;
 }
 /* was light active,  */
 .cc-text-link-focus,.cc-root--dark .cc-text-link-active { 
@@ -107,11 +107,11 @@
 }
 
 .cc-root--light .cc-text-link-focus {
-    color: #6441a4;
+    color: #4750C0;
 }
 
 .cc-text-link-visited,.cc-root--light .cc-text-link-focus {
-    color: #6441a4;
+    color: #4750C0;
 }
 
 .cc-root--dark .cc-text-link-visited {
@@ -119,7 +119,7 @@
 }
 
 .cc-root--light .cc-text-link-visited {
-    color: #6441a4;
+    color: #4750C0;
 }
 
 .cc-text-alert,.cc-text-live,.cc-root--dark .cc-text-alert,.cc-root--dark .cc-text-live,.cc-root--light .cc-text-alert,.cc-root--light .cc-text-live {

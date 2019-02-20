@@ -2,7 +2,7 @@
 .cc-textarea {
     appearance: none;
     background: #0f0e11;
-    border: 1px solid #392e5c;
+    border: 1px solid #2e365c;
     color: #faf9fa;
     font-family: inherit;
     line-height: 1.5;
@@ -12,13 +12,13 @@
     transition: box-shadow .1s ease-in,border .1s ease-in;
 }
 
-.cc-root--theme-dark .cc-textarea {
+.cc-root--dark .cc-textarea {
     background: #0f0e11;
-    border: 1px solid #392e5c;
+    border: 1px solid #2e365c;
     color: #faf9fa;
 }
 
-.cc-root--theme-light .cc-textarea {
+.cc-root--light .cc-textarea {
     background: #fff;
     border: 1px solid #dad8de;
     color: #433f4a;
@@ -28,12 +28,12 @@
     color: #898395;
 }
 
-.cc-root--theme-dark .cc-textarea::placeholder {
+.cc-root--dark .cc-textarea::placeholder {
     color: #898395;
 }
 
 
-.cc-root--theme-light .cc-textarea::placeholder {
+.cc-root--light .cc-textarea::placeholder {
     color: #a49fad;
 }
 
@@ -42,17 +42,17 @@
 }
 
 
-.cc-root--theme-dark .cc-textarea:focus,.cc-root--theme-light .cc-textarea:focus,.cc-textarea:focus {
-    border-color: #7d5bbe;
-    box-shadow: 0 0 6px -2px #7d5bbe;
+.cc-root--dark .cc-textarea:focus,.cc-root--light .cc-textarea:focus,.cc-textarea:focus {
+    border-color: #606ADA;
+    box-shadow: 0 0 6px -2px #606ADA;
 }
 
-.cc-root--theme-dark .cc-textarea--error,.cc-root--theme-light .cc-textarea--error,.cc-textarea--error {
+.cc-root--dark .cc-textarea--error,.cc-root--light .cc-textarea--error,.cc-textarea--error {
     border-color: #ec1313;
     box-shadow: 0 0 0 1px #ec1313;
 }
 
-.cc-root--theme-dark .cc-textarea--error:focus,.cc-root--theme-light .cc-textarea--error:focus,.cc-textarea--error:focus {
+.cc-root--dark .cc-textarea--error:focus,.cc-root--light .cc-textarea--error:focus,.cc-textarea--error:focus {
     border-color: #ec1313;
     box-shadow: 0 0 6px -2px #ec1313;
 }

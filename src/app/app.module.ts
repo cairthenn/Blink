@@ -10,10 +10,9 @@ import { ChatTabsComponent } from './chat-tabs/chat-tabs.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChannelDialogComponent } from './channel-dialog/channel-dialog.component';
-import { MatFormFieldModule, MatDialogModule, MatInputModule } from '@angular/material';
+import { MatFormFieldModule, MatDialogModule, MatInputModule, MatMenuModule } from '@angular/material';
 import { ChatInputComponent } from './chat-input/chat-input.component';
 import { AutoscrollComponent } from './autoscroll/autoscroll.component';
-
 @NgModule({
     declarations: [
         AppComponent,
@@ -32,6 +31,7 @@ import { AutoscrollComponent } from './autoscroll/autoscroll.component';
         MatFormFieldModule,
         MatDialogModule,
         MatInputModule,
+        MatMenuModule,
         BrowserAnimationsModule,
     ],
     entryComponents:[

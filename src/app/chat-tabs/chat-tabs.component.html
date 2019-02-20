@@ -1,7 +1,4 @@
-<div class="chat-page cc-full-height cc-flex cc-flex-column" [style.min-width]="showTabs ? tabWidth + contentWidth : contentWidth">
-<!--     
-    <app-settings [hidden]="!showSettings" class="cc-full-width cc-border-b" style="height: 50%">
-    </app-settings> -->
+<div class="chat-page cc-full-height cc-flex cc-flex-column" [style.min-width]="showTabs ? tabWidth + contentWidth : contentWidth" [class.cc-root--light]="settings.lightTheme">
 
     <div *ngIf="tabs.length == 0; else contentArea" class="cc-absolute cc-flex cc-margin-0 cc-flex-column cc-full-height cc-full-width" (click)="addChannel()">
         Click here to add a channel and get started!

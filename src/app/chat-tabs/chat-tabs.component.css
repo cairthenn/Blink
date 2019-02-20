@@ -1,7 +1,3 @@
-app_chat[hidden] {
-    display: none!important;
-}
-
 .cc-tab-control {
     max-width: 150px;
     min-width: 150px;
@@ -32,12 +28,12 @@ app_chat[hidden] {
     background: #322f37;
 }
 
-.cc-root--dark .cc-tab-active {
-    
+.cc-root--dark .cc-tab--active {
+    background: #322f37;
 }
 
-.cc-root--light .cc-tab.active {
-
+.cc-root--light .cc-tab--active {
+    background: #7D8EE8;
 }
 
 .cdk-drop-list-dragging .cdk-drag {
