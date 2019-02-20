@@ -1,7 +1,7 @@
-<div class="mat-app-background chat-page cc-full-height cc-flex cc-flex-column" [style.min-width]="showTabs ? tabWidth + contentWidth : contentWidth" [class.cc-root--light]="settings.lightTheme">
+<div class="mat-app-background cc-full-height cc-flex cc-flex-column" [style.min-width]="showTabs ? tabWidth + contentWidth : contentWidth" [class.cc-root--light]="settings.lightTheme">
 
     <div *ngIf="tabs.length == 0; else contentArea" class="mat-app-background cc-absolute cc-flex cc-margin-0 cc-flex-column cc-full-height cc-full-width" (click)="addChannel()">
-        Click here to add a channel and get started!
+        <div class="cc-flex-auto">Click here to add a channel and get started!</div>
     </div>
     <ng-template #contentArea>
         <mat-sidenav-container class="cc-full-height cc-full-width">
@@ -37,13 +37,11 @@
 
                             <div class="cc-flex-none">
                                 <div color="primary" class="cc-header cc-flex cc-flex-row cc-align-items-center cc-border-b cc-justify-content-between cc-pd-x-1 cc-alt-background">
-                                    <div id="chat-room-header-label">
-                                        <div class="cc-align-items-center cc-align-middle cc-flex cc-font-size-6">
-                                                <button mat-icon-button #tabButton (click)="drawer.toggle()" tabindex="-1">
-                                                    <mat-icon aria-label="Close Tabs">{{drawer.opened ? "chevron_right" : "chevron_left"}}</mat-icon>
-                                                </button>
-                                            {{username}}
-                                        </div>
+                                    <div class="cc-align-items-center cc-align-middle cc-flex cc-font-size-6">
+                                        <button mat-icon-button #tabButton (click)="drawer.toggle()" tabindex="-1">
+                                            <mat-icon aria-label="Close Tabs">{{drawer.opened ? "chevron_left" : "chevron_right"}}</mat-icon>
+                                        </button>
+                                        {{username}}
                                     </div>
 
                                     <button mat-button (click)="toggleSettings()" tabindex="-1">
@@ -77,8 +75,8 @@
 
                     </div>
                 </div> 
-
             </mat-sidenav-content>
+            
         </mat-sidenav-container>
     </ng-template>
 </div>

@@ -1,7 +1,8 @@
+<h5 mat-dialog-title>Settings</h5>
 <div class="cc-flex-grow-1 cc-margin-0 scrollbar" mat-dialog-content>
-    <div class="cc-flex cc-flex-column cc-flex-grow-1 cc-pd-t-1 cc-pd-x-2 cc-pd-b-2">
+    <div class="cc-flex cc-flex-column cc-flex-grow-1 cc-pd-x-2 cc-pd-b-2">
 
-        <div class="cc-full-width cc-pd-b-1 cc-pd-t-1">Appearance</div>
+        <h5 class="cc-full-width cc-pd-b-1">Appearance</h5>
         
         <mat-checkbox [(ngModel)]="data.lightTheme" (click)="setTheme(!data.lightTheme)">Light theme</mat-checkbox>
         <div class="cc-pd-b-05"></div>
@@ -11,7 +12,7 @@
         <div class="cc-pd-b-05"></div>                    
         <mat-checkbox [(ngModel)]="data.flash">Flash on notification</mat-checkbox>
         
-        <div class="cc-full-width cc-pd-b-1 cc-pd-t-1">Display</div>
+        <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Display</h5>
 
 
         <mat-checkbox [(ngModel)]="data.timestamps">Timestamps</mat-checkbox>
@@ -25,7 +26,7 @@
         <mat-checkbox [(ngModel)]="data.badges">Badges</mat-checkbox>
 
         
-        <div class="cc-full-width cc-pd-b-1 cc-pd-t-1">Enable Emotes</div>
+        <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Enable Emotes</h5>
         
         <mat-checkbox [(ngModel)]="data.twitchEmotes">Twitch Emotes</mat-checkbox>
         <div class="cc-pd-b-05"></div>
@@ -35,7 +36,7 @@
         <div class="cc-pd-b-05"></div>                    
         <mat-checkbox [(ngModel)]="data.gifs">Animated GIFs</mat-checkbox>
         
-        <div class="cc-full-width cc-pd-b-1 cc-pd-t-1">Functionality</div>
+        <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Functionality</h5>
         
         <mat-checkbox [(ngModel)]="data.duplicates">Allow duplicate chat messages</mat-checkbox>
         <div class="cc-pd-b-05"></div>
@@ -45,17 +46,25 @@
         <div class="cc-pd-b-05"></div>
         <mat-checkbox [(ngModel)]="data.stopScroll">Stop scrolling on mouse activity</mat-checkbox>
 
-        <div class="cc-full-width cc-pd-y-1">
-            <div class="cc-full-width cc-pd-b-1 cc-text-alt-2">Highlight Words</div>
-            <textarea class="cc-block cc-border-radius-medium cc-font-size-6 cc-full-width cc-textarea" style="min-height:75px" placeholder="Highlighted keywords, separated by comma" [(ngModel)]="data.highlight"></textarea>    
+        <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Highlight and Ignore</h5>
+
+        <div class="cc-full-width cc-pd-b-1 cc-pd-t-1">
+            <mat-form-field color="accent" appearance="outline" class="cc-full-width cc-margin-0">
+                <mat-label>Highlighted Words</mat-label>
+                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Highlighted keywords, separated by comma" [(ngModel)]="data.highlight"></textarea>    
+            </mat-form-field>
         </div>
         <div class="cc-full-width cc-pd-b-1">
-            <div class="cc-full-width cc-pd-b-1 cc-text-alt-2">Blacklist Words</div>
-            <textarea class="cc-block cc-border-radius-medium cc-font-size-6 cc-full-width cc-textarea" style="min-height:75px" placeholder="Blacklisted keywords, separated by comma" [(ngModel)]="data.blacklist"></textarea>    
+            <mat-form-field color="accent" appearance="outline" class="cc-full-width cc-margin-0">
+                <mat-label>Blacklisted Words</mat-label>
+                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Blacklisted keywords, separated by comma" [(ngModel)]="data.blacklist"></textarea>    
+            </mat-form-field>
         </div>
         <div class="cc-full-width cc-pd-b-1">
-            <div class="cc-full-width cc-pd-b-1 cc-text-alt-2">Ignored Users</div>
-            <textarea class="cc-block cc-border-radius-medium cc-font-size-6 cc-full-width cc-textarea" style="min-height:75px" placeholder="Ignored users, separated by comma" [(ngModel)]="data.ignored"></textarea>    
+            <mat-form-field color="accent" appearance="outline" class="cc-full-width cc-margin-0">
+                <mat-label>Ignored Users</mat-label>
+                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Ignored users, separated by comma" [(ngModel)]="data.ignored"></textarea>    
+            </mat-form-field>
         </div>
     </div>
 </div>
