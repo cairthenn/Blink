@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, HostListener, ElementRef } from '@angular/core';
-import { SettingsComponent } from '../settings/settings.component';
+import { SettingsService } from '../settings.service';
 
 @Component({
   selector: 'app-autoscroll',
@@ -12,7 +12,7 @@ export class AutoscrollComponent implements OnInit {
 
     }
 
-    @Input() settings: SettingsComponent;
+    @Input() settings: SettingsService;
         
     private userActivity = false;
     private isLocked: boolean = false;
@@ -26,7 +26,7 @@ export class AutoscrollComponent implements OnInit {
     }
 
     @HostListener('mouseenter') onMouseEnter() {
-        if(this.settings.alwaysScroll) {
+        if(this.settings.stopScroll) {
             this.userActivity = true;
         }
     }

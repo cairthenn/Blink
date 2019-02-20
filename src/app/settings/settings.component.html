@@ -1,84 +1,82 @@
-<div class="cc-background-alt cc-text-alt cc-flex cc-flex-column cc-flex-grow-1 cc-full-width" style="max-height: 100%">
-    <div class="cc-background-alt cc-flex-grow-1 scrollbar">
-        <div class="cc-flex cc-flex-column cc-flex-grow-1 cc-pd-t-1 cc-pd-x-2 cc-pd-b-2">
-            <div class="cc-full-width cc-pd-b-1">
-                <div class="cc-full-width cc-pd-b-1 cc-pd-t-1 cc-text-alt-2">Appearance</div>
-                
-                <input type="checkbox" class="cc-checkbox__input" id="chat-settings-light-theme" value [(ngModel)]="lightTheme">
-                <label class="cc-block cc-checkbox__label    cc-pd-r-2" for="chat-settings-light-theme" >Light theme</label>
-                <div class="cc-pd-b-05"></div>
-                <input type="checkbox" class="cc-checkbox__input" id="chat-settings-alternate" value [(ngModel)]="alternate">
-                <label class="cc-block cc-checkbox__label cc-pd-r-l" for="chat-settings-alternate">Alternate line colors</label>
-                <div class="cc-pd-b-05"></div>
-                <input type="checkbox" class="cc-checkbox__input" id="chat-settings-separators" value [(ngModel)]="separators">
-                <label class="cc-block cc-checkbox__label cc-pd-r-2" for="chat-settings-separators">Enable chat separators</label>
-                <div class="cc-pd-b-05"></div>                    
-                <input type="checkbox" class="cc-checkbox__input" id="chat-settings-flash" value [(ngModel)]="flash">
-                <label class="cc-block cc-checkbox__label cc-pd-l-2" for="chat-settings-flash">Flash on notification</label>
+<div class="cc-background-alt cc-flex-grow-1 scrollbar" mat-dialog-content>
+    <div class="cc-flex cc-flex-column cc-flex-grow-1 cc-pd-t-1 cc-pd-x-2 cc-pd-b-2">
+        <div class="cc-full-width cc-pd-b-1">
+            <div class="cc-full-width cc-pd-b-1 cc-pd-t-1 cc-text-alt-2">Appearance</div>
+            
+            <input type="checkbox" class="cc-checkbox__input" id="chat-settings-light-theme" value [(ngModel)]="data.lightTheme">
+            <label class="cc-block cc-checkbox__label    cc-pd-r-2" for="chat-settings-light-theme" >Light theme</label>
+            <div class="cc-pd-b-05"></div>
+            <input type="checkbox" class="cc-checkbox__input" id="chat-settings-alternate" value [(ngModel)]="data.alternate">
+            <label class="cc-block cc-checkbox__label cc-pd-r-l" for="chat-settings-alternate">Alternate line colors</label>
+            <div class="cc-pd-b-05"></div>
+            <input type="checkbox" class="cc-checkbox__input" id="chat-settings-separators" value [(ngModel)]="data.separators">
+            <label class="cc-block cc-checkbox__label cc-pd-r-2" for="chat-settings-separators">Enable chat separators</label>
+            <div class="cc-pd-b-05"></div>                    
+            <input type="checkbox" class="cc-checkbox__input" id="chat-settings-flash" value [(ngModel)]="data.flash">
+            <label class="cc-block cc-checkbox__label cc-pd-l-2" for="chat-settings-flash">Flash on notification</label>
 
 
-                
-                
-                <div class="cc-full-width cc-pd-b-1 cc-pd-t-1 cc-text-alt-2">Display</div>
+            
+            
+            <div class="cc-full-width cc-pd-b-1 cc-pd-t-1 cc-text-alt-2">Display</div>
 
 
-                <input type="checkbox" class="cc-checkbox__input" id="chat-settings-timestamps" value [(ngModel)]="timestamps">
-                <label class="cc-block cc-checkbox__label" for="chat-settings-timestamps">Timestamps</label>
-                <div class="cc-pd-b-05"></div>
-                <input type="checkbox" class="cc-checkbox__input" id="chat-settings-char-count" value [(ngModel)]="charCount">
-                <label class="cc-block cc-checkbox__label" for="chat-settings-char-count">Message character count</label>
-                <div class="cc-pd-b-05"></div>
-                <input type="checkbox" class="cc-checkbox__input" id="chat-settings-subs" value [(ngModel)]="subs">
-                <label class="cc-block cc-checkbox__label" for="chat-settings-subs">Subscriptions</label>
-                <div class="cc-pd-b-05"></div>
-                <input type="checkbox" class="cc-checkbox__input" id="chat-settings-bits" value [(ngModel)]="bits">
-                <label class="cc-block cc-checkbox__label" for="chat-settings-bits">Bits</label>
-                <div class="cc-pd-b-05"></div>
-                <input type="checkbox" class="cc-checkbox__input" id="chat-settings-badges" value [(ngModel)]="badges">
-                <label class="cc-block cc-checkbox__label" for="chat-settings-badges">Badges</label>
+            <input type="checkbox" class="cc-checkbox__input" id="chat-settings-timestamps" value [(ngModel)]="data.timestamps">
+            <label class="cc-block cc-checkbox__label" for="chat-settings-timestamps">Timestamps</label>
+            <div class="cc-pd-b-05"></div>
+            <input type="checkbox" class="cc-checkbox__input" id="chat-settings-char-count" value [(ngModel)]="data.charCount">
+            <label class="cc-block cc-checkbox__label" for="chat-settings-char-count">Message character count</label>
+            <div class="cc-pd-b-05"></div>
+            <input type="checkbox" class="cc-checkbox__input" id="chat-settings-subs" value [(ngModel)]="data.subs">
+            <label class="cc-block cc-checkbox__label" for="chat-settings-subs">Subscriptions</label>
+            <div class="cc-pd-b-05"></div>
+            <input type="checkbox" class="cc-checkbox__input" id="chat-settings-bits" value [(ngModel)]="data.bits">
+            <label class="cc-block cc-checkbox__label" for="chat-settings-bits">Bits</label>
+            <div class="cc-pd-b-05"></div>
+            <input type="checkbox" class="cc-checkbox__input" id="chat-settings-badges" value [(ngModel)]="data.badges">
+            <label class="cc-block cc-checkbox__label" for="chat-settings-badges">Badges</label>
 
-                
-                <div class="cc-full-width cc-pd-b-1 cc-pd-t-1 cc-text-alt-2">Enable Emotes</div>
-                
-                <input type="checkbox" class="cc-checkbox__input" id="chat-settings-twitch-emotes" value [(ngModel)]="twitchEmotes">
-                <label class="cc-block cc-checkbox__label" for="chat-settings-twitch-emotes">Twitch Emotes</label>
-                <div class="cc-pd-b-05"></div>
-                <input type="checkbox" class="cc-checkbox__input" id="chat-settings-bttv" value [(ngModel)]="bttv">
-                <label class="cc-block cc-checkbox__label" for="chat-settings-bttv">BTTV</label>
-                <div class="cc-pd-b-05"></div>                    
-                <input type="checkbox" class="cc-checkbox__input" id="chat-settings-ffz" value [(ngModel)]="ffz">
-                <label class="cc-block cc-checkbox__label" for="chat-settings-ffz">FFZ</label>
-                <div class="cc-pd-b-05"></div>                    
-                <input type="checkbox" class="cc-checkbox__input" id="chat-settings-gifs" value [(ngModel)]="gifs">
-                <label class="cc-block cc-checkbox__label" for="chat-settings-gifs">Animated GIFs</label>
-                
-                
-                <div class="cc-full-width cc-pd-b-1 cc-pd-t-1 cc-text-alt-2">Functionality</div>
-                
-                <input type="checkbox" class="cc-checkbox__input" id="chat-settings-duplicates" value [(ngModel)]="duplicates">
-                <label class="cc-block cc-checkbox__label" for="chat-settings-duplicates">Allow duplicate chat messages</label>
-                <div class="cc-pd-b-05"></div>
-                <input type="checkbox" class="cc-checkbox__input" id="chat-settings-emote-priority" value [(ngModel)]="emotePriority">
-                <label class="cc-block cc-checkbox__label" for="chat-settings-emote-priority">Prioritize emotes for autocomplete</label>
-                <div class="cc-pd-b-05"></div>
-                <input type="checkbox" class="cc-checkbox__input" id="chat-settings-anonymous" value [(ngModel)]="anonymous">
-                <label class="cc-block cc-checkbox__label" for="chat-settings-anonymous">Don't appear in chat rooms</label>
-                <div class="cc-pd-b-05"></div>
-                <input type="checkbox" class="cc-checkbox__input" id="chat-settings-stop-scroll" value [(ngModel)]="stopScroll">
-                <label class="cc-block cc-checkbox__label" for="chat-settings-stop-scroll">Stop scrolling on mouse activity</label>
-            </div>
-            <div class="cc-full-width cc-pd-b-1">
-                    <div class="cc-full-width cc-pd-b-1 cc-text-alt-2">Highlight Words</div>
-                    <textarea class="cc-block cc-border-radius-medium cc-font-size-6 cc-full-width cc-textarea" style="min-height:75px" placeholder="Highlighted keywords, separated by comma" [(ngModel)]="highlight"></textarea>    
-            </div>
-            <div class="cc-full-width cc-pd-b-1">
-                    <div class="cc-full-width cc-pd-b-1 cc-text-alt-2">Blacklist Words</div>
-                    <textarea class="cc-block cc-border-radius-medium cc-font-size-6 cc-full-width cc-textarea" style="min-height:75px" placeholder="Blacklisted keywords, separated by comma" [(ngModel)]="blacklist"></textarea>    
-            </div>
-            <div class="cc-full-width cc-pd-b-1">
-                    <div class="cc-full-width cc-pd-b-1 cc-text-alt-2">Ignored Users</div>
-                    <textarea class="cc-block cc-border-radius-medium cc-font-size-6 cc-full-width cc-textarea" style="min-height:75px" placeholder="Ignored users, separated by comma" [(ngModel)]="ignored"></textarea>    
-            </div>
+            
+            <div class="cc-full-width cc-pd-b-1 cc-pd-t-1 cc-text-alt-2">Enable Emotes</div>
+            
+            <input type="checkbox" class="cc-checkbox__input" id="chat-settings-twitch-emotes" value [(ngModel)]="data.twitchEmotes">
+            <label class="cc-block cc-checkbox__label" for="chat-settings-twitch-emotes">Twitch Emotes</label>
+            <div class="cc-pd-b-05"></div>
+            <input type="checkbox" class="cc-checkbox__input" id="chat-settings-bttv" value [(ngModel)]="data.bttv">
+            <label class="cc-block cc-checkbox__label" for="chat-settings-bttv">BTTV</label>
+            <div class="cc-pd-b-05"></div>                    
+            <input type="checkbox" class="cc-checkbox__input" id="chat-settings-ffz" value [(ngModel)]="data.ffz">
+            <label class="cc-block cc-checkbox__label" for="chat-settings-ffz">FFZ</label>
+            <div class="cc-pd-b-05"></div>                    
+            <input type="checkbox" class="cc-checkbox__input" id="chat-settings-gifs" value [(ngModel)]="data.gifs">
+            <label class="cc-block cc-checkbox__label" for="chat-settings-gifs">Animated GIFs</label>
+            
+            
+            <div class="cc-full-width cc-pd-b-1 cc-pd-t-1 cc-text-alt-2">Functionality</div>
+            
+            <input type="checkbox" class="cc-checkbox__input" id="chat-settings-duplicates" value [(ngModel)]="data.duplicates">
+            <label class="cc-block cc-checkbox__label" for="chat-settings-duplicates">Allow duplicate chat messages</label>
+            <div class="cc-pd-b-05"></div>
+            <input type="checkbox" class="cc-checkbox__input" id="chat-settings-emote-priority" value [(ngModel)]="data.emotePriority">
+            <label class="cc-block cc-checkbox__label" for="chat-settings-emote-priority">Prioritize emotes for autocomplete</label>
+            <div class="cc-pd-b-05"></div>
+            <input type="checkbox" class="cc-checkbox__input" id="chat-settings-anonymous" value [(ngModel)]="data.anonymous">
+            <label class="cc-block cc-checkbox__label" for="chat-settings-anonymous">Don't appear in chat rooms</label>
+            <div class="cc-pd-b-05"></div>
+            <input type="checkbox" class="cc-checkbox__input" id="chat-settings-stop-scroll" value [(ngModel)]="data.stopScroll">
+            <label class="cc-block cc-checkbox__label" for="chat-settings-stop-scroll">Stop scrolling on mouse activity</label>
+        </div>
+        <div class="cc-full-width cc-pd-b-1">
+                <div class="cc-full-width cc-pd-b-1 cc-text-alt-2">Highlight Words</div>
+                <textarea class="cc-block cc-border-radius-medium cc-font-size-6 cc-full-width cc-textarea" style="min-height:75px" placeholder="Highlighted keywords, separated by comma" [(ngModel)]="data.highlight"></textarea>    
+        </div>
+        <div class="cc-full-width cc-pd-b-1">
+                <div class="cc-full-width cc-pd-b-1 cc-text-alt-2">Blacklist Words</div>
+                <textarea class="cc-block cc-border-radius-medium cc-font-size-6 cc-full-width cc-textarea" style="min-height:75px" placeholder="Blacklisted keywords, separated by comma" [(ngModel)]="data.blacklist"></textarea>    
+        </div>
+        <div class="cc-full-width cc-pd-b-1">
+                <div class="cc-full-width cc-pd-b-1 cc-text-alt-2">Ignored Users</div>
+                <textarea class="cc-block cc-border-radius-medium cc-font-size-6 cc-full-width cc-textarea" style="min-height:75px" placeholder="Ignored users, separated by comma" [(ngModel)]="data.ignored"></textarea>    
         </div>
     </div>
 </div>

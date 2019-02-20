@@ -18,11 +18,11 @@ import { AutoscrollComponent } from './autoscroll/autoscroll.component';
     declarations: [
         AppComponent,
         ChatComponent,
-        SettingsComponent,
         ChatTabsComponent,
-        ChannelDialogComponent,
         ChatInputComponent,
         AutoscrollComponent,
+        SettingsComponent,
+        ChannelDialogComponent,
     ],
     imports: [
         FormsModule,
@@ -36,6 +36,7 @@ import { AutoscrollComponent } from './autoscroll/autoscroll.component';
     ],
     entryComponents:[
         ChannelDialogComponent,
+        SettingsComponent,
     ],
     providers: [],
     bootstrap: [AppComponent]

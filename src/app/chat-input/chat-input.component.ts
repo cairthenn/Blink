@@ -21,6 +21,7 @@ export class ChatInputComponent implements OnInit {
     }
 
     ngOnInit() {
+        
     }
 
 }

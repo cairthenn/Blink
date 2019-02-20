@@ -1,9 +1,9 @@
-<textarea #messageBox class="cc-block cc-border-radius-medium cc-font-size-6 cc-full-width cc-textarea" placeholder="Send a message" style="padding-right: 3rem;max-height: 200px; min-height: 45px"
+<textarea #messageBox class="cc-block cc-border-radius-medium cc-font-size-6 cc-full-width cc-textarea" placeholder="Send a message" style="padding-right: 3rem;max-height: 200px; min-height: 45px; min-width: 200px;"
 (keydown.enter)="send(messageBox.value); messageBox.value=''; $event.preventDefault();"  
 (keydown.tab)="tabcomplete(messageBox.value, messageBox.selectionStart, messageBox.selectionEnd); $event.preventDefault()"
 ></textarea>
 
-<div class="chat-input__buttons-container cc-flex cc-justify-content-between cc-mg-t-1">
+<div class="chat-input__buttons-container cc-flex cc-justify-content-between cc-mg-t-1" style="min-width: 200px;">
     <div>
         <button class="cc-button-icon" data-a-target="chat-viewer-list">
             <span class="cc-button-icon__icon">

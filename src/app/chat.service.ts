@@ -4,6 +4,7 @@ import { ChatMessage } from './chat/chat.component';
 import { EmotesService } from './emotes.service';
 import { SettingsComponent } from './settings/settings.component';
 import CryptoJS from 'crypto-js';
+import { SettingsService } from './settings.service';
 
 
 const image_classes = "cc-chat-image cc-inline-block chat-line__message--emote"
@@ -44,7 +45,7 @@ export class ChatService {
     
     public messages: ChatMessage[] = [];
 
-    constructor(public settings: SettingsComponent) { }
+    constructor(public settings: SettingsService) { }
 
     private updateUserList() {
         EmotesService.getUserList(this.channel).then(users => {
@@ -212,6 +213,7 @@ export class ChatService {
     private processIncoming(params: any, text: string) : any {
         
         const isAction = /\u0001ACTION (.*)\u0001$/.exec(text);
+        var highlight = false;
 
         if(isAction) {
             text = isAction[1];
@@ -222,6 +224,11 @@ export class ChatService {
 
         var cursor = 0;
         const html = text.split(' ').reduce((builder, word) => {
+
+            if(word == this.username || word in this.settings.highlightWords) {
+                highlight = true;
+            }
+
             const check = cursor;
             cursor += Array.from(word).length + 1;
             if(check in emote_locations) {
@@ -237,6 +244,7 @@ export class ChatService {
         const message = {
             username: params['display-name'], 
             isAction: isAction && true,
+            highlight: highlight,
             isChat: true,
             color: params['color'],
             text: text,
@@ -273,13 +281,21 @@ export class ChatService {
         return message;
     }
 
+    public commandHandlers = {
+        'me': [],
+    }
+
     public send(text: string) {
         const trimmed = text.trim().replace(/\r?\n/, ' ');
         if(trimmed.length > 0) {
             
-            if(text[0] == '/' || text[0] == '.') {
-                IrcService.sendMessage(this.channel, `.${trimmed.substr(1)}`);
-                return;
+            const commandCheck = /^[\./]([^ ]*)/.exec(trimmed);
+
+            if(commandCheck) {
+
+                if(commandCheck[1] in this.commandHandlers) {
+                    const command = this.commandHandlers[commandCheck[1]]
+                }
             }
             
             IrcService.sendMessage(this.channel, trimmed);

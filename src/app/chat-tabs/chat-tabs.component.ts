@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { SettingsComponent } from '../settings/settings.component';
 import { ChatService } from '../chat.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -7,6 +7,7 @@ import { ChannelDialogComponent } from '../channel-dialog/channel-dialog.compone
 import { ElectronService } from '../electron.service';
 import { IrcService } from '../irc.service';
 import { AES } from 'crypto-js';
+import { SettingsService } from '../settings.service';
 
 @Component({
     selector: 'app-chat-tabs',
@@ -17,17 +18,19 @@ export class ChatTabsComponent implements OnInit {
 
     private loaded: boolean = false;
     private token: string;
-    
-    
-    @ViewChild(SettingsComponent) settings: SettingsComponent;
+
+    public tabWidth : number = 200;
+    public contentWidth : number = 340;
+
     public tabs : ChatService[] = [];
     public username: string;
     public connected: boolean = false;
     public showSettings: boolean = false;
+    public showTabs: boolean = false;
     public viewReady: boolean = false;
     
 
-    constructor(private dialog: MatDialog, private ref: ChangeDetectorRef) { }
+    constructor(private dialog: MatDialog, private settings: SettingsService) { }
 
     public saveChannels() {
        
@@ -57,10 +60,17 @@ export class ChatTabsComponent implements OnInit {
     }
 
     public toggleSettings() {
-        this.showSettings = !this.showSettings;
-        this.settings.save();
-        if(!this.showSettings) {
-        }
+        const ref = this.dialog.open(SettingsComponent, {
+            data: this.settings,
+        });
+        
+        ref.afterClosed().subscribe(settings => {
+            this.settings.save();
+        });
+    }
+
+    public toggleTabs() {
+        this.showTabs = !this.showTabs;
     }
 
     public select(tab : ChatService) {
@@ -71,9 +81,12 @@ export class ChatTabsComponent implements OnInit {
     public remove(tab: ChatService) {
         for(var i = 0; i < this.tabs.length; i++) {
             if(this.tabs[i] == tab) {
-                tab.close();
                 this.tabs.splice(i, 1);
+                tab.close();
                 this.saveChannels();
+                if(tab.active && this.tabs.length > 0) {
+                    this.tabs[0].active = true;
+                }
                 return;
             }
         }
@@ -125,7 +138,6 @@ export class ChatTabsComponent implements OnInit {
             this.connected = true;
             this.token = AES.encrypt(token, username);
             this.loadChannels();
-            this.ref.detectChanges();
         }, (err) => {
             console.log(`Failed to connect to local server: ${err}`);
         });
