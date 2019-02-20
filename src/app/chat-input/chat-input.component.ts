@@ -4,7 +4,6 @@ import { ChatService } from '../chat.service';
 @Component({
     selector: 'app-chat-input',
     templateUrl: './chat-input.component.html',
-    styleUrls: ['./chat-input.component.css']
 })
 export class ChatInputComponent implements OnInit {
 

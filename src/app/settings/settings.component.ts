@@ -5,12 +5,11 @@ import { Inject } from '@angular/core';
 import { SettingsService } from '../settings.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-const themeLight = "cc-root--light";
+const themeLight = "chat-light-theme";
 
 @Component({
     selector: 'app-settings',
     templateUrl: './settings.component.html',
-    styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
 

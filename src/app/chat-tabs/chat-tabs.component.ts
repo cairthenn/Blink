@@ -12,7 +12,6 @@ import { SettingsService } from '../settings.service';
 @Component({
     selector: 'app-chat-tabs',
     templateUrl: './chat-tabs.component.html',
-    styleUrls: ['./chat-tabs.component.css']
 })
 export class ChatTabsComponent implements OnInit {
 

@@ -1,29 +1,11 @@
 @import url("styles/alignment.css");
-@import url("styles/padding.css");
-@import url("styles/margins.css");
-@import url("styles/text.css");
-@import url("styles/backgrounds.css");
 @import url("styles/borders.css");
-@import url("styles/elevation.css");
-@import url("styles/buttons.css");
-@import url("styles/svg.css");
-@import url("styles/textarea.css");
 @import url("styles/chat.css");
+@import url("styles/margins.css");
+@import url("styles/padding.css");
 @import url("styles/scrollbar.css");
-@import url("styles/dialog.css");
-
-app-twitch-api {
-    width: 100%;
-    height: 100%;
-}
-
-.cc-line-height-body {
-    line-height: 1.5;
-}
-
-.cc-line-height-heading {
-    line-height: 1.2;
-}
+@import url("styles/tabs.css");
+@import url("styles/text.css");
 
 .cc-regular {
     font-weight: 400;
@@ -149,23 +131,6 @@ app-twitch-api {
     visibility: hidden;
 }
 
-.cc-clearfix:after {
-    clear: both;
-    content: "";
-    display: table;
-}
-
-.cc-hide-accessible {
-    border: none;
-    clip: rect(0 0 0 0);
-    height: .1rem;
-    margin: -.1rem;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    width: .1rem;
-}
-
 .cc-ellipsis {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -194,24 +159,6 @@ ol,ul {
     list-style: none;
 }
 
-blockquote,q {
-    quotes: none;
-}
-
-blockquote:after,blockquote:before,q:after,q:before {
-    content: "";
-    content: none;
-}
-
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-
-button {
-    text-align: inherit;
-}
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -227,8 +174,6 @@ html {
 }
 
 body {
-    background: #fff;
-    color: #19171c;
     font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
     font-size: 1.2rem;
     line-height: 2rem;
@@ -241,7 +186,6 @@ img {
 }
 
 a {
-    color: #4169a4;
     text-decoration: none;
 }
 
@@ -263,18 +207,6 @@ strong {
 
 em {
     font-style: italic;
-}
-
-button {
-    background: none;
-    border: none;
-    border-radius: 0;
-    color: inherit;
-    font: inherit;
-}
-
-button:hover {
-    cursor: pointer;
 }
 
 hr {

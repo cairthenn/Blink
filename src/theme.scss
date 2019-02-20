@@ -1,0 +1,25 @@
+@import '~@angular/material/theming';
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// **Be sure that you only ever include this mixin once!**
+@include mat-core();
+
+
+$chat-primary: mat-palette($mat-deep-purple, 700, 300, 900);
+$chat-accent:  mat-palette($mat-blue-grey, 400);
+$chat-warn:    mat-palette($mat-red, 500);
+$chat-theme:   mat-dark-theme($chat-primary, $chat-accent, $chat-warn);
+
+@include angular-material-theme($chat-theme);
+
+
+// Define an alternate light theme.
+$light-primary: mat-palette($mat-blue-grey);
+$light-accent:  mat-palette($mat-indigo, A200, A100, A400);
+$light-theme:   mat-light-theme($light-primary, $light-accent);
+
+.chat-light-theme {
+  @include angular-material-theme($light-theme);
+}

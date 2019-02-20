@@ -4,7 +4,6 @@ import { SettingsService } from '../settings.service';
 @Component({
   selector: 'app-autoscroll',
   templateUrl: './autoscroll.component.html',
-  styleUrls: ['./autoscroll.component.css']
 })
 export class AutoscrollComponent implements OnInit {
     

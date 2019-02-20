@@ -4,7 +4,6 @@ import { MatDialogRef } from '@angular/material';
 @Component({
     selector: 'app-channel-dialog',
     templateUrl: './channel-dialog.component.html',
-    styleUrls: ['./channel-dialog.component.css']
 })
 export class ChannelDialogComponent implements OnInit {
 
