@@ -1,36 +1,82 @@
-<!-- Notifications -->
+<div class="mat-app-background cc-full-height cc-flex cc-flex-column" [style.min-width]="showTabs ? tabWidth + contentWidth : contentWidth" [class.chat-light-theme]="settings.lightTheme">
 
-<!-- <div class="chat-room__notifications cc-absolute cc-full-width">
-
-</div> -->
-<div class="chat-list__lines cc-word-break-word">
-    <div #message *ngFor="let msg of messages">
-        <div *ngIf="msg.isStatus" class="chat-line__status">
-            <span>{{msg.text}}</span>
-        </div>
-        <div *ngIf="msg.isChat" class="chat-line__message">
-            <span *ngIf="settings.badges"><img *ngFor="let badge of msg.badges" class="chat-badge" 
-                [src]="service.badges[badge[0]] ? service.badges[badge[0]].versions[badge[1]].image_url_1x : null"
-                /></span>
-            <ng-container *ngIf="msg.isAction; else chatTemplate">
-                <span class="message-author__display-name" [style.color]="msg.color">{{msg.username}} </span>
-                <div [innerHtml]="msg.html" class="cc-inline" [style.color]="msg.color"></div>
-            </ng-container>
-            <ng-template #chatTemplate>
-                <span class="message-author__display-name" [style.color]="msg.color">{{msg.username}}: </span>
-                <div [innerHtml]="msg.html" class="cc-inline"></div>
-            </ng-template>
-        </div>
-        <div *ngIf="msg.isBits && settings.bits" class="chat-line__message">
-            <span *ngIf="settings.badges"><img *ngFor="let badge of msg.badges" class="chat-badge" 
-                [src]="badges[badge[0]] ? badges[badge[0]].versions[badge[1]].image_url_1x : null"
-                /></span>
-            <span class="message-author__display-name" [style.color]="msg.color">{{msg.username}}: </span>
-            <div [innerHtml]="msg.html"></div>
-        </div>
-        <div *ngIf="msg.isSub && settings.subs" class="chat-line__message">
-            <div [innerHtml]="msg.html"></div>
-        </div>
-        <hr *ngIf="settings.separators" class="chat-line__separator">
+    <div *ngIf="tabs.length == 0; else contentArea" class="mat-app-background cc-absolute cc-flex cc-margin-0 cc-flex-column cc-full-height cc-full-width" (click)="addChannel()">
+        <div class="cc-flex-auto">Click here to add a channel and get started!</div>
     </div>
+    <ng-template #contentArea>
+        <mat-sidenav-container class="cc-full-height cc-full-width">
+            
+            <!-- Chat Tab Area -->
+            
+            <mat-sidenav #drawer class="cc-tab-control cc-flex-column cc-border-r" [style.min-width]="tabWidth" mode="side">
+                <div class="cc-header cc-background-alt cc-no-flex cc-border-b">
+                    <button mat-flat-button color="primary" class="cc-full-height cc-full-width cc-align-items-center cc-flex cc-justify-content-between" (click)="addChannel()" tabindex="-1" style="border-radius: 0;">
+                        <span class="cc-font-size-6">Add Channel</span>
+                        <mat-icon aria-label="Add Channel" class="cc-pd-l-05">add</mat-icon>
+                    </button>
+                </div>
+                <div class="scrollbar--hidden" [cdkDropListData]="tabs" (cdkDropListDropped)="dropped($event)" cdkDropList>
+                    <button mat-flat-button *ngFor="let tab of tabs" class="cc-full-width" (click)="select(tab)" (dblclick)="rename(tab)" [color]="tab.active ? 'accent' : 'unset'" cdkDrag style="border-radius: 0;">
+                        <div class="cc-flex cc-flex-shrink-0 cc-justify-content-between">
+                            <span class="cc-font-size-6 cc-overflow-hidden" style="max-width: 80%; text-overflow: ellipsis;">{{tab.channelDisplay}}</span>
+                            <button mat-icon-button style="height:1.2rem; width:1.2rem; line-height: 1.2rem; margin-top: auto; margin-bottom: auto" (click)="remove(tab)" tabindex="-1">&times;</button>
+                        </div>
+                    </button>
+                </div>
+            </mat-sidenav>
+
+            <!-- Main Content Area -->
+
+            <mat-sidenav-content [style.min-width]="contentWidth">
+                <div class="cc-full-height cc-full-width cc-relative">
+                    <div *ngFor="let tab of tabs" class="cc-absolute cc-full-height cc-full-width" [style.visibility]="tab.active ? 'visible' : 'hidden'">
+
+                        <!-- Chat Header -->
+
+                        <div class="cc-flex cc-flex-column cc-full-height cc-full-width" [style.min-width]="contentWidth">
+
+                            <div class="cc-flex-none">
+                                <div color="primary" class="cc-header cc-flex cc-flex-row cc-align-items-center cc-border-b cc-justify-content-between cc-pd-x-1 cc-alt-background">
+                                    <div class="cc-align-items-center cc-align-middle cc-flex cc-font-size-6">
+                                        <button mat-icon-button #tabButton (click)="drawer.toggle()" tabindex="-1">
+                                            <mat-icon aria-label="Close Tabs">{{drawer.opened ? "chevron_left" : "chevron_right"}}</mat-icon>
+                                        </button>
+                                        {{tab.channelDisplay}}
+                                    </div>
+
+                                    <button mat-button (click)="toggleSettings()" tabindex="-1">
+                                        <div class="cc-align-items-center cc-flex">
+                                            <span class="cc-font-size-6">Settings</span>
+                                            <mat-icon aria-label="Settings" class="cc-pd-l-05">settings</mat-icon>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Chat -->
+
+                            <div class="cc-flex-auto cc-flex cc-flex-column cc-full-height cc-pd-y-05">
+                                <app-autoscroll #scroll class="cc-relative cc-flex-auto scrollbar" settings="settings" style="min-width: 340px;">
+                                    <app-messages class="cc-flex-auto chat-list__lines" [settings]="settings" [service]="tab"></app-messages>
+                                    <div class="chat-more-panel cc-sticky cc-bottom-0 cc-align-items-center cc-full-width" [style.display]="scroll.wantsToScroll ? 'block' : 'none'">
+                                        <span style="text-align: center" (click)="scroll.continueScrolling()">New Messages Below</span>
+                                    </div>
+                                </app-autoscroll>
+                        
+                                <!-- Chat Input Box -->
+
+                                <div class="cc-flex-none cc-pd-x-2 cc-pd-y-1">
+                                    <app-chat-input class="chat-input cc-align-center" [service]="tab">
+                                    </app-chat-input>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div> 
+            </mat-sidenav-content>
+            
+        </mat-sidenav-container>
+    </ng-template>
 </div>

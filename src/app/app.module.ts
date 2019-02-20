@@ -4,9 +4,9 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
-import { ChatComponent } from './chat/chat.component';
+import { MessagesComponent } from './messages/messages.component';
 import { SettingsComponent } from './settings/settings.component';
-import { ChatTabsComponent } from './chat-tabs/chat-tabs.component';
+import { ChatComponent } from './chat/chat.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChannelDialogComponent } from './channel-dialog/channel-dialog.component';
@@ -18,8 +18,8 @@ import {    MatDialogModule,   MatInputModule,     MatSidenavModule,    MatFormF
 @NgModule({
     declarations: [
         AppComponent,
+        MessagesComponent,
         ChatComponent,
-        ChatTabsComponent,
         ChatInputComponent,
         AutoscrollComponent,
         SettingsComponent,

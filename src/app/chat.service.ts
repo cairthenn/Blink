@@ -1,9 +1,8 @@
-import { Injectable, Input } from '@angular/core';
-import { IrcService } from './irc.service';
-import { ChatMessage } from './chat/chat.component';
-import { EmotesService } from './emotes.service';
-import { SettingsComponent } from './settings/settings.component';
 import CryptoJS from 'crypto-js';
+import { Injectable } from '@angular/core';
+import { IrcService } from './irc.service';
+import { ChatMessage } from './messages/messages.component'
+import { EmotesService } from './emotes.service';
 import { SettingsService } from './settings.service';
 
 

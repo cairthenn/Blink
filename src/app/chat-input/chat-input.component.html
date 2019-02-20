@@ -1,11 +1,19 @@
 <div class="cc-flex cc-flex-column">
-    <mat-form-field class="cc-full-width cc-margin-0" appearance="outline" style="min-width: 200px;">
-        <mat-label>Send a message</mat-label>
-        <textarea matNativeControl #messageBox class="cc-font-size-6" style="padding-right: 3rem; max-height: 200px; min-height: 45px;"
-        (keydown.enter)="send(messageBox.value); messageBox.value=''; $event.preventDefault();"  
-        (keydown.tab)="tabcomplete(messageBox.value, messageBox.selectionStart, messageBox.selectionEnd); $event.preventDefault()"
-        ></textarea>
-    </mat-form-field>
+    <mat-menu #emoteMenu="matMenu" yPosition="above">
+        <div>Test</div>
+    </mat-menu>
+    <div class="cc-full-width cc-relative">
+        <mat-form-field color="accent" class="cc-full-width cc-margin-0" appearance="outline" style="min-width: 200px;">
+            <mat-label>Send a message</mat-label>
+            <textarea matNativeControl #messageBox class="cc-font-size-6" style="padding-right: 3rem; max-height: 200px; min-height: 45px;"
+            (keydown.enter)="send(messageBox.value); messageBox.value=''; $event.preventDefault();"  
+            (keydown.tab)="tabcomplete(messageBox.value, messageBox.selectionStart, messageBox.selectionEnd); $event.preventDefault()"
+            ></textarea>
+        </mat-form-field>
+        <button class="cc-top-0 cc-right-0" mat-icon-button [matMenuTriggerFor]="emoteMenu" style="position: absolute;">
+            <mat-icon aria-label="Emote List">sentiment_very_satisfied</mat-icon>
+        </button>
+    </div>
 
     <div class="cc-flex cc-justify-content-between" style="min-width: 200px;">
         <div>
