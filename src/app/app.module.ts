@@ -13,7 +13,8 @@ import { ChannelDialogComponent } from './channel-dialog/channel-dialog.componen
 import { ChatInputComponent } from './chat-input/chat-input.component';
 import {    MatDialogModule,   MatInputModule,     MatSidenavModule,    MatFormFieldModule, 
             MatMenuModule,     MatToolbarModule,   MatButtonModule,     MatIconModule,
-            MatCheckboxModule, } from '@angular/material';
+            MatCheckboxModule, MatCardModule } from '@angular/material';
+import { ViewerDialogComponent } from './viewer-dialog/viewer-dialog.component';
 @NgModule({
     declarations: [
         AppComponent,
@@ -22,6 +23,7 @@ import {    MatDialogModule,   MatInputModule,     MatSidenavModule,    MatFormF
         ChatInputComponent,
         SettingsComponent,
         ChannelDialogComponent,
+        ViewerDialogComponent,
     ],
     imports: [
         FormsModule,
@@ -41,10 +43,12 @@ import {    MatDialogModule,   MatInputModule,     MatSidenavModule,    MatFormF
         MatToolbarModule,
         MatSidenavModule,
         MatCheckboxModule,
+        MatCardModule,
     ],
     entryComponents:[
         ChannelDialogComponent,
         SettingsComponent,
+        ViewerDialogComponent,
     ],
     providers: [],
     bootstrap: [AppComponent]

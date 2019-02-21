@@ -16,15 +16,9 @@
     </div>
 
     <div class="cc-flex cc-justify-content-between" style="min-width: 200px;">
-        <div>
-            <mat-menu #appMenu="matMenu">
-                <div>Test</div>
-            </mat-menu>
-
-            <button mat-icon-button [matMenuTriggerFor]="appMenu">
-                <mat-icon aria-label="Viewer List">list</mat-icon>
-            </button>
-        </div>
+        <button mat-icon-button (click)="openViewers()">
+            <mat-icon aria-label="Viewer List">list</mat-icon>
+        </button>
         <button mat-flat-button color="primary" data-a-target="chat-send-button" (click)="send(messageBox.value); messageBox.value='';">
             <span class="cc-font-size-6" data-a-target="cc-button-text">Send Message</span>
         </button>

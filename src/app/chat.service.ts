@@ -36,11 +36,11 @@ export class ChatService {
     private userState: any = {};
     private roomState: any = {};
 
-    private userEmotes = [];
-    private bttvEmotes = {};
-    private ffzEmotes = {};
-    private userList = {};
-    public badges = {};
+    private userEmotes: any;
+    private bttvEmotes: any;
+    private ffzEmotes : any;
+    private badges = {};
+    public userList: any;
     
     public messages: ChatMessage[] = [];
 
@@ -49,6 +49,7 @@ export class ChatService {
     private updateUserList() {
         EmotesService.getUserList(this.channel).then(users => {
             this.userList = users;
+            console.log(this.userList);
         });
     }
     
