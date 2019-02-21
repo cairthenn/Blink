@@ -28,7 +28,8 @@ export class SettingsService {
   public stopScroll: boolean = false;
   public pauseOnHover: boolean = false;
   public maxHistory: number = 200;
-
+  
+  public highlightName: boolean = false;
   private _highlight: string = "";
   private _blacklist: string = "";
   private _ignored: string = "";
@@ -87,6 +88,7 @@ export class SettingsService {
       this.emotePriority = electronSettings.get('emotePriority');
       this.anonymous = electronSettings.get('anonymous');
       this.maxHistory = electronSettings.get('maxHistory');
+      this.highlightName = electronSettings.get('highlightName');
       this.highlight = electronSettings.get('highlight');
       this.blacklist = electronSettings.get('blacklist');
       this.ignored = electronSettings.get('ignored');
@@ -111,6 +113,7 @@ export class SettingsService {
     electronSettings.set('emotePriority', this.emotePriority);
     electronSettings.set('anonymous', this.anonymous);
     electronSettings.set('maxHistory', this.maxHistory);
+    electronSettings.set('highlightName', this.highlightName);
     electronSettings.set('highlight', this.highlight);
     electronSettings.set('blacklist', this.blacklist);
     electronSettings.set('ignored', this.ignored);

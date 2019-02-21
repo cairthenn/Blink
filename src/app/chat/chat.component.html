@@ -16,7 +16,7 @@
                     </button>
                 </div>
                 <div class="scrollbar--hidden" [cdkDropListData]="tabs" (cdkDropListDropped)="dropped($event)" cdkDropList>
-                    <button mat-flat-button *ngFor="let tab of tabs" class="cc-full-width" (click)="select(tab)" (dblclick)="rename(tab)" [color]="tab.active ? 'accent' : 'unset'" cdkDrag style="border-radius: 0;">
+                    <button mat-flat-button *ngFor="let tab of tabs" class="cc-full-width" (click)="select(tab)" (dblclick)="rename(tab)" [color]="tab.active ? 'primary' : 'unset'" cdkDrag style="border-radius: 0;">
                         <div class="cc-flex cc-flex-shrink-0 cc-justify-content-between">
                             <span class="cc-font-size-6 cc-overflow-hidden" style="max-width: 80%; text-overflow: ellipsis;">{{tab.channelDisplay}}</span>
                             <button mat-icon-button style="height:1.2rem; width:1.2rem; line-height: 1.2rem; margin-top: auto; margin-bottom: auto" (click)="remove(tab)" tabindex="-1">&times;</button>
@@ -56,12 +56,7 @@
                             <!-- Chat -->
 
                             <div class="cc-flex-auto cc-flex cc-flex-column cc-full-height cc-pd-y-05">
-                                <app-autoscroll #scroll class="cc-relative cc-flex-auto scrollbar" settings="settings" style="min-width: 340px;">
-                                    <app-messages class="cc-flex-auto chat-list__lines" [settings]="settings" [service]="tab"></app-messages>
-                                    <div class="chat-more-panel cc-sticky cc-bottom-0 cc-align-items-center cc-full-width" [style.display]="scroll.wantsToScroll ? 'block' : 'none'">
-                                        <span style="text-align: center" (click)="scroll.continueScrolling()">New Messages Below</span>
-                                    </div>
-                                </app-autoscroll>
+                                <app-messages class="cc-flex-auto scrollbar" [settings]="settings" [service]="tab" style="min-width: 340px"></app-messages>
                         
                                 <!-- Chat Input Box -->
 

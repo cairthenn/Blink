@@ -4,49 +4,39 @@
 
         <h5 class="cc-full-width cc-pd-b-1">Appearance</h5>
         
-        <mat-checkbox [(ngModel)]="data.lightTheme" (click)="setTheme(!data.lightTheme)">Light theme</mat-checkbox>
-        <div class="cc-pd-b-05"></div>
-        <mat-checkbox [(ngModel)]="data.alternate">Alternate line colors</mat-checkbox>
-        <div class="cc-pd-b-05"></div>
-        <mat-checkbox [(ngModel)]="data.separators">Enable chat separators</mat-checkbox>
-        <div class="cc-pd-b-05"></div>                    
-        <mat-checkbox [(ngModel)]="data.flash">Flash on notification</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.lightTheme" (click)="setTheme(!data.lightTheme)">Light theme</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.alternate">Alternate line colors</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.separators">Enable chat separators</mat-checkbox>                
         
         <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Display</h5>
 
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.timestamps">Timestamps</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.charCount">Message character count</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.subs">Subscription messages</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.bits">Bit donations</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.badges">User badges</mat-checkbox>
 
-        <mat-checkbox [(ngModel)]="data.timestamps">Timestamps</mat-checkbox>
-        <div class="cc-pd-b-05"></div>
-        <mat-checkbox [(ngModel)]="data.charCount">Message character count</mat-checkbox>
-        <div class="cc-pd-b-05"></div>
-        <mat-checkbox [(ngModel)]="data.subs">Subscriptions</mat-checkbox>
-        <div class="cc-pd-b-05"></div>
-        <mat-checkbox [(ngModel)]="data.bits">Bits</mat-checkbox>
-        <div class="cc-pd-b-05"></div>
-        <mat-checkbox [(ngModel)]="data.badges">Badges</mat-checkbox>
-
+        <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Emote Display</h5>
         
-        <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Enable Emotes</h5>
-        
-        <mat-checkbox [(ngModel)]="data.twitchEmotes">Twitch Emotes</mat-checkbox>
-        <div class="cc-pd-b-05"></div>
-        <mat-checkbox [(ngModel)]="data.bttv">BTTV</mat-checkbox>
-        <div class="cc-pd-b-05"></div>                    
-        <mat-checkbox [(ngModel)]="data.ffz">FFZ</mat-checkbox>
-        <div class="cc-pd-b-05"></div>                    
-        <mat-checkbox [(ngModel)]="data.gifs">Animated GIFs</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.twitchEmotes">Twitch emotes</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.ffz">FFZ emotes</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.bttv">BTTV emotes</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.gifs">Animated GIFs</mat-checkbox>
         
         <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Functionality</h5>
         
-        <mat-checkbox [(ngModel)]="data.duplicates">Allow duplicate chat messages</mat-checkbox>
-        <div class="cc-pd-b-05"></div>
-        <mat-checkbox [(ngModel)]="data.emotePriority">Prioritize emotes for autocomplete</mat-checkbox>
-        <div class="cc-pd-b-05"></div>
-        <mat-checkbox [(ngModel)]="data.anonymous" disabled>Don't appear in chat rooms</mat-checkbox>
-        <div class="cc-pd-b-05"></div>
-        <mat-checkbox [(ngModel)]="data.stopScroll">Stop scrolling on mouse activity</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.duplicates">Allow duplicate chat messages</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.emotePriority">Prioritize emotes for autocomplete</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.anonymous" disabled>Don't appear in chat rooms</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.stopScroll">Stop scrolling on mouse activity</mat-checkbox>
+        <mat-form-field color="accent" class="cc-margin-0">
+            <input matInput class="cc-pd-b-05" type="number" placeholder="Max chat history" min="100" max="1000" [(ngModel)]="data.maxHistory">
+        </mat-form-field>
 
         <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Highlight and Ignore</h5>
+
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.highlightName">Highlight messages containing your name</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.flash">Flash on notification</mat-checkbox>
 
         <div class="cc-full-width cc-pd-b-1 cc-pd-t-1">
             <mat-form-field color="accent" appearance="outline" class="cc-full-width cc-margin-0">

@@ -11,7 +11,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChannelDialogComponent } from './channel-dialog/channel-dialog.component';
 import { ChatInputComponent } from './chat-input/chat-input.component';
-import { AutoscrollComponent } from './autoscroll/autoscroll.component';
 import {    MatDialogModule,   MatInputModule,     MatSidenavModule,    MatFormFieldModule, 
             MatMenuModule,     MatToolbarModule,   MatButtonModule,     MatIconModule,
             MatCheckboxModule, } from '@angular/material';
@@ -21,7 +20,6 @@ import {    MatDialogModule,   MatInputModule,     MatSidenavModule,    MatFormF
         MessagesComponent,
         ChatComponent,
         ChatInputComponent,
-        AutoscrollComponent,
         SettingsComponent,
         ChannelDialogComponent,
     ],
