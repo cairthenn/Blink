@@ -7,13 +7,13 @@ import { MAT_DIALOG_DATA } from '@angular/material';
 })
 export class ViewerDialogComponent implements OnInit {
 
-  private broadcaster: [] = [];
-  private moderators: [] = [];
-  private staff: [] = [];
-  private vips: [] = [];
-  private viewers: [] = [];
+  public broadcaster: [] = [];
+  public moderators: [] = [];
+  public staff: [] = [];
+  public vips: [] = [];
+  public viewers: [] = [];
 
-  private filter(val: string) {
+  public filter(val: string) {
 
     try {
       const regex = new RegExp(val);
