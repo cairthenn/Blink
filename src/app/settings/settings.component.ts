@@ -13,10 +13,21 @@ const themeLight = "chat-light-theme";
 })
 export class SettingsComponent implements OnInit {
 
+    get lightTheme () {
+        return this.data.lightTheme;
+    }
+
+    set lightTheme(val: boolean) {
+        this.data.lightTheme = val;
+        this.setTheme(val);
+    }
+
     constructor(public dialogRef: MatDialogRef<SettingsComponent>, 
         @Inject(MAT_DIALOG_DATA) public data: SettingsService,
         public overlayContainer: OverlayContainer) { 
     }
+
+
 
     setTheme(light: boolean) {
         console.log(this.overlayContainer.getContainerElement(), light);
