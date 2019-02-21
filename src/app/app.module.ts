@@ -13,8 +13,9 @@ import { ChannelDialogComponent } from './channel-dialog/channel-dialog.componen
 import { ChatInputComponent } from './chat-input/chat-input.component';
 import {    MatDialogModule,   MatInputModule,     MatSidenavModule,    MatFormFieldModule, 
             MatMenuModule,     MatToolbarModule,   MatButtonModule,     MatIconModule,
-            MatCheckboxModule, MatCardModule } from '@angular/material';
+            MatCheckboxModule, MatCardModule, MatDividerModule } from '@angular/material';
 import { ViewerDialogComponent } from './viewer-dialog/viewer-dialog.component';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -44,6 +45,7 @@ import { ViewerDialogComponent } from './viewer-dialog/viewer-dialog.component';
         MatSidenavModule,
         MatCheckboxModule,
         MatCardModule,
+        MatDividerModule,
     ],
     entryComponents:[
         ChannelDialogComponent,

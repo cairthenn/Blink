@@ -1,6 +1,6 @@
 <div class="mat-app-background cc-full-height cc-flex cc-flex-column" [style.min-width]="showTabs ? tabWidth + contentWidth : contentWidth" [class.chat-light-theme]="settings.lightTheme">
 
-    <div *ngIf="tabs.length == 0; else contentArea" class="mat-app-background cc-absolute cc-flex cc-margin-0 cc-flex-column cc-full-height cc-full-width" (click)="addChannel()">
+    <div *ngIf="tabs.length == 0; else contentArea" class="mat-app-background cc-absolute cc-flex cc-margin-0 cc-flex-column cc-full-height cc-full-width" (click)="newTab()">
         <div class="cc-flex-auto">Click here to add a channel and get started!</div>
     </div>
     <ng-template #contentArea>
@@ -8,20 +8,25 @@
             
             <!-- Chat Tab Area -->
             
-            <mat-sidenav #drawer class="cc-tab-control cc-flex-column cc-border-r" [style.min-width]="tabWidth" mode="side">
-                <div class="cc-header cc-background-alt cc-no-flex cc-border-b">
-                    <button mat-flat-button color="primary" class="cc-full-height cc-full-width cc-align-items-center cc-flex cc-justify-content-between" (click)="addChannel()" tabindex="-1" style="border-radius: 0;">
-                        <span class="cc-font-size-6">Add Channel</span>
-                        <mat-icon aria-label="Add Channel" class="cc-pd-l-05">add</mat-icon>
-                    </button>
-                </div>
-                <div class="scrollbar--hidden" [cdkDropListData]="tabs" (cdkDropListDropped)="dropped($event)" cdkDropList>
-                    <button mat-flat-button *ngFor="let tab of tabs" class="cc-full-width" (click)="select(tab)" (dblclick)="rename(tab)" [color]="tab.active ? 'primary' : 'unset'" cdkDrag style="border-radius: 0;">
-                        <div class="cc-flex cc-flex-shrink-0 cc-justify-content-between">
-                            <span class="cc-font-size-6 cc-overflow-hidden" style="max-width: 80%; text-overflow: ellipsis;">{{tab.channelDisplay}}</span>
-                            <button mat-icon-button style="height:1.2rem; width:1.2rem; line-height: 1.2rem; margin-top: auto; margin-bottom: auto" (click)="remove(tab)" tabindex="-1">&times;</button>
+            <mat-sidenav #drawer class="cc-tab-control tabs cc-relative" [style.min-width]="tabWidth" mode="side">
+                
+                <div class="cc-flex cc-flex-column cc-full-height cc-full-width">
+                    <div class="cc-header cc-background-alt cc-flex-none cc-border-b">
+                        <button mat-flat-button color="primary" class="cc-full-height cc-full-width cc-align-items-center cc-flex cc-justify-content-between" (click)="newTab()" tabindex="-1" style="border-radius: 0;">
+                            <span class="cc-font-size-6">Add Channel</span>
+                            <mat-icon aria-label="Add Channel" class="cc-pd-l-05">add</mat-icon>
+                        </button>
+                    </div>
+                    <div class="cc-flex-auto scrollbar--hidden" [cdkDropListData]="tabs" (cdkDropListDropped)="dropped($event)" cdkDropList>
+                        <div>
+                            <button mat-flat-button *ngFor="let tab of tabs" class="cc-flex cc-full-width" (click)="select(tab)" (dblclick)="rename(tab)" [color]="tab.active ? 'primary' : 'unset'" cdkDrag style="border-radius: 0;">
+                                <div class="cc-flex cc-flex-shrink-0 cc-justify-content-between">
+                                    <span class="cc-font-size-6 cc-overflow-hidden" style="max-width: 80%; text-overflow: ellipsis;">{{tab.channelDisplay}}</span>
+                                    <button mat-icon-button style="height:1.2rem; width:1.2rem; line-height: 1.2rem; margin-top: auto; margin-bottom: auto" (click)="remove(tab)" tabindex="-1">&times;</button>
+                                </div>
+                            </button>
                         </div>
-                    </button>
+                    </div>
                 </div>
             </mat-sidenav>
 
@@ -29,7 +34,7 @@
 
             <mat-sidenav-content [style.min-width]="contentWidth">
                 <div class="cc-full-height cc-full-width cc-relative">
-                    <div *ngFor="let tab of tabs" class="cc-absolute cc-full-height cc-full-width" [style.visibility]="tab.active ? 'visible' : 'hidden'">
+                    <div *ngFor="let tab of tabs" class="cc-absolute cc-full-height cc-full-width" [hidden]="!tab.active">
 
                         <!-- Chat Header -->
 

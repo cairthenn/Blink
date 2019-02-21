@@ -29,6 +29,7 @@ export class MessagesComponent implements OnInit {
 
     @Input() public settings: SettingsService;
     @Input() public service: ChatService;
+    @ViewChildren('message') messageEls: QueryList<ElementRef>;
 
     private userActivity = false;
     private isLocked: boolean = false;
@@ -47,17 +48,12 @@ export class MessagesComponent implements OnInit {
     }
 
     ngAfterViewInit(): void {
-        this.mutationObserver = new MutationObserver(() => {
+        this.messageEls.changes.subscribe(() => {
             if (this.isLocked || this.userActivity) {
                 this.wantsToScroll = true;
                 return
             }
             this.scrollToBottom();
-        });
-
-        this.mutationObserver.observe(this.el.nativeElement, {
-            childList: true,
-            subtree: true,
         });
     }
     

@@ -55,7 +55,7 @@ export class ChatComponent implements OnInit {
     public loadChannels() {
         const names = ElectronService.settings.get('channels');
         for(var i in names) {
-            this.createChannel(names[i]);
+            this.addChannel(names[i]);
         }
         this.loaded = true;
     }
@@ -115,7 +115,17 @@ export class ChatComponent implements OnInit {
         });
     }
 
-    public addChannel() {
+    public addChannel(name: string) {
+        const find = this.tabs.find(x => x.channel === name.toLowerCase());
+        if(find != undefined) {
+            this.select(find);
+            return;
+        }
+
+        this.createChannel(name);
+    }
+
+    public newTab() {
         const ref = this.dialog.open(ChannelDialogComponent, {
             panelClass: "cc-dialog",
         });
@@ -131,7 +141,7 @@ export class ChatComponent implements OnInit {
                 return;
             }
 
-            this.createChannel(channel);
+            this.addChannel(channel);
         });
     }
 

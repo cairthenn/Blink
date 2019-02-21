@@ -1,34 +1,34 @@
 <div color="accent" class="cc-flex-grow-1 cc-margin-0 scrollbar" mat-dialog-content>
     <mat-form-field color="accent">
-        <input matInput class="cc-pd-b-05" type="text" placeholder="Filter term" [(ngModel)]="filter">
+        <input #filterPhrase matInput type="text" placeholder="Filter term" (keydown.enter)="filter(filterPhrase.value); $event.preventDefault();" >
     </mat-form-field>
-    <div *ngIf="data.broadcaster.length > 0"class="cc-pd-1">
+    <div *ngIf="broadcaster.length > 0"class="cc-pd-1">
         <strong>Broadcaster</strong>
-        <div *ngFor="let user of data.broadcaster">
+        <div *ngFor="let user of broadcaster">
             {{user}}
         </div>
     </div>
-    <div *ngIf="data.moderators.length > 0" class="cc-pd-1">
+    <div *ngIf="moderators.length > 0" class="cc-pd-1">
         <strong>Moderators</strong>
-        <div *ngFor="let user of data.moderators">
+        <div *ngFor="let user of moderators">
             {{user}}
         </div>
     </div>
-    <div *ngIf="data.staff.length > 0" class="cc-pd-1">
+    <div *ngIf="staff.length > 0" class="cc-pd-1">
         <strong>Staff</strong>
-        <div *ngFor="let user of data.staff">
+        <div *ngFor="let user of staff">
             {{user}}
         </div>
     </div>
-    <div *ngIf="data.vips.length > 0" class="cc-pd-1">
+    <div *ngIf="vips.length > 0" class="cc-pd-1">
         <strong>VIPs</strong>
-        <div *ngFor="let user of data.vips">
+        <div *ngFor="let user of vips">
             {{user}}
         </div>
     </div>
-    <div *ngIf="data.viewers.length > 0" class="cc-pd-1">
+    <div *ngIf="viewers.length > 0" class="cc-pd-1">
         <strong>Viewers</strong>
-        <div *ngFor="let user of data.viewers">
+        <div *ngFor="let user of viewers">
             {{user}}
         </div>
     </div>

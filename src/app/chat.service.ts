@@ -8,16 +8,6 @@ import { SettingsService } from './settings.service';
 
 const image_classes = "cc-chat-image cc-inline-block chat-line__message--emote"
 
-const ffzHtml = function(id: string, name: string) {
-    return `<img src="https://cdn.frankerfacez.com/emoticon/${id}/1" class="${image_classes}" alt="${name}"/> `
-}
-const bttvHtml = function(id: string, name: string) {
-    return `<img src="https://cdn.betterttv.net/emote/${id}/1x" class="${image_classes}" alt="${name}"/> `
-}
-const twitchHtml = function(id: string, name: string) {
-    return `<img src="https://static-cdn.jtvnw.net/emoticons/v1/${id}/1.0" class="${image_classes}" alt="${name}"/> `
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -219,27 +209,39 @@ export class ChatService {
             text = isAction[1];
         }
         
-        
-        const emote_locations = this.parseTwitchEmotes(params['emotes']);
-
         var cursor = 0;
-        const html = text.split(' ').reduce((builder, word) => {
-
-            if(word == this.username || word in this.settings.highlightWords) {
-                highlight = true;
-            }
+        const emote_locations = this.parseTwitchEmotes(params['emotes']);
+        const fragments = text.split(' ').map(word => {
 
             const check = cursor;
             cursor += Array.from(word).length + 1;
+            
             if(check in emote_locations) {
-                return `${builder}${twitchHtml(emote_locations[check], word)}`;
+                return {
+                    type: 'twitchEmote',
+                    src: `https://static-cdn.jtvnw.net/emoticons/v1/${emote_locations[check]}/1.0`,
+                    alt: word,
+                };
             } else if(word in this.bttvEmotes) {
-                return `${builder}${bttvHtml(this.bttvEmotes[word].id, word)}`;
+                return {
+                    type: 'bttvEmote',
+                    src: `https://cdn.betterttv.net/emote/${this.bttvEmotes[word].id}/1x`,
+                    alt: word,
+                };
             } else if(word in this.ffzEmotes) {
-                return `${builder}${ffzHtml(this.ffzEmotes[word].id, word)}`;
+                return {
+                    type: 'ffzEmote',
+                    src: `https://cdn.frankerfacez.com/emoticon/${this.ffzEmotes[word].id}/1`,
+                    alt: word,
+                };
             } 
-            return `${builder}${word} `;
-        }, '').trim();
+
+            return {
+                type: 'text',
+                text: `${word} `,
+                color: isAction ? params['color'] : undefined,
+             }
+        });
 
         const message = {
             username: params['display-name'], 
@@ -248,7 +250,7 @@ export class ChatService {
             isChat: true,
             color: params['color'],
             text: text,
-            html: html,
+            fragments: fragments,
             badges: this.parseBadges(params['badges']),
         };
 
@@ -257,16 +259,34 @@ export class ChatService {
 
     private processOutgoing(text: string, action: boolean = false) : any {
 
-        const html = text.split(' ').reduce((builder, word) => {
+        const fragments = text.split(' ').map(word => {
+
             if(word in this.userEmotes) {
-                return `${builder}${twitchHtml(this.userEmotes[word].id, word)}`;
+                return {
+                    type: 'twitchEmote',
+                    src: `https://static-cdn.jtvnw.net/emoticons/v1/${this.userEmotes[word].id}/1.0`,
+                    alt: word,
+                };
             } else if(word in this.bttvEmotes) {
-                return `${builder}${bttvHtml(this.bttvEmotes[word].id, word)}`;
+                return {
+                    type: 'bttvEmote',
+                    src: `https://cdn.betterttv.net/emote/${this.bttvEmotes[word].id}/1x`,
+                    alt: word,
+                };
             } else if(word in this.ffzEmotes) {
-                return `${builder}${ffzHtml(this.ffzEmotes[word].id, word)}`;
-            }
-            return `${builder}${word} `;
-        }, '');
+                return {
+                    type: 'ffzEmote',
+                    src: `https://cdn.frankerfacez.com/emoticon/${this.ffzEmotes[word].id}/1`,
+                    alt: word,
+                };
+            } 
+
+            return {
+                type: 'text',
+                color: action ? this.userState['color'] : undefined,
+                text: `${word} `,
+             }
+        });
 
         const message = {
             isAction: action,
@@ -274,7 +294,7 @@ export class ChatService {
             isChat: true,
             color: this.userState['color'],
             text: text,
-            html: html,
+            fragments: fragments,
             badges: this.parseBadges(this.userState['badges']),
         };
 
