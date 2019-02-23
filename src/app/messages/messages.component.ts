@@ -35,19 +35,19 @@ export class MessagesComponent implements OnInit {
     private isLocked: boolean = false;
     public wantsToScroll: boolean;
     private _active: boolean;
-    private subscription: Subscription;
 
     constructor(private el: ElementRef, private cdr: ChangeDetectorRef) {
     }
 
     @Input() set active(val: boolean) {
-        
-        setTimeout(() => {
-            if(val) {
-                this.updateView();
-            }
+        if(val) {    
+            setTimeout(() => {
+                this.updateAndScroll();
+                this._active = val;
+            }, 10);
+        } else {
             this._active = val;
-        }, 50);
+        }
     }
 
     get active() {
@@ -62,7 +62,7 @@ export class MessagesComponent implements OnInit {
         this.cdr.detach();
         this.service.onNewMessage = () => {
             if(this.active) {
-                this.updateView();
+                this.updateAndScroll();
             }
         };
     }
@@ -92,9 +92,13 @@ export class MessagesComponent implements OnInit {
         }
     }
 
-    public updateView() {
-        const scroll = !this.isLocked && !this.userActivity;
+    public update() {
         this.cdr.detectChanges();
+    }
+
+    public updateAndScroll() {
+        const scroll = !this.isLocked && !this.userActivity;
+        this.update();
         if(scroll) {
             this.scrollToBottom();
         } else {
