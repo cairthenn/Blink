@@ -12,6 +12,7 @@ export class ViewerDialogComponent implements OnInit {
   public staff: [] = [];
   public vips: [] = [];
   public viewers: [] = [];
+  public error: boolean = false;
 
   public filter(val: string) {
 
@@ -22,8 +23,9 @@ export class ViewerDialogComponent implements OnInit {
       this.staff = this.data.staff.filter(x => regex.test(x));
       this.vips = this.data.vips.filter(x => regex.test(x));
       this.viewers = this.data.viewers.filter(x => regex.test(x));
+      this.error = false;
     } catch(e) {
-      console.log("Invalid RegEx passed to filter.");
+      this.error = true;
     }
   }
 

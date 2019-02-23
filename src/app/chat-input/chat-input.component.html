@@ -8,18 +8,19 @@
             <textarea matNativeControl #messageBox class="cc-font-size-6" style="padding-right: 3rem; max-height: 200px; min-height: 45px;"
             (keydown.enter)="send(messageBox.value); messageBox.value=''; $event.preventDefault();"  
             (keydown.tab)="tabcomplete(messageBox.value, messageBox.selectionStart, messageBox.selectionEnd); $event.preventDefault()"
+            [disabled]="!service.joined"
             ></textarea>
         </mat-form-field>
-        <button class="cc-top-0 cc-right-0" mat-icon-button [matMenuTriggerFor]="emoteMenu" style="position: absolute;">
+        <button class="cc-top-0 cc-right-0" mat-icon-button [matMenuTriggerFor]="emoteMenu" style="position: absolute;" [disabled]="!service.joined">
             <mat-icon aria-label="Emote List">sentiment_very_satisfied</mat-icon>
         </button>
     </div>
 
     <div class="cc-flex cc-justify-content-between" style="min-width: 200px;">
-        <button mat-icon-button (click)="openViewers()">
+        <button mat-icon-button (click)="openViewers()" [disabled]="!service.joined">
             <mat-icon aria-label="Viewer List">list</mat-icon>
         </button>
-        <button mat-flat-button color="primary" data-a-target="chat-send-button" (click)="send(messageBox.value); messageBox.value='';">
+        <button mat-flat-button color="primary" data-a-target="chat-send-button" (click)="send(messageBox.value); messageBox.value='';" [disabled]="!service.joined">
             <span class="cc-font-size-6" data-a-target="cc-button-text">Send Message</span>
         </button>
     </div>

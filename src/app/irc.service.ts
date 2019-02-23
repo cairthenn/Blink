@@ -22,15 +22,10 @@ export class IrcService {
         this.socket = io.connect(this.server)
         
         this.socket.on('irc-data', (type: string, channel: string, params: any, message: string) => {
-            if(!(channel in this.handlers)) {
-                console.log(`Message for unjoined channel: ${channel} - ${message}`);
+            if(!(channel in this.handlers) || !(type in this.handlers[channel])) {
                 return;
             }
-            if(!(type in this.handlers[channel])) {
-                console.log(`No handler available for message type: ${type} - ${message}`);
-                return;
-            }
-
+            
             this.handlers[channel][type](params, message);
         });
 
@@ -58,8 +53,12 @@ export class IrcService {
         this.socket.emit('outgoing-chat', channel, message);
     }
 
-    public static saveSettings(vals) {
-        this.socket.emit('save-settings', vals);
+    public static login(force: boolean) {
+        this.socket.emit('login', force);
+    }
+
+    public static logout() {
+        this.socket.emit('logout');
     }
 
 }

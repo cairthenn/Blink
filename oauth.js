@@ -1,4 +1,4 @@
-const { BrowserWindow, ipcMain } = require('electron');
+const { BrowserWindow } = require('electron');
 const qs = require('querystring');
 const axios = require('axios');
 
@@ -11,11 +11,11 @@ let authWindow;
 module.exports.getLogin = function(forceVerify) {
     
     const urlParams = {
-        client_id : clientId,
-        response_type : 'token',
-        redirect_uri : 'https://cairthenn.com',
-        scope : 'chat:edit chat:read whispers:edit whispers:read channel:moderate whispers:edit',
-        force_verify : forceVerify || false,
+        client_id: clientId,
+        response_type: 'token',
+        redirect_uri: 'https://cairthenn.com',
+        scope: 'chat:edit chat:read whispers:edit whispers:read channel:moderate whispers:edit',
+        force_verify: forceVerify || false,
     };
 
     var promise = new Promise(function(resolve, reject) {

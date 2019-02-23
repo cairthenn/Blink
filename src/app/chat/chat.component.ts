@@ -60,19 +60,14 @@ export class ChatComponent implements OnInit {
         this.loaded = true;
     }
 
-    public toggleSettings() {
+    public openSettings() {
         const ref = this.dialog.open(SettingsComponent, {
-            data: this.settings,
-            panelClass: "cc-dialog",
+            data: this.settings
         });
         
         ref.afterClosed().subscribe(settings => {
             this.settings.save();
         });
-    }
-
-    public toggleTabs() {
-        this.showTabs = !this.showTabs;
     }
 
     public select(tab : ChatService) {
@@ -95,9 +90,7 @@ export class ChatComponent implements OnInit {
     }
 
     public rename(tab : ChatService) {
-        const ref = this.dialog.open(ChannelDialogComponent, {
-            panelClass: "cc-dialog",
-        });
+        const ref = this.dialog.open(ChannelDialogComponent);
 
         ref.afterClosed().subscribe(channel => {
             if(channel == undefined || channel.length == 0) {
@@ -116,6 +109,11 @@ export class ChatComponent implements OnInit {
     }
 
     public addChannel(name: string) {
+
+        if(!name || name.length == 0) {
+            return;
+        }
+
         const find = this.tabs.find(x => x.channel === name.toLowerCase());
         if(find != undefined) {
             this.select(find);
@@ -126,9 +124,7 @@ export class ChatComponent implements OnInit {
     }
 
     public newTab() {
-        const ref = this.dialog.open(ChannelDialogComponent, {
-            panelClass: "cc-dialog",
-        });
+        const ref = this.dialog.open(ChannelDialogComponent);
         
         ref.afterClosed().subscribe(channel => {
             if(channel == undefined || channel.length == 0) {
@@ -145,6 +141,15 @@ export class ChatComponent implements OnInit {
         });
     }
 
+    public login(force: boolean = false) {
+        IrcService.login(force);
+    }
+
+    public logout() {
+        this.connected = false;
+        IrcService.logout();
+    }
+
     public dropped(event: CdkDragDrop<ChatService[]>) {
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     }
@@ -155,9 +160,11 @@ export class ChatComponent implements OnInit {
             this.username = username;
             this.connected = true;
             this.token = AES.encrypt(token, username);
-            this.loadChannels();
+            if(!this.loaded) {
+                this.loadChannels();
+            }
         }, (err) => {
-            console.log(`Failed to connect to local server: ${err}`);
+            
         });
 
     }

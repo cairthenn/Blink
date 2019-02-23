@@ -1,12 +1,11 @@
 import CryptoJS from 'crypto-js';
+import dateformat from 'dateformat';
 import { Injectable } from '@angular/core';
 import { IrcService } from './irc.service';
 import { ChatMessage } from './messages/messages.component'
-import { EmotesService } from './emotes.service';
+import { EmotesService as WebApiService } from './emotes.service';
 import { SettingsService } from './settings.service';
 
-
-const image_classes = "cc-chat-image cc-inline-block chat-line__message--emote"
 
 @Injectable({
   providedIn: 'root'
@@ -37,15 +36,14 @@ export class ChatService {
     constructor(public settings: SettingsService) { }
 
     private updateUserList() {
-        EmotesService.getUserList(this.channel).then(users => {
+        WebApiService.getUserList(this.channel).then(users => {
             this.userList = users;
-            console.log(this.userList);
         });
     }
     
 
-    private updateBadges(state) {
-        EmotesService.getBadges(state).then(badges => {
+    private updateBadges(id) {
+        WebApiService.getBadges(id).then(badges => {
             this.badges = badges;
         })
     }
@@ -53,7 +51,7 @@ export class ChatService {
     private updateEmotes(sets: string) {
         const bytes = CryptoJS.AES.decrypt(this.token, this.username);
         const key = bytes.toString(CryptoJS.enc.Utf8);
-        EmotesService.getTwitchEmotes(sets, key).then(emotes => {
+        WebApiService.getTwitchEmotes(sets, key).then(emotes => {
             this.userEmotes = emotes;
         })
     }
@@ -84,13 +82,9 @@ export class ChatService {
     }
 
     private onUserNotice(params: any, text: string) {
-        //const message = this.processIncoming(params, text);
-        //this.addMessage(message);
         if(text) {
             this.addStatus(`[TODO]: ${text}`);
         }
-
-        console.log('user notice', text, params);
     }
 
     private onNotice(params: any, text: string) {
@@ -105,7 +99,7 @@ export class ChatService {
     }
 
     private purge(params, user: string) {
-        console.log('purge', params, user);
+
         this.messages.forEach(msg => {
             if(!user || msg.username == user) {
                 msg.deleted = true;
@@ -118,11 +112,11 @@ export class ChatService {
     }
 
     private deleteMessage(messageId: string) {
-        console.log(`Attemping to delete: ${messageId}`);
+
     }
 
     private globalUserState(state: any) {
-        console.log(`Global user state:`, state);
+
     }
 
 
@@ -137,11 +131,11 @@ export class ChatService {
         this.channelDisplay = channel;
         this.channel = channel.toLowerCase();
 
-        EmotesService.getBttvEmotes(this.channel).then(emotes => {
+        WebApiService.getBttvEmotes(this.channel).then(emotes => {
             this.bttvEmotes = emotes;
         })
 
-        EmotesService.getFfzEmotes(this.channel).then(emotes => {
+        WebApiService.getFfzEmotes(this.channel).then(emotes => {
             this.ffzEmotes = emotes;
         })
 
@@ -204,6 +198,7 @@ export class ChatService {
         
         const isAction = /\u0001ACTION (.*)\u0001$/.exec(text);
         var highlight = false;
+        var ignore = false;
 
         if(isAction) {
             text = isAction[1];
@@ -215,24 +210,32 @@ export class ChatService {
 
             const check = cursor;
             cursor += Array.from(word).length + 1;
+
+            if(this.settings.highlightName) {
+
+            }
+
+            if(word in this.settings.highlightWords) {
+                highlight = true;
+            } else 
             
             if(check in emote_locations) {
                 return {
                     type: 'twitchEmote',
                     src: `https://static-cdn.jtvnw.net/emoticons/v1/${emote_locations[check]}/1.0`,
-                    alt: word,
+                    name: word,
                 };
             } else if(word in this.bttvEmotes) {
                 return {
                     type: 'bttvEmote',
                     src: `https://cdn.betterttv.net/emote/${this.bttvEmotes[word].id}/1x`,
-                    alt: word,
+                    name: word,
                 };
             } else if(word in this.ffzEmotes) {
                 return {
                     type: 'ffzEmote',
                     src: `https://cdn.frankerfacez.com/emoticon/${this.ffzEmotes[word].id}/1`,
-                    alt: word,
+                    name: word,
                 };
             } 
 
@@ -244,6 +247,7 @@ export class ChatService {
         });
 
         const message = {
+            id: params['id'],
             username: params['display-name'], 
             isAction: isAction && true,
             highlight: highlight,
@@ -265,19 +269,19 @@ export class ChatService {
                 return {
                     type: 'twitchEmote',
                     src: `https://static-cdn.jtvnw.net/emoticons/v1/${this.userEmotes[word].id}/1.0`,
-                    alt: word,
+                    name: word,
                 };
             } else if(word in this.bttvEmotes) {
                 return {
                     type: 'bttvEmote',
                     src: `https://cdn.betterttv.net/emote/${this.bttvEmotes[word].id}/1x`,
-                    alt: word,
+                    name: word,
                 };
             } else if(word in this.ffzEmotes) {
                 return {
                     type: 'ffzEmote',
                     src: `https://cdn.frankerfacez.com/emoticon/${this.ffzEmotes[word].id}/1`,
-                    alt: word,
+                    name: word,
                 };
             } 
 
@@ -306,6 +310,10 @@ export class ChatService {
     }
 
     public send(text: string) {
+        if(!this.joined) {
+            this.addStatus('You were unable to send a message.')
+        }
+        
         const trimmed = text.trim().replace(/\r?\n/, ' ');
         if(trimmed.length > 0) {
             
@@ -324,11 +332,22 @@ export class ChatService {
         }
     }
 
+    private _odd = true;
+
+    public onNewMessage: () => void = () => {};
+
     public addMessage(message: any) {
         if(this.messages.length > this.settings.maxHistory) {
             this.messages.shift();
         }
 
+        const now = new Date();
+        message.timestamp = dateformat(now, 'hh:MM');
+        message.odd = this._odd = !this._odd;
+
         this.messages.push(message);
+        
+        this.onNewMessage();
+
     }
 }

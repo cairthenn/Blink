@@ -19,9 +19,7 @@ module.exports.IRC = class {
             return;
         }
 
-        this.socket.write(`${data}\n`, 'utf-8', function() {
-            console.log(`< ${data}`);
-        });
+        this.socket.write(`${data}\n`, 'utf-8');
     }
 
     connect(user, token) {
@@ -50,15 +48,11 @@ module.exports.IRC = class {
                 const msgs = String(data).split(/\r?\n/);
                 msgs.forEach(msg => {
                     if(msg.length > 0) {
-                        if(msg === 'PING :tmi.twitch.tv') {
+                        if(msg == 'PING :tmi.twitch.tv') {
                             this.send('PONG :tmi.twitch.tv');
                         } else {
-                            // TEMPORARY: prevent logging message if handled
-                            if(this.receive(msg)) {
-                                return;
-                            }
+                            this.receive(msg);
                         }
-                        console.log(`> ${msg}`);
                     }
                 });
             });
@@ -114,7 +108,7 @@ module.exports.IRC = class {
         const split = messageFormat.exec(data);
 
         if(!split) {
-            console.log("Unable to parse incoming IRC message:" + data);
+            console.log(`Unable to parse incoming IRC message: ${data}`);
             return;
         }
 

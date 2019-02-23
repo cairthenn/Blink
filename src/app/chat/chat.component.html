@@ -1,7 +1,15 @@
 <div class="mat-app-background cc-full-height cc-flex cc-flex-column" [style.min-width]="showTabs ? tabWidth + contentWidth : contentWidth" [class.chat-light-theme]="settings.lightTheme">
 
-    <div *ngIf="tabs.length == 0; else contentArea" class="mat-app-background cc-absolute cc-flex cc-margin-0 cc-flex-column cc-full-height cc-full-width" (click)="newTab()">
-        <div class="cc-flex-auto">Click here to add a channel and get started!</div>
+    <div *ngIf="!connected || tabs.length == 0; else contentArea" class="mat-app-background cc-flex cc-flex-column cc-flex-auto">
+        <div class="cc-flex cc-flex-column cc-flex-auto cc-justify-content-center cc-align-items-center">
+            <span class="cc-font-size-4 cc-pd-b-1">Welcome to CChat!</span>            
+            <mat-form-field color="accent" appearance="outline" class="cc-margin-0 cc-dialog">
+                <mat-label>Enter a channel</mat-label>
+                <input #noChannels matInput placeholder="Enter a channel" (keydown.enter)="addChannel(noChannels.value)" cdkFocusInitial [disabled]="!connected">
+            </mat-form-field>
+            <span *ngIf="connected" class="cc-font-size-6">Logged in as <strong>{{username}}</strong>! <a (click)="login(true)">Not you?</a></span>
+            <span *ngIf="!connected" class="cc-font-size-6"><a (click)="login()">To get started, connect to your Twitch account</a></span>
+        </div>
     </div>
     <ng-template #contentArea>
         <mat-sidenav-container class="cc-full-height cc-full-width">
@@ -49,7 +57,7 @@
                                         {{tab.channelDisplay}}
                                     </div>
 
-                                    <button mat-button (click)="toggleSettings()" tabindex="-1">
+                                    <button mat-button (click)="openSettings()" tabindex="-1">
                                         <div class="cc-align-items-center cc-flex">
                                             <span class="cc-font-size-6">Settings</span>
                                             <mat-icon aria-label="Settings" class="cc-pd-l-05">settings</mat-icon>
@@ -61,7 +69,7 @@
                             <!-- Chat -->
 
                             <div class="cc-flex-auto cc-flex cc-flex-column cc-full-height cc-pd-y-05">
-                                <app-messages class="cc-flex-auto scrollbar" [settings]="settings" [service]="tab" style="min-width: 340px"></app-messages>
+                                <app-messages class="cc-flex-auto scrollbar" [settings]="settings" [service]="tab" [active]="tab.active" style="min-width: 340px"></app-messages>
                         
                                 <!-- Chat Input Box -->
 

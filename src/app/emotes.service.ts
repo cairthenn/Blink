@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import axios from 'axios';
-import _ from 'lodash';
 
 const bttv_global = 'https://api.betterttv.net/2/emotes';
 const bttv_channel = 'https://api.betterttv.net/2/channels/';
@@ -107,7 +106,6 @@ export class EmotesService {
         return this.get(`${tmi_info}${room}/chatters`).then(info => {
             return info.chatters;
         }).catch(err => {
-            console.log(`Error fetching channel user list: ${err}`);
             return {};
         });
     }
@@ -134,7 +132,6 @@ export class EmotesService {
             this.bttv['_global'] = values[1];
             return { ...values[0], ...values[1] };
         }).catch(err => {
-            console.log(`Error fetching BTTV emotes: ${err}`);
             return {};
         });
     }
@@ -162,7 +159,6 @@ export class EmotesService {
             this.ffz['_global'] = values[1];
             return { ...values[0], ...values[1] };
         }).catch(err => {
-            console.log(`Error fetching FFZ emotes: ${err}`);
             return {};
         });
 
@@ -192,7 +188,6 @@ export class EmotesService {
                 return obj;
             }, {});
         }).catch(err => {
-            console.log(`Error fetching Twitch emotes: ${err}`);
             return {};
         });
     }
@@ -209,10 +204,13 @@ export class EmotesService {
         }).catch(err => {});
 
         return Promise.all([room_promise, global_promise]).then(values => {
-            this.badges[room] = _.merge(values[1], values[0]);
-            return this.badges[room];
+            
+            Object.keys(values[0]).forEach(x => {
+                values[1][x].versions = { ...values[1][x].versions, ...values[0][x].versions };
+            });
+            
+            return this.badges[room] = values[1]
         }).catch(err => {
-            console.log(`Error fetching Twitch badges: ${err}`);
             return {};
         });
     }

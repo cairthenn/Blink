@@ -8,43 +8,60 @@ const io = require('socket.io')(server);
 
 let window;
 let clientSocket;
+let loggingIn = false;
 
 const irc = new IRC();
 
+function tryLogin(force = false) {
+    
+    if(loggingIn) {
+        return;
+    }
+
+    if(!clientSocket) {
+        console.log('Local connection not yet established.')
+        return;
+    }
+
+    loggingIn = true;
+    
+    auth.getLogin(force).then((login) => {
+        loggingIn = false;
+        irc.connect(login.user, login.token).then(() => {
+            clientSocket.emit('irc-connected', login.user, login.token);
+        }).catch(err => {
+            clientSocket.emit('irc-connection-failed');
+            console.log(`Error connecting to IRC: ${err}`);
+        });
+    }).catch(err => {
+        loggingIn = false;
+        clientSocket.emit('irc-connection-failed');
+        console.log(`Error connecting to IRC: ${err}`);
+    });
+}
 
 io.on('connect', (socket) => {
     clientSocket = socket;
     socket.on('outgoing-chat', (channel, message) => irc.sendMessage(channel, message));
     socket.on('join', (channel) => irc.join(channel));
     socket.on('part', (channel) => irc.part(channel));
+    socket.on('logout', () => irc.disconnect());
+    socket.on('login', (force) => tryLogin(force));
 
     irc.on(/(\w*) #(\w*)(?: :(.*))?$/, (type, channel, params, message)  => {
         socket.emit('irc-data', type, channel, params, message);
     })
 
-    // irc.on(/RECONNECT/, (channel) => {
-    //     socket.emit('reconnect', channel);
-    // });
-
-    auth.getLogin().then((login) => {
-        irc.connect(login.user, login.token).then(() => {
-            socket.emit('irc-connected', login.user, login.token);
-        }).catch(err => {
-            socket.emit('irc-connection-failed');
-            console.log(`Error connecting to IRC: ${err}`);
-        });
-    }).catch(err => {
-        socket.emit('irc-connection-failed');
-        console.log(`Error connecting to IRC: ${err}`);
-    });
+    tryLogin();
 });
 
 app.on('ready', function() {
     window = new BrowserWindow( {
         minWidth: 340,
         height: 650,
-        width: 540,
+        width: 490,
         show: false,
+        autoHideMenuBar: true,
         webPreferences: {
             nodeIntegration: true,
         },
@@ -75,18 +92,7 @@ const standardTemplate = [
             {
                 label: 'Login',
                 click() {
-                    auth.getLogin(true).then((login) => {
-                        irc.connect(login.user, login.token).then(() => {
-                            clientSocket.emit('irc-connected', login.user);
-                            console.log('connected');
-                        }).catch(err => {
-                            clientSocket.emit('irc-connection-failed');
-                            console.log(`Error connecting to IRC: ${err}`);
-                        });
-                    }).catch(err => {
-                        clientSocket.emit('irc-connection-failed');
-                        console.log(`Error connecting to IRC: ${err}`);
-                    });
+                    tryLogin(true);
                 }
             },
         ]

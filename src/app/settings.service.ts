@@ -18,9 +18,8 @@ export class SettingsService {
   public badges: boolean = true;
 
   public twitchEmotes: boolean = true;
-  public bttv: boolean = true;
-  public ffz: boolean = true;
-  public gifs: boolean = false;
+  public bttvEmotes: boolean = true;
+  public ffzEmotes: boolean = true;
 
   public duplicates: boolean = false;
   public emotePriority: boolean = false;
@@ -81,9 +80,8 @@ export class SettingsService {
       this.bits = electronSettings.get('bits');
       this.badges = electronSettings.get('badges');
       this.twitchEmotes = electronSettings.get('twitchEmotes');
-      this.bttv = electronSettings.get('bttv');
-      this.ffz = electronSettings.get('ffz');
-      this.gifs = electronSettings.get('gifs');
+      this.bttvEmotes = electronSettings.get('bttvEmotes');
+      this.ffzEmotes = electronSettings.get('ffzEmotes');
       this.duplicates = electronSettings.get('duplicates');
       this.emotePriority = electronSettings.get('emotePriority');
       this.anonymous = electronSettings.get('anonymous');
@@ -106,9 +104,8 @@ export class SettingsService {
     electronSettings.set('bits', this.bits);
     electronSettings.set('badges', this.badges);
     electronSettings.set('twitchEmotes', this.twitchEmotes);
-    electronSettings.set('bttv', this.bttv);
-    electronSettings.set('ffz', this.ffz);
-    electronSettings.set('gifs', this.gifs);
+    electronSettings.set('bttvEmotes', this.bttvEmotes);
+    electronSettings.set('ffzEmotes', this.ffzEmotes);
     electronSettings.set('duplicates', this.duplicates);
     electronSettings.set('emotePriority', this.emotePriority);
     electronSettings.set('anonymous', this.anonymous);

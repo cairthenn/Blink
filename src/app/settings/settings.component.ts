@@ -30,7 +30,6 @@ export class SettingsComponent implements OnInit {
 
 
     setTheme(light: boolean) {
-        console.log(this.overlayContainer.getContainerElement(), light);
         if(light) {
             this.overlayContainer.getContainerElement().classList.add(themeLight);
         } else {

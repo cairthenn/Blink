@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, ViewChildren, Query, QueryList, ElementRef, HostListener } from '@angular/core';
-import { SettingsComponent } from '../settings/settings.component';
+import { Component, OnInit, Input, ViewChildren, QueryList, ElementRef, HostListener, ChangeDetectorRef } from '@angular/core';
 import { ChatService } from '../chat.service';
 import { SettingsService } from '../settings.service';
+import { Subscription } from 'rxjs';
 
 
 export class ChatMessage {
@@ -33,14 +33,25 @@ export class MessagesComponent implements OnInit {
 
     private userActivity = false;
     private isLocked: boolean = false;
-    private mutationObserver: MutationObserver;
     public wantsToScroll: boolean;
+    private _active: boolean;
+    private subscription: Subscription;
 
-    constructor(private el: ElementRef) {
+    constructor(private el: ElementRef, private cdr: ChangeDetectorRef) {
+    }
+
+    @Input() set active(val: boolean) {
+        
+        setTimeout(() => {
+            if(val) {
+                this.updateView();
+            }
+            this._active = val;
+        }, 50);
     }
 
     get active() {
-        return this.service.active;
+        return this._active;
     }
 
     get messages() {
@@ -48,13 +59,12 @@ export class MessagesComponent implements OnInit {
     }
 
     ngAfterViewInit(): void {
-        this.messageEls.changes.subscribe(() => {
-            if (this.isLocked || this.userActivity) {
-                this.wantsToScroll = true;
-                return
+        this.cdr.detach();
+        this.service.onNewMessage = () => {
+            if(this.active) {
+                this.updateView();
             }
-            this.scrollToBottom();
-        });
+        };
     }
     
     ngOnInit() {
@@ -63,12 +73,6 @@ export class MessagesComponent implements OnInit {
 
     @HostListener('click') onClick() {
         this.userActivity = true;
-    }
-
-    @HostListener('mouseenter') onMouseEnter() {
-        if(this.settings.stopScroll) {
-            this.userActivity = true;
-        }
     }
 
     @HostListener('mouseleave') onMouseLeave() {
@@ -81,8 +85,21 @@ export class MessagesComponent implements OnInit {
 
     @HostListener("scroll")
     private scrollHandler(): void {
-        this.isLocked = this.distance > 20;
-        this.wantsToScroll = !this.isLocked && false || this.wantsToScroll;
+        this.isLocked = this.distance > 30;
+        this.userActivity = false;
+        if(!this.isLocked) {
+            this.wantsToScroll = false;
+        }
+    }
+
+    public updateView() {
+        const scroll = !this.isLocked && !this.userActivity;
+        this.cdr.detectChanges();
+        if(scroll) {
+            this.scrollToBottom();
+        } else {
+            this.wantsToScroll = true;
+        }
     }
 
     get distance() {
@@ -91,16 +108,11 @@ export class MessagesComponent implements OnInit {
 
     public continueScrolling() {
         this.scrollToBottom();
-        this.userActivity = false;
     }
 
     private scrollToBottom() {
         this.el.nativeElement.scrollTop = this.el.nativeElement.scrollHeight;
         this.wantsToScroll = false;
+        this.userActivity = false;
     }
-
-    public ngOnDestroy(): void {
-        this.mutationObserver.disconnect();
-    }
-
 }
