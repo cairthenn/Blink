@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import axios from 'axios';
 
+const twitch_stream = 'https://api.twitch.tv/kraken/streams/'
+const twitch_channel = 'https://api.twitch.tv/kraken/channels/'
+
 const bttv_global = 'https://api.betterttv.net/2/emotes';
 const bttv_channel = 'https://api.betterttv.net/2/channels/';
 const bttv_sizes = ['1x', '2x', '3x']
@@ -92,7 +95,7 @@ const fixes = {
 @Injectable({
     providedIn: 'root'
 })
-export class EmotesService {
+export class WebApiService {
 
     public static badges: Object = {};
     public static ffz: Object = {};
@@ -102,61 +105,89 @@ export class EmotesService {
 
     constructor() { }
 
+    public static getStream(id, key) {
+        return this.get(`${twitch_stream}${id}`, { 
+            headers: {
+                Authorization : `OAuth ${key}`
+            }
+        }).then(stream => {
+            return stream.stream || {};
+        }).catch(err => {});
+    }
+
+    public static getChannel(id, key) {
+        return this.get(`${twitch_channel}${id}`, { 
+            headers: {
+                Authorization : `OAuth ${key}`
+            }
+        }).then(channel => {
+            return channel;
+        }).catch(err => {});
+    }
+
     public static getUserList(room: string) {
         return this.get(`${tmi_info}${room}/chatters`).then(info => {
             return info.chatters;
-        }).catch(err => {
-            return {};
-        });
+        }).catch(err => {});
+    }
+
+
+    public static getBttvGlobal() {
+        return this.get(bttv_global).then(global => {
+            return this.bttv['_global'] = global.emotes.reduce((obj, item) => {
+                obj[item.code] = item;
+                return obj;
+            }, {});
+        }).catch(err => {});
+    }
+
+    public static getBttvRoom(room: string) {
+        return this.bttv[room] || this.get(`${bttv_channel}${room}`).then(channel => {
+            return this.bttv[room] = channel.emotes.reduce((obj, item) => {
+                obj[item.code] = item;
+                return obj;
+            }, {});
+        }).catch(err => {});
     }
     
     public static getBttvEmotes(room: string, update: boolean = false) : Promise<any> {
 
-        const room_promise = !update && this.bttv[room] || this.get(`${bttv_channel}${room}`).then(channel => {
-            return channel.emotes.reduce((obj, item) => {
-                obj[item.code] = item;
-                return obj;
-            }, {});
-        }).catch(err => {});
+        const global_promise = this.getBttvGlobal();
+        const room_promise = this.getBttvRoom(room);
 
-
-        const global_promise = this.get(bttv_global).then(global => {
-            return global.emotes.reduce((obj, item) => {
-                obj[item.code] = item;
-                return obj;
-            }, {});
-        }).catch(err => {});
-        
         return Promise.all([room_promise, global_promise]).then(values => {
-            this.bttv[room] = values[0];
-            this.bttv['_global'] = values[1];
             return { ...values[0], ...values[1] };
         }).catch(err => {
             return {};
         });
     }
 
-    public static getFfzEmotes(room: string, update: boolean = false) : Promise<any> {
-        
-        const room_promise = !update && this.ffz[room] || this.get(`${ffz_channel}${room}`).then(channel => {
-            return channel.sets[channel.room.set].emoticons.reduce((obj, item) => {
-                obj[item.name] = item;
-                return obj;
-            }, {});
-        }).catch(err => {});
-
-        const global_promise = !update && this.ffz['_global'] || this.get(ffz_global).then(global => {
-            return global.default_sets.map(n => {
+    public static getFFzGlobal() : Promise<any> {
+        return this.ffz['_global'] || this.get(ffz_global).then(global => {
+            return this.ffz['_global'] = global.default_sets.map(n => {
                 return global.sets[n].emoticons;
             }).flat().reduce((obj, item) => {
                 obj[item.name] = item;
                 return obj;
             }, {});
         }).catch(err => {});
+    }
+
+    public static getFFzRoom(room: string) : Promise<any> {
+        return this.ffz[room] || this.get(`${ffz_channel}${room}`).then(channel => {
+            return this.ffz[room] = channel.sets[channel.room.set].emoticons.reduce((obj, item) => {
+                obj[item.name] = item;
+                return obj;
+            }, {});
+        }).catch(err => {});
+    }
+
+    public static getFfzEmotes(room: string, update: boolean = false) : Promise<any> {
+        
+        const global_promise = this.getFFzGlobal();
+        const room_promise = this.getFFzRoom(room);
 
         return Promise.all([room_promise, global_promise]).then(values => {
-            this.ffz[room] = values[0];
-            this.ffz['_global'] = values[1];
             return { ...values[0], ...values[1] };
         }).catch(err => {
             return {};

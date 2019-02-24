@@ -24,8 +24,6 @@ export class SettingsService {
   public duplicates: boolean = false;
   public emotePriority: boolean = false;
   public anonymous: boolean = false;
-  public stopScroll: boolean = false;
-  public pauseOnHover: boolean = false;
   public maxHistory: number = 200;
   
   public highlightName: boolean = false;
@@ -42,7 +40,7 @@ export class SettingsService {
   }
 
   private commaDelimiter(words: string) {
-    return words.split(',').map(s => s.trim()).filter(s => !/^\s*$/.test(s));
+    return words.split(',').map(s => s.trim().toLowerCase()).filter(s => !/^\s*$/.test(s));
 }
 
   set highlight(words: string) {
@@ -71,7 +69,7 @@ export class SettingsService {
       const electronSettings = ElectronService.settings;
 
       this.lightTheme = electronSettings.get('lightTheme');
-      this.alternate = electronSettings.alternate
+      this.alternate = electronSettings.get('alternate');
       this.separators = electronSettings.get('separators');
       this.flash = electronSettings.get('flash');
       this.timestamps = electronSettings.get('timestamps');

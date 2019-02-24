@@ -6,14 +6,14 @@
 <div class="chat-lines cc-word-break-word">
     <div #message *ngFor="let msg of messages">
         <mat-divider *ngIf="settings.separators" class="chat-line-separator"></mat-divider>
-        <div class="chat-message" [style.background-color]="msg.odd && settings.alternate ? 'rgba(0,0,0,.1)' : 'inherit'">
+        <div class="chat-message" [class.chat-alternate-bg]="settings.alternate && msg.odd" [class.chat-highlight]="msg.highlight">
             <span *ngIf="settings.timestamps" class="cc-font-size-8">[{{msg.timestamp}}] </span>
 
             <span *ngIf="msg.isStatus">
                 <span>{{msg.text}}</span>
             </span>
 
-            <span *ngIf="msg.isChat" [class.cc-highlight]="msg.highlight">
+            <span *ngIf="msg.isChat" >
                 <span *ngIf="settings.badges"><img *ngFor="let badge of msg.badges" class="chat-badge" 
                     [src]="service.badges[badge[0]] ? service.badges[badge[0]].versions[badge[1]].image_url_1x : null"
                     /></span>

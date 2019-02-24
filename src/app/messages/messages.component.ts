@@ -1,7 +1,6 @@
-import { Component, OnInit, Input, ViewChildren, QueryList, ElementRef, HostListener, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ElementRef, HostListener, ChangeDetectorRef } from '@angular/core';
 import { ChatService } from '../chat.service';
 import { SettingsService } from '../settings.service';
-import { Subscription } from 'rxjs';
 
 
 export class ChatMessage {
@@ -29,7 +28,6 @@ export class MessagesComponent implements OnInit {
 
     @Input() public settings: SettingsService;
     @Input() public service: ChatService;
-    @ViewChildren('message') messageEls: QueryList<ElementRef>;
 
     private userActivity = false;
     private isLocked: boolean = false;
@@ -39,19 +37,8 @@ export class MessagesComponent implements OnInit {
     constructor(private el: ElementRef, private cdr: ChangeDetectorRef) {
     }
 
-    @Input() set active(val: boolean) {
-        if(val) {    
-            setTimeout(() => {
-                this.updateAndScroll();
-                this._active = val;
-            }, 10);
-        } else {
-            this._active = val;
-        }
-    }
-
     get active() {
-        return this._active;
+        return this.service.active;
     }
 
     get messages() {
@@ -60,11 +47,7 @@ export class MessagesComponent implements OnInit {
 
     ngAfterViewInit(): void {
         this.cdr.detach();
-        this.service.onNewMessage = () => {
-            if(this.active) {
-                this.updateAndScroll();
-            }
-        };
+        this.service.register(this);
     }
     
     ngOnInit() {

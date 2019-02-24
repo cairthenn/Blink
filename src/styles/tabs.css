@@ -1,11 +1,36 @@
-.cc-tab-control {
-    max-width: 150px;
-    min-width: 150px;
+.new-message-indicator {
+    background: rgba(0, 0, 0, .30);
+    height: 12px;
+    width: 6px;
+    right: 0;
+    margin-top: 1.25rem;
+    border-bottom-left-radius: 12px;
+    border-top-left-radius: 12px;
+    position: absolute;
 }
 
-.cc-tab {
-    text-align: center;
-    max-width: 150px;
+.notification-indicator {
+    font-size: 2rem!important;
+    vertical-align: middle!important;
+    width: auto;
+    line-height: inherit!important;
+    opacity: 75%;
+}
+
+.default-indicator {
+    font-size: .75rem!important;
+    vertical-align: middle!important;
+    width: auto;
+    line-height: inherit!important;
+    opacity: 75%;
+}
+
+.tab-button .close-button {
+    display: none;
+}
+
+.tab-button:hover .close-button {
+    display: inline-block;
 }
 
 .cdk-drop-list-dragging .cdk-drag {

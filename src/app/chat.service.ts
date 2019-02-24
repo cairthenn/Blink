@@ -2,8 +2,8 @@ import CryptoJS from 'crypto-js';
 import dateformat from 'dateformat';
 import { Injectable } from '@angular/core';
 import { IrcService } from './irc.service';
-import { ChatMessage } from './messages/messages.component'
-import { EmotesService as WebApiService } from './emotes.service';
+import { ChatMessage, MessagesComponent } from './messages/messages.component'
+import { WebApiService as WebApiService } from './web-api';
 import { SettingsService } from './settings.service';
 
 
@@ -12,39 +12,91 @@ import { SettingsService } from './settings.service';
 })
 export class ChatService {
 
-
+    private _active = false;
     public joined: boolean = false;
+
     public username: string = '';
-    
-    public channelDisplay: string = '';
+    private token: string = '';
     public channel: string = '';
-    public active: boolean = false;
-
-    private token: string;
-
+    public channelDisplay: string = '';
+    
     private userState: any = {};
     private roomState: any = {};
 
-    private userEmotes: any;
-    private bttvEmotes: any;
-    private ffzEmotes : any;
-    private badges = {};
-    public userList: any;
+    
+    private userEmotes: any = {};
+    private bttvEmotes: any = {};
+    private ffzEmotes : any = {};
+    public userList: any = {};
+    public badges: any = {};
+    public streamInfo: any = {};
+    public channelInfo: any = {};
+
+    public mentions: number = 0;
+    public newMessages: boolean = false;
+
+    private component: MessagesComponent;
+    private updater: number;
+    private odd = true;
     
     public messages: ChatMessage[] = [];
 
-    constructor(public settings: SettingsService) { }
+    set active(val: boolean) {
+        if(val) {
+            this.mentions = 0;
+            this.newMessages = false;
+            if(this.component) {
+                setTimeout(() => this.component.updateAndScroll(), 25);
+            }
+        }
+
+        this._active = val;
+    }
+
+    get active() {
+        return this._active;
+    }
+
+    private updateStreamInfo() {
+        const bytes = CryptoJS.AES.decrypt(this.token, this.username);
+        const key = bytes.toString(CryptoJS.enc.Utf8);
+        WebApiService.getStream(this.channel, key).then(stream => {
+            this.streamInfo = stream;
+        })
+
+        WebApiService.getChannel(this.channel, key).then(channel => {
+            this.channelInfo = channel;
+        })
+    }
+
+    constructor(public settings: SettingsService) { 
+
+    }
+
+    private updateIfActive(scroll: boolean = false) {
+        
+        if(this.active && this.component) {
+            if(scroll) {
+                this.component.updateAndScroll();
+            } else {
+                this.component.update();
+            }
+            return true;
+        }
+
+        return false;
+    }
 
     private updateUserList() {
         WebApiService.getUserList(this.channel).then(users => {
             this.userList = users;
         });
     }
-    
 
-    private updateBadges(id) {
-        WebApiService.getBadges(id).then(badges => {
+    private updateBadges() {
+        WebApiService.getBadges(this.roomState['room-id']).then(badges => {
             this.badges = badges;
+            this.updateIfActive();
         })
     }
 
@@ -71,8 +123,8 @@ export class ChatService {
 
     private onRoomState(state: any) {
         this.roomState = state;
-        this.updateBadges(state['room-id']);
-        this.updateUserList();
+        this.updateBadges();
+
     }
 
     private onMessage(params: any, text: string) {
@@ -124,12 +176,20 @@ export class ChatService {
 
         if(this.joined) {
             IrcService.part(this.channel);
+            clearInterval(this.updater);
         }
 
         this.username = username;
         this.token = token;
         this.channelDisplay = channel;
         this.channel = channel.toLowerCase();
+        this.updateStreamInfo();
+        this.updateUserList();
+
+        this.updater = window.setInterval(() => {
+            this.updateStreamInfo();
+            this.updateUserList();
+        }, 60000);
 
         WebApiService.getBttvEmotes(this.channel).then(emotes => {
             this.bttvEmotes = emotes;
@@ -155,6 +215,7 @@ export class ChatService {
     public close() {
         if(this.joined) {
             IrcService.part(this.channel);
+            clearInterval(this.updater);
         }
     }
 
@@ -208,18 +269,34 @@ export class ChatService {
         const emote_locations = this.parseTwitchEmotes(params['emotes']);
         const fragments = text.split(' ').map(word => {
 
+            const lower = word.toLowerCase();
+            const username = /@(.*)/.exec(lower);
             const check = cursor;
             cursor += Array.from(word).length + 1;
 
-            if(this.settings.highlightName) {
+            const testWord = username ? username[1] : lower;
 
+
+            if(!highlight) {
+                if(this.settings.highlightName && this.username == testWord) {
+                    highlight = true;
+                } else {
+                    for(var i in this.settings.highlightWords) {
+                        if(this.settings.highlightWords[i] == testWord) {
+                            highlight = true;
+                            break;
+                        }
+                    }
+                }
             }
 
-            if(word in this.settings.highlightWords) {
-                highlight = true;
-            } else 
-            
-            if(check in emote_locations) {
+            if(username) {
+                return {
+                    type: 'username',
+                    text: word,
+                    name: username[1],
+                }
+            } else if(check in emote_locations) {
                 return {
                     type: 'twitchEmote',
                     src: `https://static-cdn.jtvnw.net/emoticons/v1/${emote_locations[check]}/1.0`,
@@ -241,10 +318,14 @@ export class ChatService {
 
             return {
                 type: 'text',
-                text: `${word} `,
+                text: word,
                 color: isAction ? params['color'] : undefined,
              }
         });
+
+        if(highlight && !this.active) {
+            this.mentions++;
+        }
 
         const message = {
             id: params['id'],
@@ -332,9 +413,13 @@ export class ChatService {
         }
     }
 
-    private _odd = true;
+    public updateView() {
+        this.component.update();
+    }
 
-    public onNewMessage: () => void = () => {};
+    public register(component: MessagesComponent) {
+        this.component = component;
+    }
 
     public addMessage(message: any) {
         if(this.messages.length > this.settings.maxHistory) {
@@ -343,11 +428,12 @@ export class ChatService {
 
         const now = new Date();
         message.timestamp = dateformat(now, 'hh:MM');
-        message.odd = this._odd = !this._odd;
+        message.odd = this.odd = !this.odd;
 
         this.messages.push(message);
         
-        this.onNewMessage();
-
+        if(!this.updateIfActive(true) && !message.isStatus) {
+            this.newMessages = true;
+        }
     }
 }

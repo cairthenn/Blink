@@ -6,3 +6,9 @@
 .mat-drawer-inner-container {
     overflow: hidden!important;
 }
+
+.notify-tab .mat-badge-content {
+    font-size: inherit!important;
+    margin-top: .25rem!important;
+    margin-right: -1.2rem!important;
+}

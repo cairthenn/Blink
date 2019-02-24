@@ -13,7 +13,7 @@ import { ChannelDialogComponent } from './channel-dialog/channel-dialog.componen
 import { ChatInputComponent } from './chat-input/chat-input.component';
 import {    MatDialogModule,   MatInputModule,     MatSidenavModule,    MatFormFieldModule, 
             MatMenuModule,     MatToolbarModule,   MatButtonModule,     MatIconModule,
-            MatCheckboxModule, MatCardModule, MatDividerModule } from '@angular/material';
+            MatCheckboxModule, MatCardModule,      MatDividerModule,    MatBadgeModule } from '@angular/material';
 import { ViewerDialogComponent } from './viewer-dialog/viewer-dialog.component';
 
 @NgModule({
@@ -46,6 +46,7 @@ import { ViewerDialogComponent } from './viewer-dialog/viewer-dialog.component';
         MatCheckboxModule,
         MatCardModule,
         MatDividerModule,
+        MatBadgeModule,
     ],
     entryComponents:[
         ChannelDialogComponent,

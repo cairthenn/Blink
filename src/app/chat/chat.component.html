@@ -1,4 +1,4 @@
-<div class="mat-app-background cc-full-height cc-flex cc-flex-column" [style.min-width]="showTabs ? tabWidth + contentWidth : contentWidth" [class.chat-light-theme]="settings.lightTheme">
+<div class="mat-app-background cc-full-height cc-flex cc-flex-column" [style.min-width.px]="showTabs ? tabWidth + contentWidth : contentWidth" [class.chat-light-theme]="settings.lightTheme">
 
     <div *ngIf="!connected || tabs.length == 0; else contentArea" class="mat-app-background cc-flex cc-flex-column cc-flex-auto">
         <div class="cc-flex cc-flex-column cc-flex-auto cc-justify-content-center cc-align-items-center">
@@ -16,9 +16,9 @@
             
             <!-- Chat Tab Area -->
             
-            <mat-sidenav #drawer class="cc-tab-control tabs cc-relative" [style.min-width]="tabWidth" mode="side">
+            <mat-sidenav #drawer class="cc-relative" mode="side" [style.width.px]="tabWidth">
                 
-                <div class="cc-flex cc-flex-column cc-full-height cc-full-width">
+                <div class="cc-flex cc-flex-column cc-full-height">
                     <div class="cc-header cc-background-alt cc-flex-none cc-border-b">
                         <button mat-flat-button color="primary" class="cc-full-height cc-full-width cc-align-items-center cc-flex cc-justify-content-between" (click)="newTab()" tabindex="-1" style="border-radius: 0;">
                             <span class="cc-font-size-6">Add Channel</span>
@@ -27,12 +27,22 @@
                     </div>
                     <div class="cc-flex-auto scrollbar--hidden" [cdkDropListData]="tabs" (cdkDropListDropped)="dropped($event)" cdkDropList>
                         <div>
-                            <button mat-flat-button *ngFor="let tab of tabs" class="cc-flex cc-full-width" (click)="select(tab)" (dblclick)="rename(tab)" [color]="tab.active ? 'primary' : 'unset'" cdkDrag style="border-radius: 0;">
-                                <div class="cc-flex cc-flex-shrink-0 cc-justify-content-between">
-                                    <span class="cc-font-size-6 cc-overflow-hidden" style="max-width: 80%; text-overflow: ellipsis;">{{tab.channelDisplay}}</span>
-                                    <button mat-icon-button style="height:1.2rem; width:1.2rem; line-height: 1.2rem; margin-top: auto; margin-bottom: auto" (click)="remove(tab)" tabindex="-1">&times;</button>
-                                </div>
-                            </button>
+                            <div *ngFor="let tab of tabs" class="cc-relative cc-flex cc-flex-column cc-full-width" [class.tab-new-messages]="tab.newMessages" cdkDrag>
+                                <button mat-flat-button class="tab-button cc-full-width" (click)="select(tab)" (dblclick)="rename(tab)" [color]="tab.active ? 'primary' : 'unset'" style="border-radius: 0;">
+                                    <div class="cc-flex cc-flex-shrink-0 cc-justify-content-between cc-overflow-visible">
+                                        <div class="cc-flex cc-full-width">
+                                            <div class="cc-relative cc-align-middle cc-pd-r-05">
+                                                <mat-icon class="cc-absolute" [class.default-indicator]="tab.mentions == 0" [class.notification-indicator]="tab.mentions > 0" [color]="tab.mentions > 0 ? 'accent' : tab.streamInfo._id ? 'warn' : 'auto'">lens</mat-icon>
+                                                <div *ngIf="tab.mentions > 0" class="cc-absolute cc-align-center cc-font-size-6" style="width:2.4rem;">{{tab.mentions}}</div>
+                                            </div>
+                                            <span class="notify-tab cc-pd-l-2 cc-font-size-6 cc-overflow-visible cc-ellipsis" style="max-width: 80%;">{{tab.channelDisplay}}</span>
+                                        </div>
+                                        <button class="close-button" mat-icon-button style="height:1.2rem; width:1.2rem; line-height: 1.2rem; margin-top: auto; margin-bottom: auto" (click)="remove(tab)" tabindex="-1">&times;</button>
+                                    </div>
+                                </button>
+                                <div *ngIf="tab.newMessages" class="new-message-indicator"> </div> 
+                                <mat-divider></mat-divider>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -50,14 +60,17 @@
 
                             <div class="cc-flex-none">
                                 <div color="primary" class="cc-header cc-flex cc-flex-row cc-align-items-center cc-border-b cc-justify-content-between cc-pd-x-1 cc-alt-background">
-                                    <div class="cc-align-items-center cc-align-middle cc-flex cc-font-size-6">
+                                    <div class="cc-align-items-center cc-align-middle cc-flex cc-font-size-6 cc-overflow-hidden cc-pd-r-1">
                                         <button mat-icon-button #tabButton (click)="drawer.toggle()" tabindex="-1">
                                             <mat-icon aria-label="Close Tabs">{{drawer.opened ? "chevron_left" : "chevron_right"}}</mat-icon>
                                         </button>
+                                        <img *ngIf="tab.channelInfo.logo"  [src]="tab.channelInfo.logo" class="avatar-icon cc-inline cc-mg-r-05">
                                         {{tab.channelDisplay}}
+                                        <span class="cc-pd-x-05" [style.color]="tab.streamInfo._id ? 'red' : 'grey'">●</span>
+                                        <span *ngIf="tab.streamInfo.game" class="cc-font-size-8 cc-ellipsis">{{tab.streamInfo.game}}</span>
                                     </div>
 
-                                    <button mat-button (click)="openSettings()" tabindex="-1">
+                                    <button mat-button (click)="openSettings(tab)" tabindex="-1">
                                         <div class="cc-align-items-center cc-flex">
                                             <span class="cc-font-size-6">Settings</span>
                                             <mat-icon aria-label="Settings" class="cc-pd-l-05">settings</mat-icon>
@@ -69,7 +82,7 @@
                             <!-- Chat -->
 
                             <div class="cc-flex-auto cc-flex cc-flex-column cc-full-height cc-pd-y-05">
-                                <app-messages class="cc-flex-auto scrollbar" [settings]="settings" [service]="tab" [active]="tab.active" style="min-width: 340px"></app-messages>
+                                <app-messages class="cc-flex-auto scrollbar" [settings]="settings" [service]="tab" style="min-width: 340px"></app-messages>
                         
                                 <!-- Chat Input Box -->
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input} from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { SettingsComponent } from '../settings/settings.component';
 import { ChatService } from '../chat.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -20,7 +20,7 @@ export class ChatComponent implements OnInit {
 
     @Input() 
     public settings : SettingsService;
-    public tabWidth : number = 200;
+    public tabWidth : number = 175;
     public contentWidth : number = 340;
 
     public tabs : ChatService[] = [];
@@ -30,7 +30,6 @@ export class ChatComponent implements OnInit {
     public showTabs: boolean = false;
     public viewReady: boolean = false;
     
-
     constructor(private dialog: MatDialog) { }
 
     public saveChannels() {
@@ -48,7 +47,7 @@ export class ChatComponent implements OnInit {
         channel.init(name, this.username, this.token);
         this.tabs.forEach(t => t.active = false);
         channel.active = true;
-        this.tabs.push(channel);
+        this.tabs.unshift(channel);
         this.saveChannels();
     }
 
@@ -60,9 +59,9 @@ export class ChatComponent implements OnInit {
         this.loaded = true;
     }
 
-    public openSettings() {
+    public openSettings(tab : ChatService) {
         const ref = this.dialog.open(SettingsComponent, {
-            data: this.settings
+            data: tab,
         });
         
         ref.afterClosed().subscribe(settings => {
