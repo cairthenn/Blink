@@ -4,16 +4,49 @@
 
 </div> -->
 <div class="chat-lines cc-word-break-word">
-    <div #message *ngFor="let msg of messages">
+    <div #message *ngFor="let msg of messages" class="cc-relative">
+        <div *ngIf="msg.raid" class="user-notice"></div>
         <mat-divider *ngIf="settings.separators" class="chat-line-separator"></mat-divider>
-        <div class="chat-message" [class.chat-alternate-bg]="settings.alternate && msg.odd" [class.chat-highlight]="msg.highlight">
-            <span *ngIf="settings.timestamps" class="cc-font-size-8">[{{msg.timestamp}}] </span>
+        <div class="chat-message" [class.chat-alternate-bg]="settings.alternate && msg.odd" [class.chat-highlight]="msg.highlight" [class.chat-subscription]="msg.subscription" [class.message-deleted]="msg.deleted">
+            
+            <div *ngIf="msg.subscription" [class.cc-pd-b-05]="msg.hasChat">
+                <span [ngSwitch]="msg.subType">
+                    <div *ngSwitchCase="1" class="c-full-height cc-font-size-4">
+                        <span class="cc-pd-r-05">❤</span>
+                        <span class="cc-font-size-6">
+                            <span class="message-display-name">{{msg.username}}</span>
+                            {{msg.subMessage}}
+                            <span class="message-display-name">{{msg.recipient}}</span>!
+                        </span>
+                    </div>
+                    <div *ngSwitchCase="2" class="c-full-height cc-font-size-4">
+                        <span class="cc-pd-r-05">❇</span>
+                        <span class="cc-font-size-6">
+                            <span class="message-display-name">{{msg.username}}</span>
+                            {{msg.subMessage}}
+                            <span class="message-display-name">{{service.channel}}</span>'s community!
+                        </span>
+                    </div>
+                    <div *ngSwitchDefault class="cc-full-height cc-font-size-4">
+                        <span class="cc-pd-r-05">★</span>
+                        <span class="cc-font-size-6">
+                            <span class="message-display-name">{{msg.username}}</span>
+                            {{msg.subMessage}}
+                        </span>
+                    </div>
+                </span>
+            </div>
 
-            <span *ngIf="msg.isStatus">
+            <div *ngIf="msg.raid">
+                <span class="message-display-name">{{msg.raider}}</span> is raiding with a party of {{msg.viewers}}!
+            </div>
+
+            <span *ngIf="msg.status">
                 <span>{{msg.text}}</span>
             </span>
 
-            <span *ngIf="msg.isChat" >
+            <span *ngIf="msg.chat" >
+                <span *ngIf="settings.timestamps" class="cc-font-size-8" style="opacity: .8">[{{msg.timestamp}}] </span>
                 <span *ngIf="settings.badges"><img *ngFor="let badge of msg.badges" class="chat-badge" 
                     [src]="service.badges[badge[0]] ? service.badges[badge[0]].versions[badge[1]].image_url_1x : null"
                     /></span>
@@ -25,21 +58,27 @@
                 </ng-template>
                 <span *ngFor="let f of msg.fragments" [style.color]="f.color">
                     <span [ngSwitch]="f.type">
-                        <span *ngSwitchCase="'twitchEmote'">
+                        <span *ngSwitchCase="1">
                             <img *ngIf="settings.twitchEmotes" class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.name" >
                             <span *ngIf="!settings.twitchEmotes">{{f.name}}</span>&nbsp;
                         </span>
-                        <span *ngSwitchCase="'ffzEmote'">
+                        <span *ngSwitchCase="2">
                             <img *ngIf="settings.ffzEmotes" class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.name" >
                             <span *ngIf="!settings.ffzEmotes">{{f.name}}</span>&nbsp;
                         </span>
-                        <span *ngSwitchCase="'bttvEmote'">
+                        <span *ngSwitchCase="3">
                             <img *ngIf="settings.bttvEmotes" class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.name" >
                             <span *ngIf="!settings.bttvEmotes">{{f.name}}</span>&nbsp;
                         </span>
-                        <span *ngSwitchCase="'cheerEmote'">
-                            <img *ngIf="settings.bits" class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.name" >
-                            <span *ngIf="!settings.bits">{{f.name}}</span>&nbsp;
+                        <span *ngSwitchCase="4">
+                            <span *ngIf="settings.bits">
+                                <img class="cc-inline-block chat-emote" [src]="settings.lightTheme ? f.light : f.dark" [alt]="f.name" >
+                                <span>&nbsp;<strong>{{f.amount}}</strong></span>
+                            </span>
+                            <span *ngIf="!settings.bits">{{f.name}}</span>
+                        </span>
+                        <span *ngSwitchCase="5">
+                            <span class="message-display-name">{{f.text}}</span>
                         </span>
                         <span *ngSwitchDefault>
                             {{f.text}}

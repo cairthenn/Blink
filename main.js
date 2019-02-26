@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, ipcMain } = require('electron');
+const { app, BrowserWindow, Menu, shell } = require('electron');
 const platform = require('os').platform();
 const auth = require('./oauth');
 const { IRC } = require('./irc');
@@ -47,6 +47,9 @@ io.on('connect', (socket) => {
     socket.on('part', (channel) => irc.part(channel));
     socket.on('logout', () => irc.disconnect());
     socket.on('login', (force) => tryLogin(force));
+    socket.on('open-url', (url) => {
+        shell.openExternal(url);
+    })
 
     irc.on(/(\w*) #(\w*)(?: :(.*))?$/, (type, channel, params, message)  => {
         socket.emit('irc-data', type, channel, params, message);
@@ -81,6 +84,7 @@ app.on('ready', function() {
 
     io.listen(8000);
     window.webContents.toggleDevTools();
+    
 
     window.loadFile('dist/index.html');
 });

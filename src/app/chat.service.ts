@@ -3,7 +3,7 @@ import dateformat from 'dateformat';
 import { Injectable } from '@angular/core';
 import { IrcService } from './irc.service';
 import { ChatMessage, MessagesComponent } from './messages/messages.component'
-import { WebApiService as WebApiService } from './web-api';
+import { WebApiService as WebApiService } from './web-api.service';
 import { SettingsService } from './settings.service';
 
 
@@ -12,34 +12,49 @@ import { SettingsService } from './settings.service';
 })
 export class ChatService {
 
-    private _active = false;
-    public joined: boolean = false;
+    public static readonly fragment = {
+        text: 0,
+        twitch: 1,
+        ffz: 2,
+        bttv: 3,
+        bits: 4,
+        username: 5,
+    }
 
-    public username: string = '';
+    private _active = false;
     private token: string = '';
-    public channel: string = '';
-    public channelDisplay: string = '';
-    
+    private component: MessagesComponent;
+    private updater: number;
+
     private userState: any = {};
     private roomState: any = {};
-
     
     private userEmotes: any = {};
     private bttvEmotes: any = {};
     private ffzEmotes : any = {};
+    private odd = true;
+
+    public joined: boolean = false;
+    public username: string = '';
+    public channel: string = '';
+    public channelDisplay: string = '';
+    
+
+    public combinedUserList: any[] = [];
     public userList: any = {};
     public badges: any = {};
+    public cheers: any = {};
     public streamInfo: any = {};
     public channelInfo: any = {};
 
     public mentions: number = 0;
     public newMessages: boolean = false;
-
-    private component: MessagesComponent;
-    private updater: number;
-    private odd = true;
     
     public messages: ChatMessage[] = [];
+
+    constructor(public settings: SettingsService) { 
+
+    }
 
     set active(val: boolean) {
         if(val) {
@@ -57,9 +72,13 @@ export class ChatService {
         return this._active;
     }
 
-    private updateStreamInfo() {
+    private get key () {
         const bytes = CryptoJS.AES.decrypt(this.token, this.username);
-        const key = bytes.toString(CryptoJS.enc.Utf8);
+        return bytes.toString(CryptoJS.enc.Utf8);
+    }
+
+    private updateStreamInfo() {
+        const key = this.key;
         WebApiService.getStream(this.channel, key).then(stream => {
             this.streamInfo = stream;
         })
@@ -69,8 +88,15 @@ export class ChatService {
         })
     }
 
-    constructor(public settings: SettingsService) { 
+    public openStream() {
+        if(!this.channel || this.channel.length == 0) {
+            return;
+        }
+        this.openExternal(`https://www.twitch.tv/${this.channel}`);
+    }
 
+    private openExternal(url: string) {
+        IrcService.openUrl(url);
     }
 
     private updateIfActive(scroll: boolean = false) {
@@ -90,12 +116,20 @@ export class ChatService {
     private updateUserList() {
         WebApiService.getUserList(this.channel).then(users => {
             this.userList = users;
+            this.combinedUserList = [].concat(users.moderators, users.vips, users.staff, users.viewers).sort();
         });
     }
 
     private updateBadges() {
         WebApiService.getBadges(this.roomState['room-id']).then(badges => {
             this.badges = badges;
+            this.updateIfActive();
+        })
+    }
+
+    private updateCheers() {
+        WebApiService.getCheers(this.roomState['room-id'], this.key).then(cheers => {
+            this.cheers = cheers;
             this.updateIfActive();
         })
     }
@@ -109,7 +143,7 @@ export class ChatService {
     }
 
     private onUserState(state: any) {
-        if(this.userState['emote-sets'] !== state['emote-sets']) {
+        if(this.userState['emote-sets'] != state['emote-sets']) {
             this.updateEmotes(state['emote-sets']);
         }
 
@@ -124,19 +158,31 @@ export class ChatService {
     private onRoomState(state: any) {
         this.roomState = state;
         this.updateBadges();
-
+        this.updateCheers();
     }
 
     private onMessage(params: any, text: string) {
         const message = this.processIncoming(params, text);
-
+        if(!message) {
+            return;
+        }
         this.addMessage(message);
     }
 
     private onUserNotice(params: any, text: string) {
-        if(text) {
-            this.addStatus(`[TODO]: ${text}`);
+        
+        const notice = this.processNotice(params);
+        if(!this.settings.subs && notice.subscription) {
+            return;
         }
+
+        const message = this.processIncoming(params, text);
+
+        if(!message) {
+            return;
+        }
+        
+        this.addMessage({ ...message, ...notice });
     }
 
     private onNotice(params: any, text: string) {
@@ -145,7 +191,7 @@ export class ChatService {
 
     private addStatus(text: string) {
         this.addMessage({
-            isStatus: true,
+            status: true,
             text: text,
         });
     }
@@ -165,6 +211,11 @@ export class ChatService {
 
     private deleteMessage(messageId: string) {
 
+        this.messages.forEach(m => { 
+            if(m.id == messageId) {
+                m.deleted = true;
+            }
+        });
     }
 
     private globalUserState(state: any) {
@@ -219,9 +270,63 @@ export class ChatService {
         }
     }
 
+    public updateView() {
+        this.component.update();
+    }
+
+    public register(component: MessagesComponent) {
+        this.component = component;
+    }
+
+    
+
+    public commandHandlers = {
+        'me': [],
+    }
+
+    public addMessage(message: any) {
+        if(this.messages.length > this.settings.maxHistory) {
+            this.messages.shift();
+        }
+
+        const now = new Date();
+        message.timestamp = dateformat(now, 'hh:MM');
+        message.odd = this.odd = !this.odd;
+
+        this.messages.push(message);
+        
+        if(!this.updateIfActive(true) && !message.status) {
+            this.newMessages = true;
+        }
+    }
+
+    public send(text: string) {
+        
+        if(!this.joined) {
+            this.addStatus('You were unable to send a message.')
+        }
+        
+        const trimmed = text.trim().replace(/\r?\n/, ' ');
+        if(trimmed.length > 0) {
+            
+            const commandCheck = /^[\./]([^ ]*)/.exec(trimmed);
+
+            if(commandCheck) {
+
+                if(commandCheck[1] in this.commandHandlers) {
+                    const command = this.commandHandlers[commandCheck[1]]
+                }
+            }
+            
+            IrcService.sendMessage(this.channel, trimmed);
+            const msg = this.processOutgoing(trimmed);
+            this.addMessage(msg);
+        }
+    }
+
     private parseTwitchEmotes(str: string) {
 
-        if(str.length == 0) {
+        if(!str || str.length == 0) {
             return {};
         }
 
@@ -255,11 +360,83 @@ export class ChatService {
 
     }
 
-    private processIncoming(params: any, text: string) : any {
+    private processNotice(params: any) {
         
-        const isAction = /\u0001ACTION (.*)\u0001$/.exec(text);
-        var highlight = false;
+        if(/^(?:sub|resub)$/.test(params['msg-id'])) {
+            const months = params['msg-param-cumulative-months'];
+            const shareStreak = params['msg-param-should-share-streak'] != 0;
+            const streakLength = params['msg-param-streak-months'];
+            const plan = params['msg-param-sub-plan'];
+            const prime = plan == 'Prime';
+            const tier = prime ? 0 : plan / 1000;
+
+            const tierMessage = prime ? 'with Twitch Prime' : `at Tier ${tier}`;
+            const streakMessage = shareStreak ? `, currenlty on a ${streakLength} month streak` : '';
+            const monthMessage = months > 1 ? ` They've subscribed for ${months} months${streakMessage}!` : '';
+            const message = `subscribed ${tierMessage}.${monthMessage}`
+
+            return {
+                subscription: true,
+                subType: 0,
+                prime: prime,
+                subMessage: message,
+            }
+        } else if(/^(?:subgift|anonsubgift)$/.test(params['msg-id'])) {
+            const tier = params['msg-param-sub-plan'] / 1000;
+            const recipient = params['msg-param-recipient-user-name'];
+            const message = `gifted a Tier ${tier} subscription to`
+            return {
+                subscription: true,
+                subType: 1,
+                recipient: recipient,
+                subMessage: message,
+            }
+        } else if(params['msg-id'] == 'submysterygift') {
+
+            const tier = params['msg-param-sub-plan'] / 1000;
+            const count = params['msg-param-mass-gift-count'];
+
+            const amountMessage = count > 1 ? `${count} Tier ${tier} subscriptions` : `a Tier ${tier} subscription`;
+            const message = `is gifting ${amountMessage} to `
+
+            return {
+                subscription: true,
+                subType: 2,
+                communityGift: true,
+                subMessage: message,
+            }
+        } else if(params['msg-id'] == 'raid') {
+            return {
+                raid: true,
+                raider: params['msg-param-displayName'],
+                viewers: params['msg-param-viewerCount'],
+            }
+        }
+
+        return {};
+    }
+
+    private processIncoming(params: any, text: string) : any {
+
         var ignore = false;
+
+        const message = {
+            id: params['id'],
+            username: params['display-name'], 
+            action: false,
+            highlight: false,
+            color: params['color'],
+            text: text,
+            badges: this.parseBadges(params['badges']),
+            fragments: undefined,
+            chat: false,
+        };
+
+        if(!text || text.length == 0) {
+            return message;
+        }
+
+        const isAction = /\u0001ACTION (.*)\u0001$/.exec(text);
 
         if(isAction) {
             text = isAction[1];
@@ -267,23 +444,66 @@ export class ChatService {
         
         var cursor = 0;
         const emote_locations = this.parseTwitchEmotes(params['emotes']);
+        const lowerUsername = params['display-name'].toLowerCase();
+
         const fragments = text.split(' ').map(word => {
 
-            const lower = word.toLowerCase();
-            const username = /@(.*)/.exec(lower);
             const check = cursor;
             cursor += Array.from(word).length + 1;
+            
+            const lower = word.toLowerCase();
 
-            const testWord = username ? username[1] : lower;
+            if(!ignore) {
+                this.settings.blacklistWords.forEach(w => {
+                    if(w == lower) {
+                        ignore = true;
+                    }
+                })
 
+                this.settings.ignoredUsers.forEach(w => {
+                    if(w == lowerUsername) {
+                        ignore = true;
+                    }
+                })
+            }
 
-            if(!highlight) {
+            if(params.bits) {
+                const bits = /([A-Za-z]+)(\d+)/.exec(word); 
+                if(bits) {
+                    const cheerType = bits[1].toLowerCase();
+
+                    if(cheerType in this.cheers) {
+                        const amount = Number(bits[2]);
+                        const info = this.cheers[cheerType];
+                        const tier = Math.min(amount >= 10000 ? 4 :
+                            amount >= 5000 ? 3 :
+                            amount >= 1000 ? 2 :
+                            amount >= 100 ? 1 : 0, info.tiers.length - 1);
+                        const scale = info.scales[0];
+
+                        return {
+                            type: ChatService.fragment.bits,
+                            name: bits[0],
+                            amount: amount,
+                            color: info.tiers[tier].color,
+                            dark: info.tiers[tier].images.dark.animated[scale],
+                            light: info.tiers[tier].images.light.animated[scale],
+                        }
+                    }
+
+                }
+            }
+
+            const username = /@([a-zA-Z0-9_]+)/.exec(word);
+            const testWord = username ? username[1].toLowerCase() : lower;
+
+            if(!message.highlight) {
                 if(this.settings.highlightName && this.username == testWord) {
-                    highlight = true;
+                    message.highlight = true;
                 } else {
                     for(var i in this.settings.highlightWords) {
                         if(this.settings.highlightWords[i] == testWord) {
-                            highlight = true;
+                            message.highlight = true;
                             break;
                         }
                     }
@@ -292,52 +512,51 @@ export class ChatService {
 
             if(username) {
                 return {
-                    type: 'username',
+                    type: ChatService.fragment.username,
                     text: word,
                     name: username[1],
                 }
             } else if(check in emote_locations) {
                 return {
-                    type: 'twitchEmote',
+                    type: ChatService.fragment.twitch,
                     src: `https://static-cdn.jtvnw.net/emoticons/v1/${emote_locations[check]}/1.0`,
                     name: word,
                 };
             } else if(word in this.bttvEmotes) {
                 return {
-                    type: 'bttvEmote',
+                    type: ChatService.fragment.bttv,
                     src: `https://cdn.betterttv.net/emote/${this.bttvEmotes[word].id}/1x`,
                     name: word,
                 };
             } else if(word in this.ffzEmotes) {
                 return {
-                    type: 'ffzEmote',
+                    type: ChatService.fragment.ffz,
                     src: `https://cdn.frankerfacez.com/emoticon/${this.ffzEmotes[word].id}/1`,
                     name: word,
                 };
             } 
 
             return {
-                type: 'text',
+                type: ChatService.fragment.text,
                 text: word,
                 color: isAction ? params['color'] : undefined,
              }
         });
 
-        if(highlight && !this.active) {
-            this.mentions++;
+        if(ignore) {
+            return;
         }
 
-        const message = {
-            id: params['id'],
-            username: params['display-name'], 
-            isAction: isAction && true,
-            highlight: highlight,
-            isChat: true,
-            color: params['color'],
-            text: text,
-            fragments: fragments,
-            badges: this.parseBadges(params['badges']),
-        };
+        if(message.highlight && !this.active) {
+            this.mentions++;
+            if(this.settings.flash) {
+                
+            }
+        }
+
+        message.action = isAction && true;
+        message.chat = true;
+        message.fragments = fragments;
 
         return message;
     }
@@ -346,21 +565,29 @@ export class ChatService {
 
         const fragments = text.split(' ').map(word => {
 
-            if(word in this.userEmotes) {
+            const username = /@([a-zA-Z0-9_]+)/.exec(word);
+
+            if(username) {
                 return {
-                    type: 'twitchEmote',
+                    type: ChatService.fragment.username,
+                    text: word,
+                    name: username[1],
+                }
+            } else if(word in this.userEmotes) {
+                return {
+                    type: ChatService.fragment.twitch,
                     src: `https://static-cdn.jtvnw.net/emoticons/v1/${this.userEmotes[word].id}/1.0`,
                     name: word,
                 };
             } else if(word in this.bttvEmotes) {
                 return {
-                    type: 'bttvEmote',
+                    type: ChatService.fragment.bttv,
                     src: `https://cdn.betterttv.net/emote/${this.bttvEmotes[word].id}/1x`,
                     name: word,
                 };
             } else if(word in this.ffzEmotes) {
                 return {
-                    type: 'ffzEmote',
+                    type: ChatService.fragment.ffz,
                     src: `https://cdn.frankerfacez.com/emoticon/${this.ffzEmotes[word].id}/1`,
                     name: word,
                 };
@@ -374,9 +601,9 @@ export class ChatService {
         });
 
         const message = {
-            isAction: action,
+            action: action,
             username: this.username, 
-            isChat: true,
+            chat: true,
             color: this.userState['color'],
             text: text,
             fragments: fragments,
@@ -384,56 +611,5 @@ export class ChatService {
         };
 
         return message;
-    }
-
-    public commandHandlers = {
-        'me': [],
-    }
-
-    public send(text: string) {
-        if(!this.joined) {
-            this.addStatus('You were unable to send a message.')
-        }
-        
-        const trimmed = text.trim().replace(/\r?\n/, ' ');
-        if(trimmed.length > 0) {
-            
-            const commandCheck = /^[\./]([^ ]*)/.exec(trimmed);
-
-            if(commandCheck) {
-
-                if(commandCheck[1] in this.commandHandlers) {
-                    const command = this.commandHandlers[commandCheck[1]]
-                }
-            }
-            
-            IrcService.sendMessage(this.channel, trimmed);
-            const msg = this.processOutgoing(trimmed);
-            this.addMessage(msg);
-        }
-    }
-
-    public updateView() {
-        this.component.update();
-    }
-
-    public register(component: MessagesComponent) {
-        this.component = component;
-    }
-
-    public addMessage(message: any) {
-        if(this.messages.length > this.settings.maxHistory) {
-            this.messages.shift();
-        }
-
-        const now = new Date();
-        message.timestamp = dateformat(now, 'hh:MM');
-        message.odd = this.odd = !this.odd;
-
-        this.messages.push(message);
-        
-        if(!this.updateIfActive(true) && !message.isStatus) {
-            this.newMessages = true;
-        }
     }
 }

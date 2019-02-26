@@ -7,7 +7,7 @@
 @include mat-core();
 
 
-$chat-primary: mat-palette($mat-deep-purple, 600, 400, 800);
+$chat-primary: mat-palette($mat-deep-purple);
 $chat-accent:  mat-palette($mat-deep-purple, 300, 200, 400);
 $chat-warn:    mat-palette($mat-red, 500);
 $chat-theme:   mat-dark-theme($chat-primary, $chat-accent, $chat-warn);
@@ -16,9 +16,8 @@ $chat-theme:   mat-dark-theme($chat-primary, $chat-accent, $chat-warn);
 
 
 // Define an alternate light theme.
-$light-primary: mat-palette($mat-deep-purple);
 $light-accent:  mat-palette($mat-deep-purple, A200, A100, A400);
-$light-theme:   mat-light-theme($light-primary, $light-accent, $chat-warn);
+$light-theme:   mat-light-theme($chat-primary, $light-accent, $chat-warn);
 
 .chat-light-theme {
   @include angular-material-theme($light-theme);

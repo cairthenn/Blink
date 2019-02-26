@@ -1,5 +1,5 @@
 .new-message-indicator {
-    background: rgba(0, 0, 0, .30);
+    background: rgba(255, 255, 255, .30);
     height: 12px;
     width: 6px;
     right: 0;
@@ -9,24 +9,55 @@
     position: absolute;
 }
 
+.chat-light-theme .new-message-indicator {
+    background: rgba(0, 0, 0, .30);
+}
+
 .notification-indicator {
     font-size: 2rem!important;
-    vertical-align: middle!important;
-    width: auto;
+    position: absolute!important;
     line-height: inherit!important;
+    width: auto;
     opacity: 75%;
+    z-index: 1;
+    margin-left: 3px;
+}
+
+.notification-text {
+    position: absolute!important;
+    width: 24px;
+    height: 24px;
+    z-index: 2;
+    margin-left: 3px;
 }
 
 .default-indicator {
     font-size: .75rem!important;
-    vertical-align: middle!important;
-    width: auto;
     line-height: inherit!important;
+    position: absolute!important;
+    width: auto;
     opacity: 75%;
+    margin-left: 3px;
+}
+
+.avatar-tab-icon {
+    border-radius: 5px;
+    width: 18px;
+    height: 18px;
+}
+
+.tab-button {
+    padding: 0!important;
 }
 
 .tab-button .close-button {
     display: none;
+    height:1.2rem!important; 
+    width:1.2rem!important; 
+    line-height: 1.2rem!important; 
+    margin-right: 1.2rem;
+    margin-top: auto; 
+    margin-bottom: auto;
 }
 
 .tab-button:hover .close-button {

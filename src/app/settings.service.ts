@@ -9,7 +9,6 @@ export class SettingsService {
   public lightTheme: boolean = false;
   public alternate: boolean = false;
   public separators: boolean = true;
-  public flash: boolean = false;
 
   public timestamps: boolean = false;
   public charCount: boolean = true;
@@ -27,6 +26,7 @@ export class SettingsService {
   public maxHistory: number = 200;
   
   public highlightName: boolean = false;
+  public flash: boolean = false;
   private _highlight: string = "";
   private _blacklist: string = "";
   private _ignored: string = "";

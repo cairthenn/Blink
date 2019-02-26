@@ -61,4 +61,8 @@ export class IrcService {
         this.socket.emit('logout');
     }
 
+    public static openUrl(url: string) {
+        this.socket.emit('open-url', url);
+    }
+
 }

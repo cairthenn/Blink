@@ -11,6 +11,7 @@ export class ChatMessage {
     color: string = undefined;
     html: string = undefined;
     badges: string[] = [];
+    id: string = undefined;
 }
 
 export interface Info {
@@ -29,37 +30,12 @@ export class MessagesComponent implements OnInit {
     @Input() public settings: SettingsService;
     @Input() public service: ChatService;
 
-    private userActivity = false;
-    private isLocked: boolean = false;
-    public wantsToScroll: boolean;
-    private _active: boolean;
-
-    constructor(private el: ElementRef, private cdr: ChangeDetectorRef) {
-    }
-
-    get active() {
-        return this.service.active;
-    }
-
-    get messages() {
-        return this.service.messages;
-    }
-
-    ngAfterViewInit(): void {
-        this.cdr.detach();
-        this.service.register(this);
-    }
-    
-    ngOnInit() {
-
-    }
-
     @HostListener('click') onClick() {
         this.userActivity = true;
     }
 
     @HostListener('mouseleave') onMouseLeave() {
-        if(this.wantsToScroll && this.distance < 30) {
+        if(this.wantsToScroll && this.distance < 50) {
             this.scrollToBottom();
         }
 
@@ -68,11 +44,31 @@ export class MessagesComponent implements OnInit {
 
     @HostListener("scroll")
     private scrollHandler(): void {
-        this.isLocked = this.distance > 30;
+        this.isLocked = this.distance > 50;
         this.userActivity = false;
         if(!this.isLocked) {
             this.wantsToScroll = false;
         }
+    }
+
+
+    private userActivity = false;
+    private isLocked: boolean = false;
+    public wantsToScroll: boolean;
+
+    constructor(private el: ElementRef, private cdr: ChangeDetectorRef) {
+    }
+
+    get distance() {
+        return this.el.nativeElement.scrollHeight - this.el.nativeElement.scrollTop - this.el.nativeElement.clientHeight;
+    }
+
+    get active() {
+        return this.service.active;
+    }
+
+    get messages() {
+        return this.service.messages;
     }
 
     public update() {
@@ -89,10 +85,6 @@ export class MessagesComponent implements OnInit {
         }
     }
 
-    get distance() {
-        return this.el.nativeElement.scrollHeight - this.el.nativeElement.scrollTop - this.el.nativeElement.clientHeight;
-    }
-
     public continueScrolling() {
         this.scrollToBottom();
     }
@@ -100,6 +92,14 @@ export class MessagesComponent implements OnInit {
     private scrollToBottom() {
         this.el.nativeElement.scrollTop = this.el.nativeElement.scrollHeight;
         this.wantsToScroll = false;
-        this.userActivity = false;
+    }
+
+    ngAfterViewInit(): void {
+        this.cdr.detach();
+        this.service.register(this);
+    }
+
+    ngOnInit() {
+
     }
 }

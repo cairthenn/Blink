@@ -17,6 +17,8 @@ const badges_global = 'https://badges.twitch.tv/v1/badges/global/display';
 const twitch_emotes = 'https://api.twitch.tv/kraken/chat/emoticon_images?emotesets='
 const tmi_info = 'https://tmi.twitch.tv/group/user/'
 
+const cheers = 'https://api.twitch.tv/kraken/bits/actions?channel_id='
+
 /*
     Twitch is Really Dumb For Real and provides RegEx for like 12 emotes which
     is stupidly inefficient because everything else can just check for key existence 
@@ -246,8 +248,19 @@ export class WebApiService {
         });
     }
 
-    public static getCheers(room: string, update: boolean = false) {
+    public static getCheers(room: string, key: string, update: boolean = false) {
         
+        return this.get(`${cheers}${room}`, { 
+            headers: {
+                Accept: 'application/vnd.twitchtv.v5+json',
+                Authorization : `OAuth ${key}`
+            }
+        }).then(cheers => {
+            return cheers.actions.reduce((obj, item) => {
+                obj[item.prefix.toLowerCase()] = item;
+                return obj;
+            }, {});
+        }).catch(err => {});
     }
 
     public static get(url: string, config: object = {}) {

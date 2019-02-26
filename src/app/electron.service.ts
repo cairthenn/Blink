@@ -8,16 +8,7 @@ import * as settings from 'electron-settings';
 @Injectable({
   providedIn: 'root'
 })
-export class ElectronService {
-
-  // static ipcRenderer: typeof ipcRenderer;
-  // static webFrame: typeof webFrame;
-  // static remote: typeof remote;
-  // static childProcess: typeof childProcess;
-  // static fs: typeof fs;
-  // static path: typeof path;
-  // static settings: typeof settings;
-  
+export class ElectronService {  
 
   static ipcRenderer = window.require('electron').ipcRenderer;
   static webFrame = window.require('electron').webFrame;

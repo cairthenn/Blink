@@ -7,8 +7,24 @@
     overflow: hidden!important;
 }
 
-.notify-tab .mat-badge-content {
-    font-size: inherit!important;
-    margin-top: .25rem!important;
-    margin-right: -1.2rem!important;
+.user-notice-icon {
+    position: relative!important;
+    margin-right: 2px!important;
+    top: 5px!important;
+    margin-top:-5px!important;
+    opacity: .5!important;
+    width: 20px!important;
+    height:20px!important;
+    font-size: 20px!important;
+    overflow: visible!important;
+    display: inline-block;
+}
+
+.mat-option.autocomplete {
+    height: 30px!important;
+    line-height: 30px!important;
+}
+
+.autocomplete .mat-option-text {
+    font-size: 1.2rem!important;
 }

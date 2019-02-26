@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MessagesComponent } from './messages/messages.component';
 import { SettingsComponent } from './settings/settings.component';
 import { ChatComponent } from './chat/chat.component';
@@ -13,7 +13,8 @@ import { ChannelDialogComponent } from './channel-dialog/channel-dialog.componen
 import { ChatInputComponent } from './chat-input/chat-input.component';
 import {    MatDialogModule,   MatInputModule,     MatSidenavModule,    MatFormFieldModule, 
             MatMenuModule,     MatToolbarModule,   MatButtonModule,     MatIconModule,
-            MatCheckboxModule, MatCardModule,      MatDividerModule,    MatBadgeModule } from '@angular/material';
+            MatCheckboxModule, MatCardModule,      MatDividerModule,    MatBadgeModule,
+            MatAutocompleteModule, MatOptionModule } from '@angular/material';
 import { ViewerDialogComponent } from './viewer-dialog/viewer-dialog.component';
 
 @NgModule({
@@ -32,6 +33,7 @@ import { ViewerDialogComponent } from './viewer-dialog/viewer-dialog.component';
         AppRoutingModule,
         DragDropModule,
         BrowserAnimationsModule,
+        ReactiveFormsModule,
 
         // Material
 
@@ -47,6 +49,8 @@ import { ViewerDialogComponent } from './viewer-dialog/viewer-dialog.component';
         MatCardModule,
         MatDividerModule,
         MatBadgeModule,
+        MatAutocompleteModule,
+        MatOptionModule,
     ],
     entryComponents:[
         ChannelDialogComponent,
