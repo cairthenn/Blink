@@ -4,6 +4,7 @@ const axios = require('axios');
 
 const authUrl = 'https://id.twitch.tv/oauth2/authorize';
 const validateUrl = 'https://id.twitch.tv/oauth2/validate';
+const redirectSuccess = 'https://cairthenn.com';
 const clientId = 'ut8pnp247zcvfj7gga2lxo8kp2d9lz';
 
 let authWindow;
@@ -46,8 +47,14 @@ module.exports.getLogin = function(forceVerify) {
         });
 
         authWindow.webContents.on('will-redirect', (event, url) => {
+            
+            if(url.indexOf(redirectSuccess) != 0) {
+                return;
+            }
+
             try {
                 const auth = parseOauth(url);
+                console.log(url, auth);
                 resolve(auth);
                 success = true;
             } 

@@ -53,8 +53,10 @@ export class ChatComponent implements OnInit {
 
     public loadChannels() {
         const names = ElectronService.settings.get('channels');
-        for(var i in names.reverse()) {
-            this.addChannel(names[i]);
+        if(name && names.length == 0) {        
+            for(var i in names.reverse()) {
+                this.addChannel(names[i]);
+            }
         }
         this.loaded = true;
     }

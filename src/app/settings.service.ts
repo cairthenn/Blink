@@ -40,6 +40,11 @@ export class SettingsService {
   }
 
   private commaDelimiter(words: string) {
+
+    if(!words || !words.length) {
+      return [];
+    }
+
     return words.split(',').map(s => s.trim().toLowerCase()).filter(s => !/^\s*$/.test(s));
 }
 

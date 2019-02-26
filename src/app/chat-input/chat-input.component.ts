@@ -14,7 +14,7 @@ const dupChar = ' ⁭';
 })
 export class ChatInputComponent implements OnInit {
 
-    private messageControl = new FormControl();
+    public messageControl = new FormControl();
     public acOptions: Observable<String[]>;
     public emoteAutocomplete: Observable<any[]>;
     private chatHistory = [];
