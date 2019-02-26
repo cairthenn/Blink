@@ -53,7 +53,7 @@ export class ChatComponent implements OnInit {
 
     public loadChannels() {
         const names = ElectronService.settings.get('channels');
-        if(name && names.length == 0) {        
+        if(names && names.length) {        
             for(var i in names.reverse()) {
                 this.addChannel(names[i]);
             }
@@ -83,7 +83,8 @@ export class ChatComponent implements OnInit {
                 tab.close();
                 this.saveChannels();
                 if(tab.active && this.tabs.length > 0) {
-                    this.tabs[0].active = true;
+                    const newIndex = Math.max(0, i - 1);
+                    this.tabs[newIndex].active = true;
                 }
                 return;
             }

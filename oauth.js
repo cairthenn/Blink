@@ -54,7 +54,6 @@ module.exports.getLogin = function(forceVerify) {
 
             try {
                 const auth = parseOauth(url);
-                console.log(url, auth);
                 resolve(auth);
                 success = true;
             } 
