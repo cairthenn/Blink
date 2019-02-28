@@ -161,10 +161,16 @@
 }
 
 .user-notice {
-    background: rgba(149,124,205, .75);
     height: 100%;
     width: 6px;
     border-bottom-right-radius: 6px;
     border-top-right-radius: 6px;
     position: absolute;
+}
+
+.user-notice.raid {
+    background: rgba(149,124,205, .75);
+}
+.user-notice.friend {
+    background: rgba(124, 139, 205, 0.75);
 }

@@ -60,9 +60,4 @@ export class IrcService {
     public static logout() {
         this.socket.emit('logout');
     }
-
-    public static openUrl(url: string) {
-        this.socket.emit('open-url', url);
-    }
-
 }

@@ -38,6 +38,7 @@ export class SettingsComponent implements OnInit {
     get highlightName() { return this.settings.highlightName; }
     get highlight() { return this.settings.highlight; }
     get blacklist() { return this.settings.blacklist; }
+    get friends() { return this.settings.friends; }
     get ignored() { return this.settings.ignored; }
 
     set lightTheme(val) { this.settings.lightTheme = val; this.setTheme(val); }
@@ -63,6 +64,7 @@ export class SettingsComponent implements OnInit {
     set highlightName(val) { this.settings.highlightName = val; }
     set highlight(val) { this.settings.highlight = val; }
     set blacklist(val) { this.settings.blacklist = val; }
+    set friends(val) { this.settings.friends = val; }
     set ignored(val) { this.settings.ignored = val; }
 
     constructor(public dialogRef: MatDialogRef<SettingsComponent>, 

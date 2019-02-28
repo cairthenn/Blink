@@ -116,7 +116,7 @@ module.exports.IRC = class {
         const params = {}
         var match;
         while(match = paramsFormat.exec(split.groups.params)) {
-            params[match[1]] = match[2];
+            params[match[1]] = match[2].trim();
         }
 
         for(var i = 0; i < this.callbacks.length; i++) {

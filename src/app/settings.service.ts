@@ -6,34 +6,36 @@ import { ElectronService } from './electron.service';
 })
 export class SettingsService {
 
-  public lightTheme: boolean = false;
-  public alternate: boolean = false;
-  public separators: boolean = true;
+  public lightTheme: boolean;
+  public alternate: boolean;
+  public separators: boolean;
 
-  public timestamps: boolean = false;
-  public charCount: boolean = true;
-  public subs: boolean = true;
-  public bits: boolean = true;
-  public badges: boolean = true;
+  public timestamps: boolean;
+  public charCount: boolean;
+  public subs: boolean;
+  public bits: boolean;
+  public badges: boolean;
 
-  public twitchEmotes: boolean = true;
-  public bttvEmotes: boolean = true;
-  public ffzEmotes: boolean = true;
+  public twitchEmotes: boolean;
+  public bttvEmotes: boolean;
+  public ffzEmotes: boolean;
 
-  public duplicates: boolean = false;
-  public emotePriority: boolean = false;
-  public anonymous: boolean = false;
-  public maxHistory: number = 200;
+  public duplicates: boolean;
+  public emotePriority: boolean;
+  public anonymous: boolean;
+  public maxHistory: number;
   
-  public highlightName: boolean = false;
-  public flash: boolean = false;
-  private _highlight: string = "";
-  private _blacklist: string = "";
-  private _ignored: string = "";
+  public highlightName: boolean;
+  public flash: boolean;
+  private _highlight: string;
+  private _blacklist: string;
+  private _friends: string;
+  private _ignored: string;
 
-  public highlightWords: string[] = [];
-  public blacklistWords: string[] = [];
-  public ignoredUsers: string[] = [];
+  public highlightWords: string[];
+  public blacklistWords: string[];
+  public friendList: string[];
+  public ignoredUsers: string[];
 
   constructor() {
     this.load();
@@ -63,6 +65,13 @@ export class SettingsService {
 
   get blacklist() { return this._blacklist; }
 
+  set friends(words: string) {
+      this._friends = words;
+      this.friendList = this.commaDelimiter(words);
+  }
+
+  get friends() { return this._friends; }
+
   set ignored(words: string) {
       this._ignored = words;
       this.ignoredUsers = this.commaDelimiter(words);
@@ -73,26 +82,27 @@ export class SettingsService {
   public load() {
       const electronSettings = ElectronService.settings;
 
-      this.lightTheme = electronSettings.get('lightTheme');
-      this.alternate = electronSettings.get('alternate');
-      this.separators = electronSettings.get('separators');
-      this.flash = electronSettings.get('flash');
-      this.timestamps = electronSettings.get('timestamps');
-      this.charCount = electronSettings.get('charCount');
-      this.subs = electronSettings.get('subs');
-      this.bits = electronSettings.get('bits');
-      this.badges = electronSettings.get('badges');
-      this.twitchEmotes = electronSettings.get('twitchEmotes');
-      this.bttvEmotes = electronSettings.get('bttvEmotes');
-      this.ffzEmotes = electronSettings.get('ffzEmotes');
-      this.duplicates = electronSettings.get('duplicates');
-      this.emotePriority = electronSettings.get('emotePriority');
-      this.anonymous = electronSettings.get('anonymous');
-      this.maxHistory = electronSettings.get('maxHistory');
-      this.highlightName = electronSettings.get('highlightName');
-      this.highlight = electronSettings.get('highlight');
-      this.blacklist = electronSettings.get('blacklist');
-      this.ignored = electronSettings.get('ignored');
+      this.lightTheme = electronSettings.get('lightTheme') || false;
+      this.alternate = electronSettings.get('alternate') || false;
+      this.separators = electronSettings.get('separators') || false;
+      this.flash = electronSettings.get('flash') || false;
+      this.timestamps = electronSettings.get('timestamps') || false;
+      this.charCount = electronSettings.get('charCount') || false;
+      this.subs = electronSettings.get('subs') || true;
+      this.bits = electronSettings.get('bits') || true;
+      this.badges = electronSettings.get('badges') || true;
+      this.twitchEmotes = electronSettings.get('twitchEmotes') || true;
+      this.bttvEmotes = electronSettings.get('bttvEmotes') || true;
+      this.ffzEmotes = electronSettings.get('ffzEmotes') || true;
+      this.duplicates = electronSettings.get('duplicates') || false;
+      this.emotePriority = electronSettings.get('emotePriority') || true;
+      this.anonymous = electronSettings.get('anonymous') || false;
+      this.maxHistory = electronSettings.get('maxHistory') || 300;
+      this.highlightName = electronSettings.get('highlightName') || true;
+      this.highlight = electronSettings.get('highlight') || '';
+      this.blacklist = electronSettings.get('blacklist') || '';
+      this.friends = electronSettings.get('friends') || '';
+      this.ignored = electronSettings.get('ignored') || '';
   }
 
   save() {
@@ -116,6 +126,7 @@ export class SettingsService {
     electronSettings.set('highlightName', this.highlightName);
     electronSettings.set('highlight', this.highlight);
     electronSettings.set('blacklist', this.blacklist);
+    electronSettings.set('friends', this.friends);
     electronSettings.set('ignored', this.ignored);
 }
 

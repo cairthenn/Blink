@@ -2,39 +2,45 @@
 <div class="cc-flex-grow-1 cc-margin-0 scrollbar" mat-dialog-content>
     <div class="cc-flex cc-flex-column cc-flex-grow-1 cc-pd-x-2 cc-pd-b-2">
 
-        <h5 class="cc-full-width cc-pd-b-1">Appearance</h5>
+        <h5 class="cc-full-width cc-pd-b-1">Appearance & Display</h5>
         
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="lightTheme">Light theme</mat-checkbox>
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="alternate">Alternate line colors</mat-checkbox>
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="separators">Enable chat separators</mat-checkbox>                
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="separators">Show chat separators</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="timestamps">Show timestamps</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="charCount">Display message character count</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="badges">Show user badges</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="subs">Show subscription messages</mat-checkbox>
         
-        <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Display</h5>
-
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="timestamps">Timestamps</mat-checkbox>
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="charCount">Message character count</mat-checkbox>
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="subs">Subscription messages</mat-checkbox>
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="bits">Bit donations</mat-checkbox>
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="badges">User badges</mat-checkbox>
-
-        <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Emote Display</h5>
+        <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Emotes</h5>
         
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="twitchEmotes">Twitch emotes</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="bits">Cheer emotes</mat-checkbox>
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="ffzEmotes">FFZ emotes</mat-checkbox>
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="bttvEmotes">BTTV emotes</mat-checkbox>
         
         <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Functionality</h5>
         
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="duplicates" disabled>Allow duplicate chat messages</mat-checkbox>
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="emotePriority" disabled>Prioritize emotes for autocomplete</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="duplicates">Allow duplicate chat messages</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="emotePriority">Prioritize emotes for autocomplete</mat-checkbox>
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="anonymous" disabled>Don't appear in chat rooms</mat-checkbox>
         <mat-form-field color="accent" class="cc-margin-0">
             <input matInput class="cc-pd-b-05" type="number" placeholder="Max chat history" min="50" max="300" [(ngModel)]="maxHistory">
         </mat-form-field>
 
-        <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Highlight and Ignore</h5>
+        <h5 class="cc-full-width cc-pd-t-1">Friends</h5>
+        <span class="cc-font-size-7 cc-pd-b-1">Users on your friends list will be distinguished in chat rooms, but you will not receive notifications when they talk.</span>
+        <div class="cc-full-width cc-pd-b-1 cc-pd-t-1">
+            <mat-form-field color="accent" appearance="outline" class="cc-full-width cc-margin-0">
+                <mat-label>Friends List</mat-label>
+                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Friends, separated by comma" [(ngModel)]="friends"></textarea>    
+            </mat-form-field>
+        </div>
+
+        <h5 class="cc-full-width cc-pd-b-1">Highlight and Ignore</h5>
 
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="highlightName">Highlight messages containing your name</mat-checkbox>
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="flash" disabled>Flash on notification</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="flash">Flash on notification</mat-checkbox>
 
         <div class="cc-full-width cc-pd-b-1 cc-pd-t-1">
             <mat-form-field color="accent" appearance="outline" class="cc-full-width cc-margin-0">

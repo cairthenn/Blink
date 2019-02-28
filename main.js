@@ -1,4 +1,5 @@
 const { app, BrowserWindow, Menu, shell } = require('electron');
+const settings = require('electron-settings');
 const platform = require('os').platform();
 const auth = require('./oauth');
 const { IRC } = require('./irc');
@@ -47,9 +48,6 @@ io.on('connect', (socket) => {
     socket.on('part', (channel) => irc.part(channel));
     socket.on('logout', () => irc.disconnect());
     socket.on('login', (force) => tryLogin(force));
-    socket.on('open-url', (url) => {
-        shell.openExternal(url);
-    })
 
     irc.on(/(\w*) #(\w*)(?: :(.*))?$/, (type, channel, params, message)  => {
         socket.emit('irc-data', type, channel, params, message);
@@ -59,16 +57,33 @@ io.on('connect', (socket) => {
 });
 
 app.on('ready', function() {
+
+    const width = settings.get('width') || 500;
+    const height = settings.get('height') || 800;
+    const x = settings.get('x');
+    const y = settings.get('y');
+
     window = new BrowserWindow( {
         minWidth: 340,
-        height: 650,
-        width: 490,
+        x: x,
+        y: y,
+        width: width,
+        height: height,
         show: false,
         autoHideMenuBar: true,
         webPreferences: {
             nodeIntegration: true,
         },
         icon: './dist/assets/icon.png',
+    });
+
+    window.on('close', () => {
+        const size = window.getSize();
+        const position = window.getPosition();
+        settings.set('width', size[0]);
+        settings.set('height', size[1]);
+        settings.set('x', position[0]);
+        settings.set('y', position[1]);
     });
     
     window.on('closed', () => {

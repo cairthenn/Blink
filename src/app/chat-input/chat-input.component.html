@@ -1,28 +1,31 @@
-<form class="cc-flex cc-flex-column" (ngSubmit)="onSubmit()">
+<form class="cc-flex cc-flex-column" matAutocompleteOrigin #origin="matAutocompleteOrigin" (ngSubmit)="onSubmit()">
     <mat-menu #emoteMenu="matMenu" yPosition="above" color="accent" class="emote-panel">
         <mat-card>Coming soon!</mat-card>
     </mat-menu>
-    <mat-autocomplete #auto="matAutocomplete" class="autocomplete scrollbar">
-        <mat-option class="autocomplete" *ngFor="let option of acOptions | async" [value]="option.before + option.word + option.after">{{option.word}}</mat-option>
-    </mat-autocomplete>
     <div class="cc-full-width cc-relative" style="min-width: 200px;">
         <mat-form-field color="accent" class="cc-full-width cc-margin-0" appearance="outline" style="min-width: 200px;">
             <mat-label>Send a message</mat-label>
             <textarea matNativeControl #messageBox class="cc-font-size-6" style="padding-right: 3rem; max-height: 200px; min-height: 45px;"
-            [formControl]="messageControl" [matAutocomplete]="auto" (keydown.enter)="send($event)"
-            ></textarea>
+            [formControl]="messageControl" [matAutocomplete]="auto" [matAutocompleteConnectedTo]="origin" maxlength="500"
+            (keydown.enter)="send($event)" (keydown)="keydownHandler($event)"></textarea>
         </mat-form-field>
         <button class="cc-top-0 cc-right-0" mat-icon-button [matMenuTriggerFor]="emoteMenu" style="position: absolute;" [disabled]="!service.joined">
             <mat-icon aria-label="Emote List">sentiment_very_satisfied</mat-icon>
         </button>
     </div>
+    <mat-autocomplete #auto="matAutocomplete" class="autocomplete scrollbar" panelWidth="200px;" autoActiveFirstOption>
+        <mat-option class="autocomplete" *ngFor="let option of acOptions | async" [value]="option.before + option.word + option.after">
+            <img *ngIf="option.emote" [src]="option.emote.src" class="cc-no-flex autocomplete-emote" />
+            <span class="cc-mg-l-05 cc-font-size-6 cc-ellipsis" style="opacity: .8">{{option.word}}</span>
+        </mat-option>
+    </mat-autocomplete>
 
     <div class="cc-flex cc-justify-content-between" style="min-width: 200px;">
         <div class="cc-flex">
-            <button mat-icon-button (click)="openViewers()" [disabled]="!service.joined" class="cc-pd-r-1">
+            <button mat-icon-button (click)="openViewers()" type="button" [disabled]="!service.joined" class="cc-pd-r-1">
                 <mat-icon aria-label="Viewer List">list</mat-icon>
             </button>
-            <button mat-icon-button (click)="openStream()" [disabled]="!service.joined">
+            <button mat-icon-button (click)="openStream()" type="button" [disabled]="!service.joined">
                 <mat-icon aria-label="Open Stream">visibility</mat-icon>
             </button>
         </div>

@@ -5,6 +5,7 @@ import { IrcService } from './irc.service';
 import { ChatMessage, MessagesComponent } from './messages/messages.component'
 import { WebApiService as WebApiService } from './web-api.service';
 import { SettingsService } from './settings.service';
+import { ElectronService } from './electron.service';
 
 
 @Injectable({
@@ -12,26 +13,31 @@ import { SettingsService } from './settings.service';
 })
 export class ChatService {
 
-    public static readonly fragment = {
-        text: 0,
-        twitch: 1,
-        ffz: 2,
-        bttv: 3,
-        bits: 4,
-        username: 5,
+    public emotes = {
+        ffz: {
+            global: [],
+            channel: [],
+            lookup: {},
+        },
+        bttv: {
+            global: [],
+            channel: [],
+            lookup: {},
+        },
+        twitch: {
+            sets: {},
+            lookup: {},
+        },
+        lookup: {},
+        autocomplete: [],
     }
 
-    private _active = false;
     private token: string = '';
     private component: MessagesComponent;
     private updater: number;
 
     private userState: any = {};
     private roomState: any = {};
-    
-    private userEmotes: any = {};
-    private bttvEmotes: any = {};
-    private ffzEmotes : any = {};
     private odd = true;
 
     public joined: boolean = false;
@@ -40,7 +46,6 @@ export class ChatService {
     public channelDisplay: string = '';
     
 
-    public combinedUserList: any[] = [];
     public userList: any = {};
     public badges: any = {};
     public cheers: any = {};
@@ -56,6 +61,7 @@ export class ChatService {
 
     }
 
+    private _active = false;
     set active(val: boolean) {
         if(val) {
             this.mentions = 0;
@@ -77,6 +83,19 @@ export class ChatService {
         return bytes.toString(CryptoJS.enc.Utf8);
     }
 
+    
+    private openExternal(url: string) {
+        ElectronService.shell.openExternal(url);
+    }
+
+
+    public openStream() {
+        if(!this.channel || this.channel.length == 0) {
+            return;
+        }
+        this.openExternal(`https://www.twitch.tv/${this.channel}`);
+    }
+
     private updateStreamInfo() {
         const key = this.key;
         WebApiService.getStream(this.channel, key).then(stream => {
@@ -86,17 +105,6 @@ export class ChatService {
         WebApiService.getChannel(this.channel, key).then(channel => {
             this.channelInfo = channel;
         })
-    }
-
-    public openStream() {
-        if(!this.channel || this.channel.length == 0) {
-            return;
-        }
-        this.openExternal(`https://www.twitch.tv/${this.channel}`);
-    }
-
-    private openExternal(url: string) {
-        IrcService.openUrl(url);
     }
 
     private updateIfActive(scroll: boolean = false) {
@@ -116,7 +124,7 @@ export class ChatService {
     private updateUserList() {
         WebApiService.getUserList(this.channel).then(users => {
             this.userList = users;
-            this.combinedUserList = [].concat(users.moderators, users.vips, users.staff, users.viewers).sort();
+            this.userList.autocomplete = [].concat(users.moderators, users.vips, users.staff, users.viewers).sort();
         });
     }
 
@@ -134,12 +142,54 @@ export class ChatService {
         })
     }
 
+    private updateFFZ() {
+        WebApiService.getFfzEmotes(this.channel).then(emotes => {
+            this.emotes.ffz.channel = emotes[0];
+            this.emotes.ffz.global = emotes[1];
+            this.emotes.ffz.lookup = emotes.flat().reduce((obj, item) => {
+                obj[item.code] = item;
+                return obj;
+            }, {});
+            this.updateEmoteLookup();
+        })
+    }
+
+    private updateBTTV() {
+        WebApiService.getBttvEmotes(this.channel).then(emotes => {
+            this.emotes.bttv.channel = emotes[0];
+            this.emotes.bttv.global = emotes[1];
+            this.emotes.bttv.lookup = emotes.flat().reduce((obj, item) => {
+                obj[item.code] = item;
+                return obj;
+            }, {});
+            this.updateEmoteLookup();
+        })
+    }
+
     private updateEmotes(sets: string) {
         const bytes = CryptoJS.AES.decrypt(this.token, this.username);
         const key = bytes.toString(CryptoJS.enc.Utf8);
         WebApiService.getTwitchEmotes(sets, key).then(emotes => {
-            this.userEmotes = emotes;
+            this.emotes.twitch.sets = emotes;
+            this.emotes.twitch.lookup = emotes.reduce((obj, arr) => {
+                arr[1].forEach(e => {
+                    obj[e.code] = e;
+                });
+                return obj;
+            }, {});
+            this.updateEmoteLookup();
         })
+
+    }
+
+    private updateEmoteLookup() {
+        this.emotes.lookup = { 
+            ...this.emotes.twitch.lookup, 
+            ...this.emotes.bttv.lookup, 
+            ...this.emotes.ffz.lookup
+        };
+
+        this.emotes.autocomplete = Object.keys(this.emotes.lookup).sort().map(x => [x.toLowerCase(), x]);
     }
 
     private onUserState(state: any) {
@@ -152,6 +202,16 @@ export class ChatService {
 
     private onJoin() {
         this.addStatus('Welcome to the chat!');
+        
+        this.updateStreamInfo();
+        this.updateUserList();
+        this.updateFFZ();
+        this.updateBTTV();
+
+        this.updater = window.setInterval(() => {
+            this.updateStreamInfo();
+            this.updateUserList();
+        }, 60000);
         this.joined = true;
     }
 
@@ -234,21 +294,6 @@ export class ChatService {
         this.token = token;
         this.channelDisplay = channel;
         this.channel = channel.toLowerCase();
-        this.updateStreamInfo();
-        this.updateUserList();
-
-        this.updater = window.setInterval(() => {
-            this.updateStreamInfo();
-            this.updateUserList();
-        }, 60000);
-
-        WebApiService.getBttvEmotes(this.channel).then(emotes => {
-            this.bttvEmotes = emotes;
-        })
-
-        WebApiService.getFfzEmotes(this.channel).then(emotes => {
-            this.ffzEmotes = emotes;
-        })
 
         IrcService.join(this.channel, {
             'CLEARCHAT' : (params, msg) => { this.purge(params, msg); },
@@ -277,8 +322,6 @@ export class ChatService {
     public register(component: MessagesComponent) {
         this.component = component;
     }
-
-    
 
     public commandHandlers = {
         'me': [],
@@ -416,9 +459,36 @@ export class ChatService {
         return {};
     }
 
-    private processIncoming(params: any, text: string) : any {
+    private checkBits(word) {
+        const bits = /([a-z]+)(\d+)/.exec(word); 
+        
+        if(!bits) {
+            return undefined;
+        }
+            
+        const cheerType = bits[1];
 
-        var ignore = false;
+        if(cheerType in this.cheers) {
+            const amount = Number(bits[2]);
+            const info = this.cheers[cheerType];
+            const tier = Math.min(amount >= 10000 ? 4 :
+                amount >= 5000 ? 3 :
+                amount >= 1000 ? 2 :
+                amount >= 100 ? 1 : 0, info.tiers.length - 1);
+            const scale = info.scales[0];
+
+            return {
+                type: 'bits',
+                name: bits[0],
+                amount: amount,
+                color: info.tiers[tier].color,
+                dark: info.tiers[tier].images.dark.animated[scale],
+                light: info.tiers[tier].images.light.animated[scale],
+            }
+        }
+    }
+
+    private processIncoming(params: any, text: string) : any {
 
         const message = {
             id: params['id'],
@@ -430,6 +500,7 @@ export class ChatService {
             badges: this.parseBadges(params['badges']),
             fragments: undefined,
             chat: false,
+            friend: false,
         };
 
         if(!text || text.length == 0) {
@@ -440,57 +511,36 @@ export class ChatService {
 
         if(isAction) {
             text = isAction[1];
+            message.action = true;
         }
         
         var cursor = 0;
         const emote_locations = this.parseTwitchEmotes(params['emotes']);
         const lowerUsername = params['display-name'].toLowerCase();
 
+        message.chat = true;
+        message.friend = this.settings.friendList.find(x => x == lowerUsername) && true;
+       
+        if(this.settings.ignoredUsers.find(x => x == lowerUsername)) {
+            return;
+        }
+
+        var ignore = false;
         const fragments = text.split(' ').map(word => {
+            if(ignore) {
+                return;
+            }
 
             const check = cursor;
             cursor += Array.from(word).length + 1;
-            
             const lower = word.toLowerCase();
 
-            if(!ignore) {
-                this.settings.blacklistWords.forEach(w => {
-                    if(w == lower) {
-                        ignore = true;
-                    }
-                })
-
-                this.settings.ignoredUsers.forEach(w => {
-                    if(w == lowerUsername) {
-                        ignore = true;
-                    }
-                })
-            }
+            ignore = this.settings.blacklistWords.find(x => x == lower) && true;
 
             if(params.bits) {
-                const bits = /([A-Za-z]+)(\d+)/.exec(word); 
+                const bits = this.checkBits(lower);
                 if(bits) {
-                    const cheerType = bits[1].toLowerCase();
-
-                    if(cheerType in this.cheers) {
-                        const amount = Number(bits[2]);
-                        const info = this.cheers[cheerType];
-                        const tier = Math.min(amount >= 10000 ? 4 :
-                            amount >= 5000 ? 3 :
-                            amount >= 1000 ? 2 :
-                            amount >= 100 ? 1 : 0, info.tiers.length - 1);
-                        const scale = info.scales[0];
-
-                        return {
-                            type: ChatService.fragment.bits,
-                            name: bits[0],
-                            amount: amount,
-                            color: info.tiers[tier].color,
-                            dark: info.tiers[tier].images.dark.animated[scale],
-                            light: info.tiers[tier].images.light.animated[scale],
-                        }
-                    }
-
+                    return bits;
                 }
             }
 
@@ -501,43 +551,28 @@ export class ChatService {
                 if(this.settings.highlightName && this.username == testWord) {
                     message.highlight = true;
                 } else {
-                    for(var i in this.settings.highlightWords) {
-                        if(this.settings.highlightWords[i] == testWord) {
-                            message.highlight = true;
-                            break;
-                        }
-                    }
+                    message.highlight = this.settings.highlightWords.find(x => x == testWord) && true;
                 }
             }
 
             if(username) {
                 return {
-                    type: ChatService.fragment.username,
+                    type: 'username',
                     text: word,
                     name: username[1],
                 }
             } else if(check in emote_locations) {
                 return {
-                    type: ChatService.fragment.twitch,
+                    type: 'twitch',
                     src: `https://static-cdn.jtvnw.net/emoticons/v1/${emote_locations[check]}/1.0`,
                     name: word,
                 };
-            } else if(word in this.bttvEmotes) {
-                return {
-                    type: ChatService.fragment.bttv,
-                    src: `https://cdn.betterttv.net/emote/${this.bttvEmotes[word].id}/1x`,
-                    name: word,
-                };
-            } else if(word in this.ffzEmotes) {
-                return {
-                    type: ChatService.fragment.ffz,
-                    src: `https://cdn.frankerfacez.com/emoticon/${this.ffzEmotes[word].id}/1`,
-                    name: word,
-                };
+            } else if(this.emotes.lookup[word] && !this.emotes.lookup[word].userOnly) {
+                return this.emotes.lookup[word];
             } 
 
             return {
-                type: ChatService.fragment.text,
+                type: 'text',
                 text: word,
                 color: isAction ? params['color'] : undefined,
              }
@@ -550,12 +585,10 @@ export class ChatService {
         if(message.highlight && !this.active) {
             this.mentions++;
             if(this.settings.flash) {
-                
+                ElectronService.ipcRenderer.send('flash');
             }
         }
 
-        message.action = isAction && true;
-        message.chat = true;
         message.fragments = fragments;
 
         return message;
@@ -569,29 +602,13 @@ export class ChatService {
 
             if(username) {
                 return {
-                    type: ChatService.fragment.username,
+                    type: 'username',
                     text: word,
                     name: username[1],
                 }
-            } else if(word in this.userEmotes) {
-                return {
-                    type: ChatService.fragment.twitch,
-                    src: `https://static-cdn.jtvnw.net/emoticons/v1/${this.userEmotes[word].id}/1.0`,
-                    name: word,
-                };
-            } else if(word in this.bttvEmotes) {
-                return {
-                    type: ChatService.fragment.bttv,
-                    src: `https://cdn.betterttv.net/emote/${this.bttvEmotes[word].id}/1x`,
-                    name: word,
-                };
-            } else if(word in this.ffzEmotes) {
-                return {
-                    type: ChatService.fragment.ffz,
-                    src: `https://cdn.frankerfacez.com/emoticon/${this.ffzEmotes[word].id}/1`,
-                    name: word,
-                };
-            } 
+            } else if(word in this.emotes.lookup) {
+                return this.emotes.lookup[word];
+            }
 
             return {
                 type: 'text',
