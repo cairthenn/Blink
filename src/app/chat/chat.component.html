@@ -19,12 +19,13 @@
             <mat-sidenav #drawer class="cc-relative" mode="side" [style.width.px]="tabWidth" [opened]="settings.drawer">
                 
                 <div class="cc-flex cc-flex-column cc-full-height">
-                    <div class="cc-header cc-background-alt cc-flex-none cc-border-b">
+                    <div class="cc-header cc-background-alt cc-flex-none">
                         <button mat-flat-button color="primary" class="cc-full-height cc-full-width cc-align-items-center cc-flex cc-justify-content-between" (click)="newTab()" tabindex="-1" style="border-radius: 0;">
                             <span class="cc-font-size-6">Add Channel</span>
                             <mat-icon aria-label="Add Channel" class="cc-pd-l-05">add</mat-icon>
                         </button>
                     </div>
+                    <mat-divider></mat-divider>
                     <div class="cc-flex-auto scrollbar--hidden" [cdkDropListData]="tabs" (cdkDropListDropped)="dropped($event)" cdkDropList>
                         <div>
                             <div *ngFor="let tab of tabs" class="cc-relative cc-flex cc-flex-column cc-full-width" [class.tab-new-messages]="tab.newMessages" cdkDrag>
@@ -60,7 +61,7 @@
                         <div class="cc-flex cc-flex-column cc-full-height cc-full-width" [style.min-width]="contentWidth">
 
                             <div class="cc-flex-none">
-                                <div color="primary" class="cc-header cc-flex cc-flex-row cc-align-items-center cc-border-b cc-justify-content-between cc-pd-x-1 cc-alt-background">
+                                <div class="cc-header cc-flex cc-flex-row cc-align-items-center cc-justify-content-between cc-pd-x-1 cc-alt-background">
                                     <div class="cc-align-items-center cc-align-middle cc-flex cc-font-size-6 cc-overflow-hidden cc-pd-r-1">
                                         <button mat-icon-button #tabButton (click)="drawer.toggle()" tabindex="-1">
                                             <mat-icon aria-label="Close Tabs">{{drawer.opened ? "chevron_left" : "chevron_right"}}</mat-icon>
@@ -78,6 +79,7 @@
                                         </div>
                                     </button>
                                 </div>
+                                <mat-divider></mat-divider>
                             </div>
                             
                             <!-- Chat -->

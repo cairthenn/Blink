@@ -98,7 +98,7 @@ app.on('ready', function() {
     });
 
     io.listen(8000);
-    window.webContents.toggleDevTools();
+    // window.webContents.toggleDevTools();
     
 
     window.loadFile('dist/index.html');

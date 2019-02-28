@@ -154,6 +154,7 @@ export class ChatComponent implements OnInit {
 
     public dropped(event: CdkDragDrop<ChatService[]>) {
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        this.saveChannels();
     }
 
     ngAfterViewInit() {

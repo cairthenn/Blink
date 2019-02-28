@@ -17,6 +17,8 @@ export class ChatInputComponent implements OnInit {
     public messageControl = new FormControl();
     public acOptions: Observable<String[]>;
     private chatHistory : string[] = [];
+
+    private readonly maxInputHistory = 30;
     private historyIndex = -1;
     private duplicated : boolean = false;
 
@@ -120,12 +122,14 @@ export class ChatInputComponent implements OnInit {
         if(event.key == 'Tab') {
             this.tabcomplete(event);
             return;
-        } else if(event.key == 'ArrowUp' && this.start == 0 && this.chatHistory.length) {
-            this.historyIndex = (this.historyIndex + 1) % this.chatHistory.length;
-            this.text = this.chatHistory[this.chatHistory.length - this.historyIndex - 1];
-        } else if(event.key == 'ArrowDown' && this.end == this.text.length && this.chatHistory.length) {
-            this.historyIndex = (this.historyIndex - 1) < 0 ? Math.min(this.maxInputHistory, this.chatHistory.length) - 1 : this.historyIndex - 1;
-            this.text = this.chatHistory[this.chatHistory.length - this.historyIndex - 1];
+        } else if(event.key == 'ArrowUp' && !this.ac.isOpen
+            && this.start == 0 && this.chatHistory.length) {
+                this.historyIndex = (this.historyIndex + 1) % this.chatHistory.length;
+                this.text = this.chatHistory[this.chatHistory.length - this.historyIndex - 1];
+        } else if(event.key == 'ArrowDown' && !this.ac.isOpen
+            && this.end == this.text.length && this.chatHistory.length) {
+                this.historyIndex = (this.historyIndex - 1) < 0 ? Math.min(this.maxInputHistory, this.chatHistory.length) - 1 : this.historyIndex - 1;
+                this.text = this.chatHistory[this.chatHistory.length - this.historyIndex - 1];
         } else if(event.key != 'Shift') {
             this.tabs.active = false;
         }
@@ -177,9 +181,6 @@ export class ChatInputComponent implements OnInit {
         this.text = `${this.tabs.before}${word} ${this.tabs.after}`;
         this.end = this.start = this.tabs.before.length + word.length + 1;
     }
-
-    
-    private readonly maxInputHistory = 30;
 
     public send(event: KeyboardEvent = undefined) {
         

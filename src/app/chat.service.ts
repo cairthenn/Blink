@@ -84,7 +84,7 @@ export class ChatService {
     }
 
     
-    private openExternal(url: string) {
+    public openExternal(url: string) {
         ElectronService.shell.openExternal(url);
     }
 
@@ -279,7 +279,9 @@ export class ChatService {
     }
 
     private globalUserState(state: any) {
-
+        const notice = this.processNotice(state);
+        
+        this.addMessage(notice);
     }
 
 
@@ -323,10 +325,6 @@ export class ChatService {
         this.component = component;
     }
 
-    public commandHandlers = {
-        'me': [],
-    }
-
     public addMessage(message: any) {
         if(this.messages.length > this.settings.maxHistory) {
             this.messages.shift();
@@ -343,6 +341,15 @@ export class ChatService {
         }
     }
 
+    
+    public commandHandlers = {
+        'me': (text) => {
+            IrcService.sendMessage(this.channel, `.me ${text}`);
+            const msg = this.processOutgoing(text, true);
+            this.addMessage(msg);
+        }
+    }
+
     public send(text: string) {
         
         if(!this.joined) {
@@ -350,21 +357,26 @@ export class ChatService {
         }
         
         const trimmed = text.trim().replace(/\r?\n/, ' ');
-        if(trimmed.length > 0) {
+        if(trimmed.length <= 0) {
+            return;
+        }
             
-            const commandCheck = /^[\./]([^ ]*)/.exec(trimmed);
+        const commandCheck = /^[\.\/]([^ ]*)( .*)?$/.exec(trimmed);
 
-            if(commandCheck) {
-
-                if(commandCheck[1] in this.commandHandlers) {
-                    const command = this.commandHandlers[commandCheck[1]]
-                }
-            }
-            
+        if(!commandCheck) {
             IrcService.sendMessage(this.channel, trimmed);
             const msg = this.processOutgoing(trimmed);
             this.addMessage(msg);
+            return;
         }
+
+        const handler = this.commandHandlers[commandCheck[1]];
+        if(!handler) {
+            IrcService.sendMessage(this.channel, commandCheck[1]);
+            return;
+        }
+
+        handler[0](commandCheck[2]);
     }
 
     private parseTwitchEmotes(str: string) {
@@ -456,7 +468,9 @@ export class ChatService {
             }
         }
 
-        return {};
+        return {
+            notice: params['system-msg']
+        };
     }
 
     private checkBits(word) {
@@ -475,7 +489,7 @@ export class ChatService {
                 amount >= 5000 ? 3 :
                 amount >= 1000 ? 2 :
                 amount >= 100 ? 1 : 0, info.tiers.length - 1);
-            const scale = info.scales[0];
+            const scale = info.scales.sort()[0];
 
             return {
                 type: 'bits',
@@ -486,6 +500,11 @@ export class ChatService {
                 light: info.tiers[tier].images.light.animated[scale],
             }
         }
+    }
+
+    private checkUrl(word) {
+        const regex = /(?:https?:\/\/)?(?:www\.)?[-a-zA-Z0-9]{2,256}\.[A-Za-z]{2,6}/
+        return regex.test(word);
     }
 
     private processIncoming(params: any, text: string) : any {
@@ -533,6 +552,14 @@ export class ChatService {
 
             const check = cursor;
             cursor += Array.from(word).length + 1;
+
+            if(this.checkUrl(word)) {
+                return {
+                    type: 'url',
+                    text: word,
+                }
+            }
+
             const lower = word.toLowerCase();
 
             ignore = this.settings.blacklistWords.find(x => x == lower) && true;
@@ -565,7 +592,7 @@ export class ChatService {
                 return {
                     type: 'twitch',
                     src: `https://static-cdn.jtvnw.net/emoticons/v1/${emote_locations[check]}/1.0`,
-                    name: word,
+                    code: word,
                 };
             } else if(this.emotes.lookup[word] && !this.emotes.lookup[word].userOnly) {
                 return this.emotes.lookup[word];
@@ -597,6 +624,13 @@ export class ChatService {
     private processOutgoing(text: string, action: boolean = false) : any {
 
         const fragments = text.split(' ').map(word => {
+
+            if(this.checkUrl(word)) {
+                return {
+                    type: 'url',
+                    text: word,
+                }
+            }
 
             const username = /@([a-zA-Z0-9_]+)/.exec(word);
 

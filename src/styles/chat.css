@@ -81,10 +81,12 @@
     cursor: pointer;
     outline: none;
     word-break: break-all;
+    font-weight: bold;
 }
 
-.message-display-name {
-    font-weight: 600;
+.chat-link {
+    cursor: pointer;
+    word-break: break-all;
 }
 
 .message-mod-icon {
@@ -163,14 +165,14 @@
 .user-notice {
     height: 100%;
     width: 6px;
-    border-bottom-right-radius: 6px;
-    border-top-right-radius: 6px;
     position: absolute;
 }
 
 .user-notice.raid {
     background: rgba(149,124,205, .75);
+    border-bottom-right-radius: 6px;
+    border-top-right-radius: 6px;
 }
 .user-notice.friend {
-    background: rgba(124, 139, 205, 0.75);
+    opacity: .75;
 }

@@ -6,7 +6,7 @@
 <div class="chat-lines cc-word-break-word">
     <div #message *ngFor="let msg of messages" class="cc-relative">
         <div *ngIf="msg.raid" class="user-notice raid"></div>
-        <div *ngIf="msg.friend" class="user-notice friend"></div>
+        <div *ngIf="msg.friend" class="user-notice friend" [style.background]="msg.color"></div>
         <mat-divider *ngIf="settings.separators" class="chat-line-separator"></mat-divider>
         <div class="chat-message" [class.chat-alternate-bg]="settings.alternate && msg.odd" [class.chat-highlight]="msg.highlight" [class.chat-subscription]="msg.subscription" [class.message-deleted]="msg.deleted">
             
@@ -38,8 +38,12 @@
                 </span>
             </div>
 
+            <div *ngIf="msg.ukNotice">
+                <span>[UNKNOWN NOTICE] {{msg.notice}}</span>
+            </div>
+
             <div *ngIf="msg.raid">
-                <span class="message-display-name">{{msg.raider}}</span> is raiding with a party of {{msg.viewers}}!
+                <span class="chat-username">{{msg.raider}}</span> is raiding with a party of {{msg.viewers}}!
             </div>
 
             <span *ngIf="msg.status">
@@ -51,20 +55,20 @@
                 <span *ngIf="settings.badges"><img *ngFor="let badge of msg.badges" class="chat-badge" 
                     [src]="service.badges[badge[0]] ? service.badges[badge[0]].versions[badge[1]].image_url_1x : null"
                     /></span>
-                <span *ngIf="msg.action" class="message-display-name" [style.color]="msg.color">{{msg.username}}: </span>
-                <span *ngIf="!msg.action" class="message-display-name" [style.color]="msg.color">{{msg.username}} </span>
+                <span *ngIf="msg.action" class="chat-username" [style.color]="msg.color">{{msg.username}} </span>
+                <span *ngIf="!msg.action" class="chat-username" [style.color]="msg.color">{{msg.username}}: </span>
                 <span *ngFor="let f of msg.fragments" [style.color]="f.color">
                     <span [ngSwitch]="f.type">
                         <span *ngSwitchCase="'twitch'">
-                            <img *ngIf="settings.twitchEmotes" class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" >
+                            <span *ngIf="settings.twitchEmotes"><img class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" >&nbsp;</span>
                             <span *ngIf="!settings.twitchEmotes">{{f.code}} </span>
                         </span>
                         <span *ngSwitchCase="'ffz'">
-                            <img *ngIf="settings.ffzEmotes" class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" >
+                            <span *ngIf="settings.ffzEmotes"><img class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" >&nbsp;</span>
                             <span *ngIf="!settings.ffzEmotes">{{f.code}} </span>
                         </span>
                         <span *ngSwitchCase="'bttv'">
-                            <img *ngIf="settings.bttvEmotes" class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" >
+                            <span *ngIf="settings.bttvEmotes"><img class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" >&nbsp;</span>
                             <span *ngIf="!settings.bttvEmotes">{{f.code}} </span>
                         </span>
                         <span *ngSwitchCase="'bits'">
@@ -74,8 +78,11 @@
                             </span>
                             <span *ngIf="!settings.bits">{{f.name}} </span>
                         </span>
+                        <span *ngSwitchCase="'url'">
+                            <a class="chat-link" (click)="service.openExternal(f.text)">{{f.text}} </a>
+                        </span>
                         <span *ngSwitchCase="'username'">
-                            <span class="message-display-name">{{f.text}} </span>
+                            <span class="chat-username">{{f.text}} </span>
                         </span>
                         <span *ngSwitchDefault>{{f.text}} </span>
                     </span>
