@@ -2,7 +2,7 @@
 
     <div *ngIf="!connected || tabs.length == 0; else contentArea" class="mat-app-background cc-flex cc-flex-column cc-flex-auto">
         <div class="cc-flex cc-flex-column cc-flex-auto cc-justify-content-center cc-align-items-center">
-            <span class="cc-font-size-4 cc-pd-b-1">Welcome to CChat!</span>
+            <span class="cc-font-size-4 cc-pd-b-1">Welcome to Blink!</span>
             <mat-form-field color="accent" appearance="outline" class="cc-margin-0 cc-dialog">
                 <mat-label>Enter a channel</mat-label>
                 <input #noChannels matInput placeholder="Enter a channel" (keydown.enter)="addChannel(noChannels.value)" cdkFocusInitial [disabled]="!connected">

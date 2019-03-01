@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ipcRenderer, webFrame, remote, shell } from 'electron-forge';
+import { ipcRenderer, webFrame, remote, shell } from 'electron';
 import * as settings from 'electron-settings';
 
 @Injectable({

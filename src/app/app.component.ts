@@ -10,7 +10,7 @@ const themeLight = 'chat-light-theme';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    title = 'CChat';
+    title = 'Blink';
 
     constructor(public settings: SettingsService, public overlayContainer: OverlayContainer) {
         if (settings.lightTheme) {
