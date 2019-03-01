@@ -1,6 +1,10 @@
 environment:
   nodejs_version: "10"
 
+branches:
+  only:
+    - master
+
 install:
   - ps: Install-Product node $env:nodejs_version $env:node_platform
   - npm install
