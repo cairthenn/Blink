@@ -11,23 +11,21 @@ matrix:
     - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 
   include:
-    - os: osx
-      osx_image: xcode9.4
-    - os: linux
-      services: docker
-      language: generic
-      before_install:
-        - sudo apt-get install -y libxml2-dev
-        - sudo apt-get install fakeroot
-        - sudo apt-get install rpm
+    # - os: osx
+    #   osx_image: xcode9.4
+    # - os: linux
+    #   services: docker
+    #   language: generic
+    #   before_install:
+    #     - sudo apt-get install -y libxml2-dev
+    #     - sudo apt-get install fakeroot
+    #     - sudo apt-get install rpm
     - os: windows
-      script: travis_wait npm run make
-      
+
 cache:
   directories:
     - node_modules
     - $HOME/.cache/electron
-    - $HOME/.cache/electron-forge
 
 install:
   - npm install
