@@ -1,6 +1,7 @@
 {
   "name": "cchat",
   "version": "1.0.0",
+  "description":"A Twitch chat client",
   "main": "main/main.js",
   "scripts": {
     "ng": "ng",
