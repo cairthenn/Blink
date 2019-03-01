@@ -1,10 +1,10 @@
 {
   "name": "cchat",
   "version": "1.0.0",
-  "main": "main.js",
+  "main": "main/main.js",
   "scripts": {
     "ng": "ng",
-    "start": "electron-forge start",
+    "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -58,7 +58,7 @@
     "electron-prebuilt-compile": "4.0.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
-    "karma": "^4.0.0",
+    "karma": "^4.0.1",
     "karma-chrome-launcher": "~2.2.0",
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~1.1.2",
