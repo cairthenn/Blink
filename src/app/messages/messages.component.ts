@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, ElementRef, HostListener, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ElementRef, HostListener, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { ChatService } from '../chat.service';
 import { SettingsService } from '../settings.service';
 
 
 export class ChatMessage {
-    isStatus: boolean = false;
-    deleted: boolean = false;
+    isStatus = false;
+    deleted = false;
     text: string = undefined;
     username: string = undefined;
     color: string = undefined;
@@ -25,7 +25,11 @@ export interface Info {
     selector: 'app-messages',
     templateUrl: './messages.component.html',
 })
-export class MessagesComponent implements OnInit {
+export class MessagesComponent implements OnInit, AfterViewInit {
+
+    private userActivity = false;
+    private isLocked = false;
+    public wantsToScroll = false;
 
     @Input() public settings: SettingsService;
     @Input() public service: ChatService;
@@ -35,26 +39,21 @@ export class MessagesComponent implements OnInit {
     }
 
     @HostListener('mouseleave') onMouseLeave() {
-        if(this.wantsToScroll && this.distance < 50) {
+        if (this.wantsToScroll && this.distance < 50) {
             this.scrollToBottom();
         }
 
         this.userActivity = false;
     }
 
-    @HostListener("scroll")
+    @HostListener('scroll')
     private scrollHandler(): void {
         this.isLocked = this.distance > 50;
         this.userActivity = false;
-        if(!this.isLocked) {
+        if (!this.isLocked) {
             this.wantsToScroll = false;
         }
     }
-
-
-    private userActivity = false;
-    private isLocked: boolean = false;
-    public wantsToScroll: boolean;
 
     constructor(private el: ElementRef, private cdr: ChangeDetectorRef) {
     }
@@ -78,7 +77,7 @@ export class MessagesComponent implements OnInit {
     public updateAndScroll() {
         const scroll = !this.isLocked && !this.userActivity;
         this.update();
-        if(scroll) {
+        if (scroll) {
             this.scrollToBottom();
         } else {
             this.wantsToScroll = true;

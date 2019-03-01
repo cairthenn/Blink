@@ -11,7 +11,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChannelDialogComponent } from './channel-dialog/channel-dialog.component';
 import { ChatInputComponent } from './chat-input/chat-input.component';
-import {    MatDialogModule,   MatInputModule,     MatSidenavModule,    MatFormFieldModule, 
+import {    MatDialogModule,   MatInputModule,     MatSidenavModule,    MatFormFieldModule,
             MatMenuModule,     MatToolbarModule,   MatButtonModule,     MatIconModule,
             MatCheckboxModule, MatCardModule,      MatDividerModule,    MatBadgeModule,
             MatAutocompleteModule, MatOptionModule } from '@angular/material';
@@ -52,7 +52,7 @@ import { ViewerDialogComponent } from './viewer-dialog/viewer-dialog.component';
         MatAutocompleteModule,
         MatOptionModule,
     ],
-    entryComponents:[
+    entryComponents: [
         ChannelDialogComponent,
         SettingsComponent,
         ViewerDialogComponent,

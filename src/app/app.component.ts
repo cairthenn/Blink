@@ -12,8 +12,8 @@ const themeLight = 'chat-light-theme';
 export class AppComponent {
     title = 'CChat';
 
-    constructor(public settings : SettingsService, public overlayContainer: OverlayContainer) {
-        if(settings.lightTheme) {
+    constructor(public settings: SettingsService, public overlayContainer: OverlayContainer) {
+        if (settings.lightTheme) {
             this.overlayContainer.getContainerElement().classList.add(themeLight);
         }
     }

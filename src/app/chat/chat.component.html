@@ -2,7 +2,7 @@
 
     <div *ngIf="!connected || tabs.length == 0; else contentArea" class="mat-app-background cc-flex cc-flex-column cc-flex-auto">
         <div class="cc-flex cc-flex-column cc-flex-auto cc-justify-content-center cc-align-items-center">
-            <span class="cc-font-size-4 cc-pd-b-1">Welcome to CChat!</span>            
+            <span class="cc-font-size-4 cc-pd-b-1">Welcome to CChat!</span>
             <mat-form-field color="accent" appearance="outline" class="cc-margin-0 cc-dialog">
                 <mat-label>Enter a channel</mat-label>
                 <input #noChannels matInput placeholder="Enter a channel" (keydown.enter)="addChannel(noChannels.value)" cdkFocusInitial [disabled]="!connected">
@@ -13,11 +13,11 @@
     </div>
     <ng-template #contentArea>
         <mat-sidenav-container class="cc-full-height cc-full-width">
-            
+
             <!-- Chat Tab Area -->
-            
+
             <mat-sidenav #drawer class="cc-relative" mode="side" [style.width.px]="tabWidth" [opened]="settings.drawer">
-                
+
                 <div class="cc-flex cc-flex-column cc-full-height">
                     <div class="cc-header cc-background-alt cc-flex-none">
                         <button mat-flat-button color="primary" class="cc-full-height cc-full-width cc-align-items-center cc-flex cc-justify-content-between" (click)="newTab()" tabindex="-1" style="border-radius: 0;">
@@ -42,7 +42,7 @@
                                         <button class="close-button" mat-icon-button (click)="remove(tab)" tabindex="-1">&times;</button>
                                     </div>
                                 </button>
-                                <div *ngIf="tab.newMessages" class="new-message-indicator"> </div> 
+                                <div *ngIf="tab.newMessages" class="new-message-indicator"> </div>
                                 <mat-divider></mat-divider>
                             </div>
                         </div>
@@ -81,12 +81,12 @@
                                 </div>
                                 <mat-divider></mat-divider>
                             </div>
-                            
+
                             <!-- Chat -->
 
                             <div class="cc-flex-auto cc-flex cc-flex-column cc-full-height cc-pd-y-05">
                                 <app-messages class="cc-flex-auto scrollbar" [settings]="settings" [service]="tab" style="min-width: 340px"></app-messages>
-                        
+
                                 <!-- Chat Input Box -->
 
                                 <div class="cc-flex-none cc-pd-x-2 cc-pd-y-1">
@@ -98,9 +98,9 @@
                         </div>
 
                     </div>
-                </div> 
+                </div>
             </mat-sidenav-content>
-            
+
         </mat-sidenav-container>
     </ng-template>
 </div>

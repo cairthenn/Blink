@@ -3,7 +3,7 @@
     <div class="cc-flex cc-flex-column cc-flex-grow-1 cc-pd-x-2 cc-pd-b-2">
 
         <h5 class="cc-full-width cc-pd-b-1">Appearance & Display</h5>
-        
+
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="lightTheme">Light theme</mat-checkbox>
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="alternate">Alternate line colors</mat-checkbox>
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="separators">Show chat separators</mat-checkbox>
@@ -11,16 +11,16 @@
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="charCount">Display message character count</mat-checkbox>
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="badges">Show user badges</mat-checkbox>
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="subs">Show subscription messages</mat-checkbox>
-        
+
         <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Emotes</h5>
-        
+
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="twitchEmotes">Twitch emotes</mat-checkbox>
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="bits">Cheer emotes</mat-checkbox>
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="ffzEmotes">FFZ emotes</mat-checkbox>
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="bttvEmotes">BTTV emotes</mat-checkbox>
-        
+
         <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Functionality</h5>
-        
+
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="duplicates">Allow duplicate chat messages</mat-checkbox>
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="emotePriority">Prioritize emotes for autocomplete</mat-checkbox>
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="anonymous" disabled>Don't appear in chat rooms</mat-checkbox>
@@ -33,7 +33,7 @@
         <div class="cc-full-width cc-pd-b-1 cc-pd-t-1">
             <mat-form-field color="accent" appearance="outline" class="cc-full-width cc-margin-0">
                 <mat-label>Friends List</mat-label>
-                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Friends, separated by comma" [(ngModel)]="friends"></textarea>    
+                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Friends, separated by comma" [(ngModel)]="friends"></textarea>
             </mat-form-field>
         </div>
 
@@ -45,19 +45,19 @@
         <div class="cc-full-width cc-pd-b-1 cc-pd-t-1">
             <mat-form-field color="accent" appearance="outline" class="cc-full-width cc-margin-0">
                 <mat-label>Highlighted Words</mat-label>
-                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Highlighted keywords, separated by comma" [(ngModel)]="highlight"></textarea>    
+                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Highlighted keywords, separated by comma" [(ngModel)]="highlight"></textarea>
             </mat-form-field>
         </div>
         <div class="cc-full-width cc-pd-b-1">
             <mat-form-field color="accent" appearance="outline" class="cc-full-width cc-margin-0">
                 <mat-label>Blacklisted Words</mat-label>
-                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Blacklisted keywords, separated by comma" [(ngModel)]="blacklist"></textarea>    
+                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Blacklisted keywords, separated by comma" [(ngModel)]="blacklist"></textarea>
             </mat-form-field>
         </div>
         <div class="cc-full-width cc-pd-b-1">
             <mat-form-field color="accent" appearance="outline" class="cc-full-width cc-margin-0">
                 <mat-label>Ignored Users</mat-label>
-                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Ignored users, separated by comma" [(ngModel)]="ignored"></textarea>    
+                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Ignored users, separated by comma" [(ngModel)]="ignored"></textarea>
             </mat-form-field>
         </div>
     </div>

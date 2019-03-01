@@ -13,7 +13,7 @@ module.exports.IRC = class {
         this.channels = [];
     }
 
-    
+
     send(data) {
         if(!this.connected) {
             return;
@@ -23,7 +23,7 @@ module.exports.IRC = class {
     }
 
     connect(user, token) {
-        
+
         if(this.connected) {
             this.disconnect();
         }
@@ -43,7 +43,7 @@ module.exports.IRC = class {
                 })
                 resolve();
             });
-    
+
             this.socket.on('data', (data) => {
                 const msgs = String(data).split(/\r?\n/);
                 msgs.forEach(msg => {
@@ -56,11 +56,11 @@ module.exports.IRC = class {
                     }
                 });
             });
-    
+
             this.socket.connect(port, host);
         });
     }
-    
+
     disconnect() {
         if(!this.connected) {
             return;
@@ -82,7 +82,7 @@ module.exports.IRC = class {
         if(!this.channels.includes(channel)) {
             return;
         }
-        
+
         this.channels = this.channels.filter(x => x != channel);
 
         this.send(`PART #${channel}`);

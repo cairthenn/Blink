@@ -14,7 +14,7 @@ let loggingIn = false;
 const irc = new IRC();
 
 function tryLogin(force = false) {
-    
+
     if(loggingIn) {
         return;
     }
@@ -25,7 +25,7 @@ function tryLogin(force = false) {
     }
 
     loggingIn = true;
-    
+
     auth.getLogin(force).then((login) => {
         loggingIn = false;
         irc.connect(login.user, login.token).then(() => {
@@ -85,21 +85,21 @@ app.on('ready', function() {
         settings.set('x', position[0]);
         settings.set('y', position[1]);
     });
-    
+
     window.on('closed', () => {
         irc.disconnect();
         server.close();
         app.quit();
         window = null;
     });
-    
-    window.on('ready-to-show', () => { 
+
+    window.on('ready-to-show', () => {
         window.show();
     });
 
     io.listen(8000);
     // window.webContents.toggleDevTools();
-    
+
 
     window.loadFile('dist/index.html');
 });

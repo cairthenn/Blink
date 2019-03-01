@@ -1,14 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ipcRenderer, webFrame, remote, shell } from 'electron';
-import * as childProcess from 'child_process';
-import * as fs from 'fs';
-import * as path from 'path';
+import { ipcRenderer, webFrame, remote, shell } from 'electron-forge';
 import * as settings from 'electron-settings';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ElectronService {  
+export class ElectronService {
 
   static ipcRenderer = window.require('electron').ipcRenderer;
   static webFrame = window.require('electron').webFrame;
@@ -16,11 +13,7 @@ export class ElectronService {
   static shell = window.require('electron').shell;
   static settings = window.require('electron').remote.require('electron-settings');
 
-  static childProcess = window.require('child_process');
-  static fs = window.require('fs');
-  static path = window.require('path');
-
-  constructor() { 
+  constructor() {
 
   }
 

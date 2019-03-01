@@ -12,7 +12,7 @@ export class ViewerDialogComponent implements OnInit {
   public staff: [] = [];
   public vips: [] = [];
   public viewers: [] = [];
-  public error: boolean = false;
+  public error = false;
 
   public filter(val: string) {
 
@@ -24,13 +24,13 @@ export class ViewerDialogComponent implements OnInit {
       this.vips = this.data.vips.filter(x => regex.test(x));
       this.viewers = this.data.viewers.filter(x => regex.test(x));
       this.error = false;
-    } catch(e) {
+    } catch (e) {
       this.error = true;
     }
   }
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) { 
-    this.broadcaster = data.broadcaster
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
+    this.broadcaster = data.broadcaster;
     this.moderators = data.moderators;
     this.staff = data.staff;
     this.vips = data.vips;

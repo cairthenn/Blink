@@ -10,7 +10,7 @@ const clientId = 'ut8pnp247zcvfj7gga2lxo8kp2d9lz';
 let authWindow;
 
 module.exports.getLogin = function(forceVerify) {
-    
+
     const urlParams = {
         client_id: clientId,
         response_type: 'token',
@@ -47,7 +47,7 @@ module.exports.getLogin = function(forceVerify) {
         });
 
         authWindow.webContents.on('will-redirect', (event, url) => {
-            
+
             if(url.indexOf(redirectSuccess) != 0) {
                 return;
             }
@@ -56,7 +56,7 @@ module.exports.getLogin = function(forceVerify) {
                 const auth = parseOauth(url);
                 resolve(auth);
                 success = true;
-            } 
+            }
             catch(err) {
                 reject('The response token was not valid.');
             }
@@ -88,7 +88,7 @@ function parseOauth(url) {
 }
 
 function validateUsername(token) {
-    return axios.get(validateUrl, { 
+    return axios.get(validateUrl, {
         headers: {
             Authorization : `OAuth ${token}`
         }

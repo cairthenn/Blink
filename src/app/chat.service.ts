@@ -2,7 +2,7 @@ import CryptoJS from 'crypto-js';
 import dateformat from 'dateformat';
 import { Injectable } from '@angular/core';
 import { IrcService } from './irc.service';
-import { ChatMessage, MessagesComponent } from './messages/messages.component'
+import { ChatMessage, MessagesComponent } from './messages/messages.component';
 import { WebApiService as WebApiService } from './web-api.service';
 import { SettingsService } from './settings.service';
 import { ElectronService } from './electron.service';
@@ -30,9 +30,9 @@ export class ChatService {
         },
         lookup: {},
         autocomplete: [],
-    }
+    };
 
-    private token: string = '';
+    private token = '';
     private component: MessagesComponent;
     private updater: number;
 
@@ -40,11 +40,10 @@ export class ChatService {
     private roomState: any = {};
     private odd = true;
 
-    public joined: boolean = false;
-    public username: string = '';
-    public channel: string = '';
-    public channelDisplay: string = '';
-    
+    public joined = false;
+    public username = '';
+    public channel = '';
+    public channelDisplay = '';
 
     public userList: any = {};
     public badges: any = {};
@@ -52,45 +51,53 @@ export class ChatService {
     public streamInfo: any = {};
     public channelInfo: any = {};
 
-    public mentions: number = 0;
-    public newMessages: boolean = false;
-    
+    public mentions = 0;
+    public newMessages = false;
+
     public messages: ChatMessage[] = [];
 
-    constructor(public settings: SettingsService) { 
+    public commandHandlers = {
+        me: (text) => {
+            IrcService.sendMessage(this.channel, `.me ${text}`);
+            const msg = this.processOutgoing(text, true);
+            this.addMessage(msg);
+        }
+    };
+
+    constructor(public settings: SettingsService) {
 
     }
 
-    private _active = false;
+    private activeProxy = false;
     set active(val: boolean) {
-        if(val) {
+        if (val) {
             this.mentions = 0;
             this.newMessages = false;
-            if(this.component) {
+            if (this.component) {
                 setTimeout(() => this.component.updateAndScroll(), 25);
             }
         }
 
-        this._active = val;
+        this.activeProxy = val;
     }
 
     get active() {
-        return this._active;
+        return this.activeProxy;
     }
 
-    private get key () {
+    private get key() {
         const bytes = CryptoJS.AES.decrypt(this.token, this.username);
         return bytes.toString(CryptoJS.enc.Utf8);
     }
 
-    
+
     public openExternal(url: string) {
         ElectronService.shell.openExternal(url);
     }
 
 
     public openStream() {
-        if(!this.channel || this.channel.length == 0) {
+        if (!this.channel || !this.channel.length) {
             return;
         }
         this.openExternal(`https://www.twitch.tv/${this.channel}`);
@@ -100,17 +107,17 @@ export class ChatService {
         const key = this.key;
         WebApiService.getStream(this.channel, key).then(stream => {
             this.streamInfo = stream;
-        })
+        });
 
         WebApiService.getChannel(this.channel, key).then(channel => {
             this.channelInfo = channel;
-        })
+        });
     }
 
     private updateIfActive(scroll: boolean = false) {
-        
-        if(this.active && this.component) {
-            if(scroll) {
+
+        if (this.active && this.component) {
+            if (scroll) {
                 this.component.updateAndScroll();
             } else {
                 this.component.update();
@@ -132,14 +139,14 @@ export class ChatService {
         WebApiService.getBadges(this.roomState['room-id']).then(badges => {
             this.badges = badges;
             this.updateIfActive();
-        })
+        });
     }
 
     private updateCheers() {
         WebApiService.getCheers(this.roomState['room-id'], this.key).then(cheers => {
             this.cheers = cheers;
             this.updateIfActive();
-        })
+        });
     }
 
     private updateFFZ() {
@@ -151,7 +158,7 @@ export class ChatService {
                 return obj;
             }, {});
             this.updateEmoteLookup();
-        })
+        });
     }
 
     private updateBTTV() {
@@ -163,7 +170,7 @@ export class ChatService {
                 return obj;
             }, {});
             this.updateEmoteLookup();
-        })
+        });
     }
 
     private updateEmotes(sets: string) {
@@ -178,14 +185,14 @@ export class ChatService {
                 return obj;
             }, {});
             this.updateEmoteLookup();
-        })
+        });
 
     }
 
     private updateEmoteLookup() {
-        this.emotes.lookup = { 
-            ...this.emotes.twitch.lookup, 
-            ...this.emotes.bttv.lookup, 
+        this.emotes.lookup = {
+            ...this.emotes.twitch.lookup,
+            ...this.emotes.bttv.lookup,
             ...this.emotes.ffz.lookup
         };
 
@@ -193,7 +200,7 @@ export class ChatService {
     }
 
     private onUserState(state: any) {
-        if(this.userState['emote-sets'] != state['emote-sets']) {
+        if (this.userState['emote-sets'] !== state['emote-sets']) {
             this.updateEmotes(state['emote-sets']);
         }
 
@@ -202,7 +209,7 @@ export class ChatService {
 
     private onJoin() {
         this.addStatus('Welcome to the chat!');
-        
+
         this.updateStreamInfo();
         this.updateUserList();
         this.updateFFZ();
@@ -223,25 +230,25 @@ export class ChatService {
 
     private onMessage(params: any, text: string) {
         const message = this.processIncoming(params, text);
-        if(!message) {
+        if (!message) {
             return;
         }
         this.addMessage(message);
     }
 
     private onUserNotice(params: any, text: string) {
-        
+
         const notice = this.processNotice(params);
-        if(!this.settings.subs && notice.subscription) {
+        if (!this.settings.subs && notice.subscription) {
             return;
         }
 
         const message = this.processIncoming(params, text);
 
-        if(!message) {
+        if (!message) {
             return;
         }
-        
+
         this.addMessage({ ...message, ...notice });
     }
 
@@ -249,30 +256,30 @@ export class ChatService {
         this.addStatus(text);
     }
 
-    private addStatus(text: string) {
+    private addStatus(status: string) {
         this.addMessage({
             status: true,
-            text: text,
+            text: status,
         });
     }
 
     private purge(params, user: string) {
 
         this.messages.forEach(msg => {
-            if(!user || msg.username == user) {
+            if (!user || msg.username === user) {
                 msg.deleted = true;
             }
-        })
+        });
 
-        if(!user) {
-            this.addStatus('Chat was cleared by a moderator.')
+        if (!user) {
+            this.addStatus('Chat was cleared by a moderator.');
         }
     }
 
     private deleteMessage(messageId: string) {
 
-        this.messages.forEach(m => { 
-            if(m.id == messageId) {
+        this.messages.forEach(m => {
+            if (m.id === messageId) {
                 m.deleted = true;
             }
         });
@@ -280,14 +287,14 @@ export class ChatService {
 
     private globalUserState(state: any) {
         const notice = this.processNotice(state);
-        
+
         this.addMessage(notice);
     }
 
 
     public init(channel: string, username: string, token: string) {
 
-        if(this.joined) {
+        if (this.joined) {
             IrcService.part(this.channel);
             clearInterval(this.updater);
         }
@@ -298,20 +305,20 @@ export class ChatService {
         this.channel = channel.toLowerCase();
 
         IrcService.join(this.channel, {
-            'CLEARCHAT' : (params, msg) => { this.purge(params, msg); },
-            'CLEARMSG' : (_, msg) => { this.deleteMessage(msg); },
-            'GLOBALUSERSTATE': (params) => { this.globalUserState(params); },
-            'PRIVMSG': (params, msg) => { this.onMessage(params, msg); },
-            'ROOMSTATE': (params) => { this.onRoomState(params); },
-            'NOTICE': (params, msg) => { this.onNotice(params, msg); },
-            'USERNOTICE': (params, msg) => { this.onUserNotice(params, msg); },
-            'USERSTATE': (params) => { this.onUserState(params); },
-            'JOIN': () => { this.onJoin(); },
+            CLEARCHAT : (params, msg) => { this.purge(params, msg); },
+            CLEARMSG : (_, msg) => { this.deleteMessage(msg); },
+            GLOBALUSERSTATE: (params) => { this.globalUserState(params); },
+            PRIVMSG: (params, msg) => { this.onMessage(params, msg); },
+            ROOMSTATE: (params) => { this.onRoomState(params); },
+            NOTICE: (params, msg) => { this.onNotice(params, msg); },
+            USERNOTICE: (params, msg) => { this.onUserNotice(params, msg); },
+            USERSTATE: (params) => { this.onUserState(params); },
+            JOIN: () => { this.onJoin(); },
         });
     }
 
     public close() {
-        if(this.joined) {
+        if (this.joined) {
             IrcService.part(this.channel);
             clearInterval(this.updater);
         }
@@ -326,7 +333,7 @@ export class ChatService {
     }
 
     public addMessage(message: any) {
-        if(this.messages.length > this.settings.maxHistory) {
+        if (this.messages.length > this.settings.maxHistory) {
             this.messages.shift();
         }
 
@@ -335,35 +342,26 @@ export class ChatService {
         message.odd = this.odd = !this.odd;
 
         this.messages.push(message);
-        
-        if(!this.updateIfActive(true) && !message.status) {
+
+        if (!this.updateIfActive(true) && !message.status) {
             this.newMessages = true;
         }
     }
 
-    
-    public commandHandlers = {
-        'me': (text) => {
-            IrcService.sendMessage(this.channel, `.me ${text}`);
-            const msg = this.processOutgoing(text, true);
-            this.addMessage(msg);
-        }
-    }
-
     public send(text: string) {
-        
-        if(!this.joined) {
-            this.addStatus('You were unable to send a message.')
+
+        if (!this.joined) {
+            this.addStatus('You were unable to send a message.');
         }
-        
+
         const trimmed = text.trim().replace(/\r?\n/, ' ');
-        if(trimmed.length <= 0) {
+        if (trimmed.length <= 0) {
             return;
         }
-            
+
         const commandCheck = /^[\.\/]([^ ]*)( .*)?$/.exec(trimmed);
 
-        if(!commandCheck) {
+        if (!commandCheck) {
             IrcService.sendMessage(this.channel, trimmed);
             const msg = this.processOutgoing(trimmed);
             this.addMessage(msg);
@@ -371,7 +369,7 @@ export class ChatService {
         }
 
         const handler = this.commandHandlers[commandCheck[1]];
-        if(!handler) {
+        if (!handler) {
             IrcService.sendMessage(this.channel, commandCheck[1]);
             return;
         }
@@ -381,11 +379,11 @@ export class ChatService {
 
     private parseTwitchEmotes(str: string) {
 
-        if(!str || str.length == 0) {
+        if (!str || !str.length) {
             return {};
         }
 
-        const split = str.split('/').map(x => { 
+        const split = str.split('/').map(x => {
 
             const match = /([\d]+):(.*)$/.exec(x);
             const locations = match[2].split(',').map(y => /^([\d]+)-([\d]+)$/.exec(y)[1]);
@@ -393,10 +391,10 @@ export class ChatService {
                 obj[item] = match[1];
                 return obj;
             }, {});
-        
+
             return map;
         });
-        
+
         const merged = split.reduce((obj, item) => {
             return { ...obj, ...item };
         }, {});
@@ -407,65 +405,66 @@ export class ChatService {
 
     private parseBadges(str: string) {
 
-        if(str == undefined || str.length == 0) {
+        if (!str || !str.length) {
             return [];
         }
 
-        return str.split(',').map(x => x.split('/'))
+        return str.split(',').map(x => x.split('/'));
 
     }
 
     private processNotice(params: any) {
-        
-        if(/^(?:sub|resub)$/.test(params['msg-id'])) {
+
+        if (/^(?:sub|resub)$/.test(params['msg-id'])) {
             const months = params['msg-param-cumulative-months'];
-            const shareStreak = params['msg-param-should-share-streak'] != 0;
+            const shareStreak = params['msg-param-should-share-streak'] !== 0;
             const streakLength = params['msg-param-streak-months'];
             const plan = params['msg-param-sub-plan'];
-            const prime = plan == 'Prime';
-            const tier = prime ? 0 : plan / 1000;
+            const isPrime = plan === 'Prime';
+            const tier = isPrime ? 0 : plan / 1000;
 
-            const tierMessage = prime ? 'with Twitch Prime' : `at Tier ${tier}`;
+            const tierMessage = isPrime ? 'with Twitch Prime' : `at Tier ${tier}`;
             const streakMessage = shareStreak ? `, currenlty on a ${streakLength} month streak` : '';
             const monthMessage = months > 1 ? ` They've subscribed for ${months} months${streakMessage}!` : '';
-            const message = `subscribed ${tierMessage}.${monthMessage}`
+            const message = `subscribed ${tierMessage}.${monthMessage}`;
 
             return {
                 subscription: true,
                 subType: 0,
-                prime: prime,
+                prime: isPrime,
                 subMessage: message,
-            }
-        } else if(/^(?:subgift|anonsubgift)$/.test(params['msg-id'])) {
+            };
+
+        } else if (/^(?:subgift|anonsubgift)$/.test(params['msg-id'])) {
             const tier = params['msg-param-sub-plan'] / 1000;
-            const recipient = params['msg-param-recipient-user-name'];
-            const message = `gifted a Tier ${tier} subscription to`
+            const displayName = params['msg-param-recipient-display-name'];
+            const message = `gifted a Tier ${tier} subscription to`;
             return {
                 subscription: true,
                 subType: 1,
-                recipient: recipient,
+                recipient: displayName,
                 subMessage: message,
-            }
-        } else if(params['msg-id'] == 'submysterygift') {
+            };
+        } else if (params['msg-id'] === 'submysterygift') {
 
             const tier = params['msg-param-sub-plan'] / 1000;
             const count = params['msg-param-mass-gift-count'];
 
             const amountMessage = count > 1 ? `${count} Tier ${tier} subscriptions` : `a Tier ${tier} subscription`;
-            const message = `is gifting ${amountMessage} to `
+            const message = `is gifting ${amountMessage} to `;
 
             return {
                 subscription: true,
                 subType: 2,
                 communityGift: true,
                 subMessage: message,
-            }
-        } else if(params['msg-id'] == 'raid') {
+            };
+        } else if (params['msg-id'] === 'raid') {
             return {
                 raid: true,
                 raider: params['msg-param-displayName'],
                 viewers: params['msg-param-viewerCount'],
-            }
+            };
         }
 
         return {
@@ -474,99 +473,99 @@ export class ChatService {
     }
 
     private checkBits(word) {
-        const bits = /([a-z]+)(\d+)/.exec(word); 
-        
-        if(!bits) {
+        const bits = /([a-z]+)(\d+)/.exec(word);
+
+        if (!bits) {
             return undefined;
         }
-            
+
         const cheerType = bits[1];
 
-        if(cheerType in this.cheers) {
-            const amount = Number(bits[2]);
+        if (cheerType in this.cheers) {
+            const spent = Number(bits[2]);
             const info = this.cheers[cheerType];
-            const tier = Math.min(amount >= 10000 ? 4 :
-                amount >= 5000 ? 3 :
-                amount >= 1000 ? 2 :
-                amount >= 100 ? 1 : 0, info.tiers.length - 1);
+            const tier = Math.min(spent >= 10000 ? 4 :
+                spent >= 5000 ? 3 :
+                spent >= 1000 ? 2 :
+                spent >= 100 ? 1 : 0, info.tiers.length - 1);
             const scale = info.scales.sort()[0];
 
             return {
                 type: 'bits',
                 name: bits[0],
-                amount: amount,
+                amount: spent,
                 color: info.tiers[tier].color,
                 dark: info.tiers[tier].images.dark.animated[scale],
                 light: info.tiers[tier].images.light.animated[scale],
-            }
+            };
         }
     }
 
     private checkUrl(word) {
-        const regex = /(?:https?:\/\/)?(?:www\.)?[-a-zA-Z0-9]{2,256}\.[A-Za-z]{2,6}/
+        const regex = /(?:https?:\/\/)?(?:www\.)?[-a-zA-Z0-9]{2,256}\.[A-Za-z]{2,6}/;
         return regex.test(word);
     }
 
-    private processIncoming(params: any, text: string) : any {
+    private processIncoming(params: any, original: string): any {
 
         const message = {
-            id: params['id'],
-            username: params['display-name'], 
+            id: params.id,
+            username: params['display-name'],
             action: false,
             highlight: false,
-            color: params['color'],
-            text: text,
-            badges: this.parseBadges(params['badges']),
+            color: params.color,
+            text: original,
+            badges: this.parseBadges(params.badges),
             fragments: undefined,
             chat: false,
             friend: false,
         };
 
-        if(!text || text.length == 0) {
+        if (!original || !original.length) {
             return message;
         }
 
-        const isAction = /\u0001ACTION (.*)\u0001$/.exec(text);
+        const isAction = /\u0001ACTION (.*)\u0001$/.exec(original);
 
-        if(isAction) {
-            text = isAction[1];
+        if (isAction) {
+            original = isAction[1];
             message.action = true;
         }
-        
-        var cursor = 0;
-        const emote_locations = this.parseTwitchEmotes(params['emotes']);
+
+        let cursor = 0;
+        const emoteLocations = this.parseTwitchEmotes(params.emotes);
         const lowerUsername = params['display-name'].toLowerCase();
 
         message.chat = true;
-        message.friend = this.settings.friendList.find(x => x == lowerUsername) && true;
-       
-        if(this.settings.ignoredUsers.find(x => x == lowerUsername)) {
+        message.friend = this.settings.friendList.find(x => x === lowerUsername) && true;
+
+        if (this.settings.ignoredUsers.find(x => x === lowerUsername)) {
             return;
         }
 
-        var ignore = false;
-        const fragments = text.split(' ').map(word => {
-            if(ignore) {
+        let ignore = false;
+        const fragments = original.split(' ').map(word => {
+            if (ignore) {
                 return;
             }
 
             const check = cursor;
             cursor += Array.from(word).length + 1;
 
-            if(this.checkUrl(word)) {
+            if (this.checkUrl(word)) {
                 return {
                     type: 'url',
                     text: word,
-                }
+                };
             }
 
             const lower = word.toLowerCase();
 
-            ignore = this.settings.blacklistWords.find(x => x == lower) && true;
+            ignore = this.settings.blacklistWords.find(x => x === lower) && true;
 
-            if(params.bits) {
+            if (params.bits) {
                 const bits = this.checkBits(lower);
-                if(bits) {
+                if (bits) {
                     return bits;
                 }
             }
@@ -574,44 +573,44 @@ export class ChatService {
             const username = /@([a-zA-Z0-9_]+)/.exec(word);
             const testWord = username ? username[1].toLowerCase() : lower;
 
-            if(!message.highlight) {
-                if(this.settings.highlightName && this.username == testWord) {
+            if (!message.highlight) {
+                if (this.settings.highlightName && this.username === testWord) {
                     message.highlight = true;
                 } else {
-                    message.highlight = this.settings.highlightWords.find(x => x == testWord) && true;
+                    message.highlight = this.settings.highlightWords.find(x => x === testWord) && true;
                 }
             }
 
-            if(username) {
+            if (username) {
                 return {
                     type: 'username',
                     text: word,
                     name: username[1],
-                }
-            } else if(check in emote_locations) {
+                };
+            } else if (check in emoteLocations) {
                 return {
                     type: 'twitch',
-                    src: `https://static-cdn.jtvnw.net/emoticons/v1/${emote_locations[check]}/1.0`,
+                    src: `https://static-cdn.jtvnw.net/emoticons/v1/${emoteLocations[check]}/1.0`,
                     code: word,
                 };
-            } else if(this.emotes.lookup[word] && !this.emotes.lookup[word].userOnly) {
+            } else if (this.emotes.lookup[word] && !this.emotes.lookup[word].userOnly) {
                 return this.emotes.lookup[word];
-            } 
+            }
 
             return {
                 type: 'text',
                 text: word,
-                color: isAction ? params['color'] : undefined,
-             }
+                color: isAction ? params.color : undefined,
+             };
         });
 
-        if(ignore) {
+        if (ignore) {
             return;
         }
 
-        if(message.highlight && !this.active) {
+        if (message.highlight && !this.active) {
             this.mentions++;
-            if(this.settings.flash) {
+            if (this.settings.flash) {
                 ElectronService.ipcRenderer.send('flash');
             }
         }
@@ -621,44 +620,44 @@ export class ChatService {
         return message;
     }
 
-    private processOutgoing(text: string, action: boolean = false) : any {
+    private processOutgoing(original: string, isAction: boolean = false): any {
 
-        const fragments = text.split(' ').map(word => {
+        const chatFrags = original.split(' ').map(word => {
 
-            if(this.checkUrl(word)) {
+            if (this.checkUrl(word)) {
                 return {
                     type: 'url',
                     text: word,
-                }
+                };
             }
 
             const username = /@([a-zA-Z0-9_]+)/.exec(word);
 
-            if(username) {
+            if (username) {
                 return {
                     type: 'username',
                     text: word,
                     name: username[1],
-                }
-            } else if(word in this.emotes.lookup) {
+                };
+            } else if (word in this.emotes.lookup) {
                 return this.emotes.lookup[word];
             }
 
             return {
                 type: 'text',
-                color: action ? this.userState['color'] : undefined,
+                color: isAction ? this.userState.color : undefined,
                 text: `${word} `,
-             }
+             };
         });
 
         const message = {
-            action: action,
-            username: this.username, 
+            action: isAction,
+            username: this.username,
             chat: true,
-            color: this.userState['color'],
-            text: text,
-            fragments: fragments,
-            badges: this.parseBadges(this.userState['badges']),
+            color: this.userState.color,
+            text: original,
+            fragments: chatFrags,
+            badges: this.parseBadges(this.userState.badges),
         };
 
         return message;

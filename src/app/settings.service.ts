@@ -24,13 +24,13 @@ export class SettingsService {
   public emotePriority: boolean;
   public anonymous: boolean;
   public maxHistory: number;
-  
+
   public highlightName: boolean;
   public flash: boolean;
-  private _highlight: string;
-  private _blacklist: string;
-  private _friends: string;
-  private _ignored: string;
+  private highlightProxy: string;
+  private blacklistProxy: string;
+  private friendsProxy: string;
+  private ignoredProxy: string;
 
   public highlightWords: string[];
   public blacklistWords: string[];
@@ -43,7 +43,7 @@ export class SettingsService {
 
   private commaDelimiter(words: string) {
 
-    if(!words || !words.length) {
+    if (!words || !words.length) {
       return [];
     }
 
@@ -51,33 +51,33 @@ export class SettingsService {
 }
 
   set highlight(words: string) {
-      this._highlight = words;
+      this.highlightProxy = words;
       this.highlightWords = this.commaDelimiter(words);
   }
 
-  get highlight() { return this._highlight; }
+  get highlight() { return this.highlightProxy; }
 
   set blacklist(words: string) {
-      this._blacklist = words;
+      this.blacklistProxy = words;
       this.blacklistWords = this.commaDelimiter(words);
 
   }
 
-  get blacklist() { return this._blacklist; }
+  get blacklist() { return this.blacklistProxy; }
 
   set friends(words: string) {
-      this._friends = words;
+      this.friendsProxy = words;
       this.friendList = this.commaDelimiter(words);
   }
 
-  get friends() { return this._friends; }
+  get friends() { return this.friendsProxy; }
 
   set ignored(words: string) {
-      this._ignored = words;
+      this.ignoredProxy = words;
       this.ignoredUsers = this.commaDelimiter(words);
   }
 
-  get ignored() { return this._ignored; }
+  get ignored() { return this.ignoredProxy; }
 
   public load() {
       const electronSettings = ElectronService.settings;
