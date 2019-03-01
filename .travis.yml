@@ -30,7 +30,7 @@ cache:
     - $HOME/.cache/electron-forge
 
 install:
-  # - npm install
+  - npm install
   - npm update
 
 script:
