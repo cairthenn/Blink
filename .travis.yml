@@ -1,6 +1,10 @@
 language: node_js
 node_js: "10"
 
+branches:
+  only:
+    - master
+
 matrix:
   env:
     - ELECTRON_CACHE=$HOME/.cache/electron
@@ -16,7 +20,7 @@ matrix:
       language: generic
       before_install:
         - sudo apt-get install -y libxml2-dev
-        - apt-get install fakeroot
+        - sudo apt-get install fakeroot
 
 cache:
   directories:
