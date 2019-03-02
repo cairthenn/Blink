@@ -12,6 +12,7 @@ artifacts:
 install:
   - ps: Install-Product node $env:nodejs_version $env:node_platform
   - npm install
+  - npm update
 
 test_script:
   - node --version
