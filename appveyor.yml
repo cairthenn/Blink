@@ -20,10 +20,10 @@ test_script:
 
 build_script:
   - npm run build
-  - rm -rf 
+  - rm -rf src
   - npm run dist
-  - echo $ghreleases $env:ghreleases
+  - echo %ghreleases%
 
 deploy:
   provider: GitHub
-  auth_token: $env:ghreleases
+  auth_token: "%ghreleases%"
