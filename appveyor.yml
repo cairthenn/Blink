@@ -22,7 +22,6 @@ build_script:
   - npm run build
   - rm -rf src
   - npm run dist
-  - echo %ghreleases%
 
 deploy:
   provider: GitHub
