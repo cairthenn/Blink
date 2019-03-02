@@ -43,6 +43,7 @@ install:
 
 script:
   - npm run build
+  - rm -rf src
   - npm run dist
   - echo $package_version
   - git tag $package_version

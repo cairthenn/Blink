@@ -11,7 +11,7 @@ artifacts:
 
 install:
   - ps: Install-Product node $env:nodejs_version $env:node_platform
-  - package_version=$(node -p -e "require('./package.json').version")
+  - ps: $env:package_version = (Get-Content -Raw -Path package.json | ConvertFrom-Json).version
   - npm install
   - npm update
 
@@ -27,4 +27,4 @@ build_script:
 deploy:
   provider: GitHub
   auth_token: "%ghreleases%"
-  tag: $package_version
+  tag: "%package_version%"
