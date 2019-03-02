@@ -11,7 +11,6 @@ export class SettingsService {
   public separators: boolean;
 
   public timestamps: boolean;
-  public charCount: boolean;
   public subs: boolean;
   public bits: boolean;
   public badges: boolean;
@@ -87,7 +86,6 @@ export class SettingsService {
       this.separators = electronSettings.get('separators') || false;
       this.flash = electronSettings.get('flash') || false;
       this.timestamps = electronSettings.get('timestamps') || false;
-      this.charCount = electronSettings.get('charCount') || false;
       this.subs = electronSettings.get('subs') || true;
       this.bits = electronSettings.get('bits') || true;
       this.badges = electronSettings.get('badges') || true;
@@ -112,7 +110,6 @@ export class SettingsService {
     electronSettings.set('separators', this.separators);
     electronSettings.set('flash', this.flash);
     electronSettings.set('timestamps', this.timestamps);
-    electronSettings.set('charCount', this.charCount);
     electronSettings.set('subs', this.subs);
     electronSettings.set('bits', this.bits);
     electronSettings.set('badges', this.badges);

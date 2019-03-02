@@ -26,8 +26,6 @@ export class SettingsComponent implements OnInit {
 
     get timestamps() { return this.settings.timestamps; }
     set timestamps(val) { this.settings.timestamps = val; this.data.updateView(); }
-    get charCount() { return this.settings.charCount; }
-    set charCount(val) { this.settings.charCount = val; }
     get subs() { return this.settings.subs; }
     set subs(val) { this.settings.subs = val; this.data.updateView(); }
     get bits() { return this.settings.bits; }

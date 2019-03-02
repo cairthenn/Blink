@@ -131,7 +131,7 @@ export class ChatService {
     private updateUserList() {
         WebApiService.getUserList(this.channel).then(users => {
             this.userList = users;
-            this.userList.autocomplete = [].concat(users.moderators, users.vips, users.staff, users.viewers).sort();
+            this.userList.autocomplete = [].concat(users.broadcaster, users.moderators, users.vips, users.staff, users.viewers).sort();
         });
     }
 

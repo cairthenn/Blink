@@ -70,6 +70,7 @@ app.on('ready', function() {
         width: width,
         height: height,
         show: false,
+        frame: false,
         autoHideMenuBar: true,
         webPreferences: {
             nodeIntegration: true,
