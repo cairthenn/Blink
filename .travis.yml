@@ -14,8 +14,7 @@ matrix:
       deploy:
         provider: releases
         api_key: $ghreleases
-        file: blink-darwin-x64/*
-        file_glob: true
+        file: blink-darwin-x64.zip
         skip_cleanup: true
     - os: linux
       services: docker
