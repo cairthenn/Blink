@@ -102,7 +102,7 @@ app.on('ready', function() {
     // window.webContents.toggleDevTools();
 
 
-    window.loadFile('dist/index.html');
+    window.loadFile('./dist/index.html');
 });
 
 const standardTemplate = [
