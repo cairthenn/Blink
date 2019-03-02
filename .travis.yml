@@ -9,6 +9,8 @@ matrix:
   include:
     - os: osx
       osx_image: xcode9.4
+      before_deploy:
+        - zip -r blink-darwin-x64.zip blink-darwin-x64
       deploy:
         provider: releases
         api_key: $ghreleases
@@ -22,11 +24,12 @@ matrix:
         - sudo apt-get install -y libxml2-dev
         - sudo apt-get install fakeroot
         - sudo apt-get install rpm
+      before_deploy:
+        - zip -r blink-linux-x64.zip blink-linux-x64
       deploy:
         provider: releases
         api_key: $ghreleases
-        file: blink-linux-x64/*
-        file_glob: true
+        file: blink-linux-x64.zip
         skip_cleanup: true
 
 cache:
