@@ -5,12 +5,16 @@ branches:
   only:
     - master
 
+env:
+  - PACKAGE_VERSION="1.0.*"
+
 matrix:
   include:
     - os: osx
       osx_image: xcode9.4
       before_deploy:
         - zip -r blink-darwin-x64.zip blink-darwin-x64
+        - git tag darwin-$PACKAGE_VERSION
       deploy:
         provider: releases
         api_key: $ghreleases
@@ -25,6 +29,7 @@ matrix:
         - sudo apt-get install rpm
       before_deploy:
         - zip -r blink-linux-x64.zip blink-linux-x64
+        - git tag linux-$PACKAGE_VERSION
       deploy:
         provider: releases
         api_key: $ghreleases
