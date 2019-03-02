@@ -24,4 +24,4 @@ build_script:
 
 deploy:
   provider: GitHub
-  auth_token: $github_releases
+  auth_token: $ghreleases
