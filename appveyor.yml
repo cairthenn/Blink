@@ -5,6 +5,10 @@ branches:
   only:
     - master
 
+artifacts:
+  - path: blink-win32-x64
+    name: blink-windows
+
 install:
   - ps: Install-Product node $env:nodejs_version $env:node_platform
   - npm install
