@@ -14,8 +14,6 @@ matrix:
         api_key: $env:ghreleases
         file: blink-darwin-x64
         skip_cleanup: true
-        on:
-          tags: true
     - os: linux
       services: docker
       language: generic
@@ -23,6 +21,11 @@ matrix:
         - sudo apt-get install -y libxml2-dev
         - sudo apt-get install fakeroot
         - sudo apt-get install rpm
+      deploy:
+        provider: releases
+        api_key: $env:ghreleases
+        file: blink-linux-x64
+        skip_cleanup: true
 
 cache:
   directories:
