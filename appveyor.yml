@@ -21,3 +21,7 @@ test_script:
 build_script:
   - npm run build
   - npm run dist
+
+deploy:
+  provider: GitHub
+  auth_token: $env:github_releases
