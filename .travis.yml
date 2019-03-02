@@ -39,4 +39,5 @@ install:
   - npm update
 
 script:
+  - npm run build
   - npm run dist
