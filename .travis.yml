@@ -11,7 +11,6 @@ matrix:
       osx_image: xcode9.4
       before_deploy:
         - zip -r blink-darwin-x64.zip blink-darwin-x64
-        - git tag darwin-$TRAVIS_BUILD_NUMBER
       deploy:
         provider: releases
         api_key: $ghreleases
@@ -26,7 +25,6 @@ matrix:
         - sudo apt-get install rpm
       before_deploy:
         - zip -r blink-linux-x64.zip blink-linux-x64
-        - git tag linux-$TRAVIS_BUILD_NUMBER
       deploy:
         provider: releases
         api_key: $ghreleases
@@ -39,9 +37,12 @@ cache:
     - $HOME/.cache/electron
 
 install:
+  - package_version=$(node -p -e "require('./package.json').version")
   - npm install
   - npm update
 
 script:
   - npm run build
   - npm run dist
+  - echo $package_version
+  - git tag $package_version
