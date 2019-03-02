@@ -19,7 +19,7 @@
     "electron": "electron .",
     "electron-build": "ng build --prod && electron .",
     "fast-build": "ng build --source-map=false && electron .",
-    "dist": "electron-packager ."
+    "dist": "electron-packager . blink --asar"
   },
   "private": true,
   "dependencies": {
