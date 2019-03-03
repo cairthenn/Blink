@@ -36,6 +36,7 @@ export class ChatService {
     private component: MessagesComponent;
     private updater: number;
 
+    private colors = [];
     private userState: any = {};
     private roomState: any = {};
     private odd = true;
@@ -109,9 +110,6 @@ export class ChatService {
 
         const l = (max + min) / 2;
 
-        let light;
-        let dark;
-
         let h;
         let s;
 
@@ -137,16 +135,16 @@ export class ChatService {
             h += 360;
         }
 
-        if (l > .3) {
-            dark = color;
-        } else {
-            dark = `hsl(${h},${s}%,30%)`;
-        }
+        
+        let light;
+        let dark;
 
-        if (l < .5) {
-            light = color;
+        if (l > .5) {
+            dark = color;
+            light = `hsl(${h},${s}%,30%)`;
         } else {
-            light = `hsl(${h},${s}%,50%)`;
+            dark = `hsl(${h},${s}%,70%)`;
+            light = color;
         }
 
         return [light, dark];
@@ -267,6 +265,7 @@ export class ChatService {
         }
 
         this.userState = state;
+        this.colors = ChatService.colorCorrect(state.color);
     }
 
     private onJoin() {
@@ -711,7 +710,8 @@ export class ChatService {
 
             return {
                 type: 'text',
-                color: isAction ? this.userState.color : undefined,
+                lightColor: this.colors[0],
+                darkColor: this.colors[1],
                 text: `${word} `,
              };
         });
@@ -720,7 +720,8 @@ export class ChatService {
             action: isAction,
             username: this.username,
             chat: true,
-            color: this.userState.color,
+            lightColor: this.colors[0],
+            darkColor: this.colors[1],
             text: original,
             fragments: chatFrags,
             badges: this.parseBadges(this.userState.badges),

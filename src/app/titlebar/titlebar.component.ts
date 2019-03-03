@@ -10,7 +10,9 @@ export class TitlebarComponent implements OnInit {
     public maximized = false;
 
     constructor() {
-
+        const window = ElectronService.remote.getCurrentWindow();
+        window.on('maximize', () => this.maximized = true);
+        window.on('unmaximize', () => this.maximized = false);
     }
 
     public close() {
@@ -21,15 +23,11 @@ export class TitlebarComponent implements OnInit {
         ElectronService.remote.getCurrentWindow().minimize();
     }
 
-    public resize() {
-        const window = ElectronService.remote.getCurrentWindow();
-        if (this.maximized) {
-            window.unmaximize();
-        } else {
-            window.maximize();
-        }
-
-        this.maximized = !this.maximized;
+    public maximize() {
+        ElectronService.remote.getCurrentWindow().maximize();
+    }
+    public restore() {
+        ElectronService.remote.getCurrentWindow().unmaximize();
     }
 
     ngOnInit() {
