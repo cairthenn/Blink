@@ -83,7 +83,7 @@ module.exports.getLogin = function(forceVerify) {
         });
 
         authWindow.loadURL(`${authUrl}?${qs.stringify(urlParams)}`);
-        authWindow.webContents.toggleDevTools();
+        // authWindow.webContents.toggleDevTools();
     });
 
     return promise.then(auth => {
