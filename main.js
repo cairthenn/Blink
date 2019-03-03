@@ -60,7 +60,6 @@ function tryLogin(force = false) {
 }
 
 io.on('connect', (socket) => {
-    console.log('pp')
     clientSocket = socket;
     socket.on('outgoing-chat', (channel, message) => irc.sendMessage(channel, message));
     socket.on('join', (channel) => irc.join(channel));
