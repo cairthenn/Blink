@@ -1,5 +1,4 @@
 @import url("styles/alignment.css");
-@import url("styles/borders.css");
 @import url("styles/chat.css");
 @import url("styles/material.css");
 @import url("styles/margins.css");
@@ -8,38 +7,6 @@
 @import url("styles/tabs.css");
 @import url("styles/titlebar.css");
 @import url("styles/text.css");
-
-.cc-regular {
-    font-weight: 400;
-}
-
-.cc-strong {
-    font-weight: 600;
-}
-
-.cc-italic {
-    font-style: italic;
-}
-
-.cc-strikethrough {
-    text-decoration: line-through;
-}
-
-.cc-nowrap {
-    white-space: nowrap;
-}
-
-.cc-underline {
-    text-decoration: underline;
-}
-
-.cc-upcase {
-    text-transform: uppercase;
-}
-
-.cc-capcase {
-    text-transform: capitalize;
-}
 
 .cc-word-break-normal {
     word-break: normal;
@@ -103,18 +70,6 @@
 
 .cc-overflow-visible {
     overflow: visible;
-}
-
-.cc-resize-none {
-    resize: none;
-}
-
-.cc-resize-x {
-    resize: horizontal;
-}
-
-.cc-resize-y {
-    resize: vertical;
 }
 
 .cc-full-width {

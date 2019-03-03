@@ -1,4 +1,20 @@
-/* Alignment */
+/*
+    Blink, a chat client for Twitch
+    Copyright (C) 2019 cairthenn
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 .cc-flex {
     display: flex;
@@ -144,56 +160,12 @@
     flex-grow: 1;
 }
 
-.cc-flex-grow-2 {
-    flex-grow: 2;
-}
-
-.cc-flex-grow-3 {
-    flex-grow: 3;
-}
-
-.cc-flex-grow-4 {
-    flex-grow: 4;
-}
-
 .cc-flex-shrink-0 {
     flex-shrink: 0;
 }
 
 .cc-flex-shrink-1 {
     flex-shrink: 1;
-}
-
-.cc-flex-shrink-2 {
-    flex-shrink: 2;
-}
-
-.cc-flex-shrink-3 {
-    flex-shrink: 3;
-}
-
-.cc-flex-shrink-4 {
-    flex-shrink: 4;
-}
-
-.cc-item-order-0 {
-    order: 0;
-}
-
-.cc-item-order-1 {
-    order: 1;
-}
-
-.cc-item-order-2 {
-    order: 2;
-}
-
-.cc-item-order-3 {
-    order: 3;
-}
-
-.cc-item-order-4 {
-    order: 4;
 }
 
 .cc-relative {
@@ -226,18 +198,6 @@
 
 .cc-left-0 {
     left: 0;
-}
-
-.cc-z-above {
-    z-index: 10;
-}
-
-.cc-z-default {
-    z-index: 1;
-}
-
-.cc-z-below {
-    z-index: -1;
 }
 
 .cc-align-top {

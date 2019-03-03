@@ -1,4 +1,20 @@
-/* Margins */
+/*
+    Blink, a chat client for Twitch
+    Copyright (C) 2019 cairthenn
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 .cc-mg-0 {
     margin: 0;
@@ -26,26 +42,6 @@
 
 .cc-mg-5 {
     margin: 5rem;
-}
-
-.cc-mg-6 {
-    margin: 6rem;
-}
-
-.cc-mg-7 {
-    margin: 7rem;
-}
-
-.cc-mg-8 {
-    margin: 8rem;
-}
-
-.cc-mg-9 {
-    margin: 9rem;
-}
-
-.cc-mg-10 {
-    margin: 10rem;
 }
 
 .cc-mg-auto {
@@ -80,26 +76,6 @@
     margin-top: 5rem;
 }
 
-.cc-mg-t-6 {
-    margin-top: 6rem;
-}
-
-.cc-mg-t-7 {
-    margin-top: 7rem;
-}
-
-.cc-mg-t-8 {
-    margin-top: 8rem;
-}
-
-.cc-mg-t-9 {
-    margin-top: 9rem;
-}
-
-.cc-mg-t-10 {
-    margin-top: 10rem;
-}
-
 .cc-mg-t-auto {
     margin-top: auto;
 }
@@ -130,26 +106,6 @@
 
 .cc-mg-r-5 {
     margin-right: 5rem;
-}
-
-.cc-mg-r-6 {
-    margin-right: 6rem;
-}
-
-.cc-mg-r-7 {
-    margin-right: 7rem;
-}
-
-.cc-mg-r-8 {
-    margin-right: 8rem;
-}
-
-.cc-mg-r-9 {
-    margin-right: 9rem;
-}
-
-.cc-mg-r-10 {
-    margin-right: 10rem;
 }
 
 .cc-mg-r-auto {
@@ -184,26 +140,6 @@
     margin-bottom: 5rem;
 }
 
-.cc-mg-b-6 {
-    margin-bottom: 6rem;
-}
-
-.cc-mg-b-7 {
-    margin-bottom: 7rem;
-}
-
-.cc-mg-b-8 {
-    margin-bottom: 8rem;
-}
-
-.cc-mg-b-9 {
-    margin-bottom: 9rem;
-}
-
-.cc-mg-b-10 {
-    margin-bottom: 10rem;
-}
-
 .cc-mg-b-auto {
     margin-bottom: auto;
 }
@@ -234,26 +170,6 @@
 
 .cc-mg-l-5 {
     margin-left: 5rem;
-}
-
-.cc-mg-l-6 {
-    margin-left: 6rem;
-}
-
-.cc-mg-l-7 {
-    margin-left: 7rem;
-}
-
-.cc-mg-l-8 {
-    margin-left: 8rem;
-}
-
-.cc-mg-l-9 {
-    margin-left: 9rem;
-}
-
-.cc-mg-l-10 {
-    margin-left: 10rem;
 }
 
 .cc-mg-l-auto {
@@ -295,31 +211,6 @@
     margin-top: 5rem;
 }
 
-.cc-mg-y-6 {
-    margin-bottom: 6rem;
-    margin-top: 6rem;
-}
-
-.cc-mg-y-7 {
-    margin-bottom: 7rem;
-    margin-top: 7rem;
-}
-
-.cc-mg-y-8 {
-    margin-bottom: 8rem;
-    margin-top: 8rem;
-}
-
-.cc-mg-y-9 {
-    margin-bottom: 9rem;
-    margin-top: 9rem;
-}
-
-.cc-mg-y-10 {
-    margin-bottom: 10rem;
-    margin-top: 10rem;
-}
-
 .cc-mg-y-auto {
     margin-bottom: auto;
     margin-top: auto;
@@ -358,31 +249,6 @@
 .cc-mg-x-5 {
     margin-left: 5rem;
     margin-right: 5rem;
-}
-
-.cc-mg-x-6 {
-    margin-left: 6rem;
-    margin-right: 6rem;
-}
-
-.cc-mg-x-7 {
-    margin-left: 7rem;
-    margin-right: 7rem;
-}
-
-.cc-mg-x-8 {
-    margin-left: 8rem;
-    margin-right: 8rem;
-}
-
-.cc-mg-x-9 {
-    margin-left: 9rem;
-    margin-right: 9rem;
-}
-
-.cc-mg-x-10 {
-    margin-left: 10rem;
-    margin-right: 10rem;
 }
 
 .cc-mg-x-auto {

@@ -1,63 +1,25 @@
+/*
+    Blink, a chat client for Twitch
+    Copyright (C) 2019 cairthenn
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 .chat-badge {
     margin-bottom: .2rem;
     margin-right: .3rem;
     vertical-align: middle;
-}
-
-.cheermote-for-amount {
-    display: table;
-    margin: 0 auto;
-}
-
-.cheermote-image {
-    -o-object-fit: contain;
-    height: 40px;
-    margin-right: .5rem;
-    object-fit: contain;
-    width: auto;
-}
-
-.cheermote-image--small {
-    height: 35px;
-    width: auto;
-}
-
-.cheermote-image--extra-small {
-    height: 25px;
-    margin-right: .2rem;
-    width: auto;
-}
-
-.cheermote-image--extremely-small {
-    height: 13px;
-    margin-right: .1rem;
-    width: auto;
-}
-
-.cheermote-image--inline {
-    margin-left: 1px;
-    vertical-align: middle;
-}
-
-.cheermote-amount,.cheermote-amount--medium {
-    font-size: 1.6rem;
-}
-
-.cheermote-amount--small {
-    font-size: 1.4rem;
-}
-
-.cheermote-amount--extremely-small {
-    font-size: 1.1rem;
-}
-
-.cheermote-for-amount__display--table-cell {
-    display: table-cell;
-    vertical-align: middle;
-}
-
-.chat-list {
-    overflow: hidden;
 }
 
 .chat-lines {
@@ -70,11 +32,6 @@
 
 .cc-header {
     height: 5rem;
-}
-
-.mod-icon {
-    font-size: 1.6rem;
-    outline: none;
 }
 
 .chat-username {
@@ -90,19 +47,11 @@
 }
 
 .message-mod-icon {
-    vertical-align: bottom;
-}
-
-.message-mod-icon {
     margin: 0 .2rem 0 0;
 }
 
 .message {
     word-wrap: break-word;
-}
-
-.user-notice-line {
-    padding-left: 1.6rem;
 }
 
 .chat-message,.chat-moderation,.chat-status {
@@ -114,10 +63,6 @@
     margin-bottom: .2rem;
     margin-right: .3rem;
     vertical-align: middle;
-}
-
-.chat-cheer-amount {
-    font-weight: 600;
 }
 
 .chat-emote,.chat-emote-button {
@@ -173,6 +118,7 @@
     border-bottom-right-radius: 6px;
     border-top-right-radius: 6px;
 }
+
 .user-notice.friend {
     opacity: .75;
 }
