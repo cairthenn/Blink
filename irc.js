@@ -75,7 +75,26 @@ module.exports.IRC = class {
                 });
             });
 
-            this.socket.connect(port, host);
+
+            this.socket.on('close', () => {
+                if(this.connected) {
+                    this.callbacks['connection-lost'][0]();
+                }
+                console.log('attempting reconnection')
+                setTimeout(() => {
+                    this.connect(user, token);
+                }, 15000);
+            })
+
+            this.socket.on('error', (err) => {
+                console.log(err);
+            })
+            
+            try {
+                this.socket.connect(port, host);
+            } catch {
+
+            }
         });
     }
 

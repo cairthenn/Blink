@@ -60,6 +60,7 @@ function tryLogin(force = false) {
 }
 
 io.on('connect', (socket) => {
+    console.log('pp')
     clientSocket = socket;
     socket.on('outgoing-chat', (channel, message) => irc.sendMessage(channel, message));
     socket.on('join', (channel) => irc.join(channel));
@@ -69,9 +70,13 @@ io.on('connect', (socket) => {
 
     irc.on(/(\w*) #(\w*)(?: :(.*))?$/, (type, channel, params, message)  => {
         socket.emit('irc-data', type, channel, params, message);
-    })
+    });
 
     tryLogin();
+});
+
+server.on('error', (err) => {
+    window.close();
 });
 
 app.on('ready', function() {
@@ -117,9 +122,6 @@ app.on('ready', function() {
     });
 
     io.listen(8000);
-    // window.webContents.toggleDevTools();
-
-
     window.loadFile('./dist/index.html');
 });
 

@@ -41,6 +41,7 @@ module.exports.getLogin = function(forceVerify) {
         var success = false;
         authWindow = new BrowserWindow({
             show: false,
+            frame: false,
             webPreferences: {
                 nodeIntegration: false
             },
@@ -82,6 +83,7 @@ module.exports.getLogin = function(forceVerify) {
         });
 
         authWindow.loadURL(`${authUrl}?${qs.stringify(urlParams)}`);
+        authWindow.webContents.toggleDevTools();
     });
 
     return promise.then(auth => {

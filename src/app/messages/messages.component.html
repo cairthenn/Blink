@@ -19,7 +19,7 @@
 <div class="chat-lines cc-word-break-word">
     <div #message *ngFor="let msg of messages" class="cc-relative">
         <div *ngIf="msg.raid" class="user-notice raid"></div>
-        <div *ngIf="msg.friend" class="user-notice friend" [style.background]="msg.color"></div>
+        <div *ngIf="msg.friend" class="user-notice friend" [style.background]="settings.lightTheme ? msg.lightColor : msg.darkColor"></div>
         <div class="chat-message" [class.chat-alternate-bg]="settings.alternate && msg.odd" [class.chat-highlight]="msg.highlight" [class.chat-subscription]="msg.subscription" [class.message-deleted]="msg.deleted">
 
             <div *ngIf="msg.subscription" [class.cc-pd-b-05]="msg.hasChat">

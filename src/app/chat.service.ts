@@ -641,7 +641,8 @@ export class ChatService {
                 };
             }
 
-            const lower = word.toLowerCase();
+            const boundary = /.*\b/.exec(word);
+            const lower = boundary ? boundary[0].toLowerCase() : word.toLowerCase();
 
             ignore = this.settings.blacklistWords.find(x => x === lower) && true;
 
@@ -694,7 +695,9 @@ export class ChatService {
         if (message.highlight && !this.active) {
             this.mentions++;
             if (this.settings.flash) {
-                ElectronService.ipcRenderer.send('flash');
+                const window = ElectronService.remote.getCurrentWindow();
+                window.once('focus', () => window.flashFrame(false));
+                window.flashFrame(true);
             }
         }
 
