@@ -7,7 +7,6 @@
     <div #message *ngFor="let msg of messages" class="cc-relative">
         <div *ngIf="msg.raid" class="user-notice raid"></div>
         <div *ngIf="msg.friend" class="user-notice friend" [style.background]="msg.color"></div>
-        <mat-divider *ngIf="settings.separators" class="chat-line-separator"></mat-divider>
         <div class="chat-message" [class.chat-alternate-bg]="settings.alternate && msg.odd" [class.chat-highlight]="msg.highlight" [class.chat-subscription]="msg.subscription" [class.message-deleted]="msg.deleted">
 
             <div *ngIf="msg.subscription" [class.cc-pd-b-05]="msg.hasChat">
@@ -53,9 +52,9 @@
                 <span *ngIf="settings.badges"><img *ngFor="let badge of msg.badges" class="chat-badge"
                     [src]="service.badges[badge[0]] ? service.badges[badge[0]].versions[badge[1]].image_url_1x : null"
                     /></span>
-                <span *ngIf="msg.action" class="chat-username" [style.color]="msg.color">{{msg.username}} </span>
-                <span *ngIf="!msg.action" class="chat-username" [style.color]="msg.color">{{msg.username}}: </span>
-                <span *ngFor="let f of msg.fragments" [style.color]="f.color">
+                <span *ngIf="msg.action" class="chat-username" [style.color]="settings.lightTheme ? msg.lightColor : msg.darkColor">{{msg.username}} </span>
+                <span *ngIf="!msg.action" class="chat-username" [style.color]="settings.lightTheme ? msg.lightColor : msg.darkColor">{{msg.username}}: </span>
+                <span *ngFor="let f of msg.fragments" [style.color]="settings.lightTheme ? f.lightColor : f.darkColor">
                     <span [ngSwitch]="f.type">
                         <span *ngSwitchCase="'twitch'">
                             <span *ngIf="settings.twitchEmotes"><img class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" >&nbsp;</span>
@@ -87,5 +86,6 @@
                 </span>
             </span>
         </div>
+        <mat-divider *ngIf="settings.separators" class="chat-line-separator"></mat-divider>
     </div>
 </div>

@@ -16,6 +16,7 @@ import {    MatDialogModule,   MatInputModule,     MatSidenavModule,    MatFormF
             MatCheckboxModule, MatCardModule,      MatDividerModule,    MatBadgeModule,
             MatAutocompleteModule, MatOptionModule } from '@angular/material';
 import { ViewerDialogComponent } from './viewer-dialog/viewer-dialog.component';
+import { TitlebarComponent } from './titlebar/titlebar.component';
 
 @NgModule({
     declarations: [
@@ -26,6 +27,7 @@ import { ViewerDialogComponent } from './viewer-dialog/viewer-dialog.component';
         SettingsComponent,
         ChannelDialogComponent,
         ViewerDialogComponent,
+        TitlebarComponent,
     ],
     imports: [
         FormsModule,

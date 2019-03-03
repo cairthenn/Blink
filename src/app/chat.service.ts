@@ -506,14 +506,79 @@ export class ChatService {
         return regex.test(word);
     }
 
+    public static colorCorrect(color: string) {
+        
+        if(!color) {
+            return [undefined, undefined];
+        }
+
+        const r = parseInt(color.substr(1,2), 16) / 255;
+        const g = parseInt(color.substr(3,2), 16) / 255;
+        const b = parseInt(color.substr(5,2), 16) / 255;
+
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+
+        if(max == min) {
+            return ['hsl(0,0,.5)', 'hsl(0,0.5)'];
+        }
+
+        const l = (max + min) / 2;
+
+        let light;
+        let dark;
+
+        let h;
+        let s;
+
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+        switch (max) {
+            case r: 
+                h = ((g - b) / d) % 6;
+                break;
+            case g: 
+                h = (b - r) / d + 2; 
+                break;
+            case b: 
+                h = (r - g) / d + 4; 
+                break;
+          }
+      
+        h *= 60;
+        s *= 100;
+        
+        while(h < 0) {
+            h += 360;
+        }
+
+        if(l > .3) {
+            dark = color;
+        } else {
+            dark = `hsl(${h},${s}%,30%)`;
+        }
+
+        if(l < .5) {
+            light = color;
+        } else {
+            light = `hsl(${h},${s}%,50%)`;
+        }
+
+        return [light, dark];
+    }
+
     private processIncoming(params: any, original: string): any {
+
+        const colors = ChatService.colorCorrect(params.color);
 
         const message = {
             id: params.id,
             username: params['display-name'],
             action: false,
             highlight: false,
-            color: params.color,
+            lightColor: colors[0],
+            darkColor: colors[1],
             text: original,
             badges: this.parseBadges(params.badges),
             fragments: undefined,
@@ -600,7 +665,8 @@ export class ChatService {
             return {
                 type: 'text',
                 text: word,
-                color: isAction ? params.color : undefined,
+                lightColor: isAction ? params.color : undefined,
+                darkColor: isAction ? params.darkColor : undefined,
              };
         });
 

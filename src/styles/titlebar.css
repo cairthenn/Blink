@@ -1,0 +1,67 @@
+.titlebar {
+    height: 19px;
+}
+
+.titlebar.draggable {
+    -webkit-app-region: drag;
+}
+
+.titlebar-controls {
+    float: right;
+}
+
+.titlebar-minimize, .titlebar-resize, .titlebar-close {
+    float: left;
+    width: 30px;
+    height: 18px;
+    margin: 1px 1px 0 0;
+    text-align: center;
+    line-height: 15px;
+
+    -webkit-transition: background-color .2s;
+    -moz-transition: background-color .2s;
+    -ms-transition: background-color .2s;
+    -o-transition: background-color .2s;
+    transition: background-color .2s;
+}
+
+.titlebar.draggable .titlebar-minimize, .titlebar.draggable .titlebar-resize, .titlebar.draggable .titlebar-close {
+    -webkit-app-region: no-drag;
+}
+
+.titlebar-minimize svg, .titlebar-resize svg, .titlebar-close svg {
+    fill: rgba(255, 255, 255, .5);
+    margin-top: 1px;
+    width: 10px;
+    height: 10px;
+    shape-rendering: crispEdges;
+}
+
+.chat-light-theme .titlebar-minimize svg, .chat-light-theme .titlebar-resize svg, .chat-light-theme .titlebar-close svg {
+    fill: rgba(0, 0, 0, .5);
+}
+
+.titlebar-close svg polygon {
+    -webkit-transition: fill .2s;
+    -moz-transition: fill .2s;
+    -ms-transition: fill .2s;
+    -o-transition: fill .2s;
+    transition: fill .2s;
+}
+
+.titlebar-minimize:hover, .titlebar-resize:hover, .titlebar-fullscreen:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.chat-light-theme .titlebar-minimize:hover, .chat-light-theme .titlebar-resize:hover, .chat-light-theme .titlebar-fullscreen:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+
+.titlebar-close:hover {
+    background-color: rgba(235, 59, 73, 0.85);
+}
+
+.titlebar-close:hover svg {
+    fill: rgba(255, 255, 255, .8);
+}

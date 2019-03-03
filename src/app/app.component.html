@@ -1,2 +1,4 @@
-<app-chat [settings]="settings" class="cc-full-height cc-full-width"></app-chat>
+<app-titlebar class="cc-no-flex" [class.chat-light-theme]="settings.lightTheme">
+</app-titlebar>
+<app-chat class="cc-flex cc-flex-auto" [settings]="settings"></app-chat>
 <router-outlet></router-outlet>
