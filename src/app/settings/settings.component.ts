@@ -73,6 +73,7 @@ export class SettingsComponent implements OnInit {
         } else {
             this.overlayContainer.getContainerElement().classList.remove(themeLight);
         }
+        this.data.updateView();
     }
 
     ngOnInit() {

@@ -105,7 +105,7 @@ export class ChatService {
         const min = Math.min(r, g, b);
 
         if (max === min) {
-            return ['hsl(0,0,.5)', 'hsl(0,0.5)'];
+            return [undefined, undefined];
         }
 
         const l = (max + min) / 2;
@@ -710,8 +710,8 @@ export class ChatService {
 
             return {
                 type: 'text',
-                lightColor: this.colors[0],
-                darkColor: this.colors[1],
+                lightColor: isAction ? this.colors[0] : undefined,
+                darkColor: isAction ? this.colors[1] : undefined,
                 text: `${word} `,
              };
         });
