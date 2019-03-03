@@ -77,9 +77,6 @@ module.exports.IRC = class {
 
 
             this.socket.on('close', () => {
-                if(this.connected) {
-                    this.callbacks['connection-lost'][0]();
-                }
                 console.log('attempting reconnection')
                 setTimeout(() => {
                     this.connect(user, token);
