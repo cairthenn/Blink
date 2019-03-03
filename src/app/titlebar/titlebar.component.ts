@@ -9,23 +9,21 @@ export class TitlebarComponent implements OnInit {
 
     public maximized = false;
 
-    constructor() { 
+    constructor() {
 
     }
-
-    
 
     public close() {
         ElectronService.remote.getCurrentWindow().close();
     }
-    
+
     public minimize() {
         ElectronService.remote.getCurrentWindow().minimize();
     }
 
     public resize() {
         const window = ElectronService.remote.getCurrentWindow();
-        if(this.maximized) {
+        if (this.maximized) {
             window.unmaximize();
         } else {
             window.maximize();

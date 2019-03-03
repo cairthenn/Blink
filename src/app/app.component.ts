@@ -11,7 +11,7 @@ const themeLight = 'chat-light-theme';
 })
 export class AppComponent {
     title = 'Blink';
-    public settings : SettingsService;
+    public settings: SettingsService;
     constructor(public overlayContainer: OverlayContainer) {
         this.settings = new SettingsService();
         if (this.settings.lightTheme) {
