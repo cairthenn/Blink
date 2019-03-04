@@ -18,7 +18,6 @@
 
 const { app, BrowserWindow, Menu, autoUpdater, dialog } = require('electron');
 const settings = require('electron-settings');
-const platform = require('os').platform();
 const auth = require('./oauth');
 const { IRC } = require('./irc');
 
@@ -27,15 +26,6 @@ const io = require('socket.io')(server);
 
 const updateServer = 'https://update.electronjs.org'
 const feed = `${updateServer}/cairthenn/blink/${process.platform}-${process.arch}/${app.getVersion()}`
-
-function update() {
-    const promise = new Promise((resolve, reject) => { 
-        console.log('what');
-        // autoUpdater.checkForUpdates();
-    });
-
-    return promise.then(result => result);
-}
 
 let window;
 let clientSocket;
@@ -121,6 +111,7 @@ app.on('ready', () => {
         launchApplication();
         return;
     }
+    
     update().then((restart) => {
         if(reload) {
             autoUpdater.quitAndInstall();
@@ -210,6 +201,7 @@ function handleSquirrelEvent() {
     const squirrelEvent = process.argv[1];
     switch (squirrelEvent) {
       case '--squirrel-firstrun':
+        app.relaunch();
         return true;
       case '--squirrel-install':
       case '--squirrel-updated':

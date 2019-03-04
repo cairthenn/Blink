@@ -6,11 +6,11 @@ branches:
     - master
 
 artifacts:
-  - path: installer/Setup.exe
-    name: blink-win32-x64
-    type: exe
+  - path: installer/setup-win32-x64.exe
+    name: Installer
 
   - path: installer/RELEASES
+    name: Release File
 
 install:
   - ps: Install-Product node $env:nodejs_version $env:node_platform

@@ -2,8 +2,9 @@ const ei = require('electron-winstaller');
 
 
 const result = ei.createWindowsInstaller({
-    appDirectory: 'blink-win32-x64/',
+    appDirectory: `blink-${process.platform}-${process.arch}/`,
     authors: 'cairthenn',
+    setupExe: `setup-${process.platform}-${process.arch}`,
     noMsi: true,
 });
 
