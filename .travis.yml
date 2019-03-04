@@ -10,7 +10,7 @@ matrix:
     - os: osx
       osx_image: xcode9.4
       before_deploy:
-        - zip -r blink-darwin-x64.zip blink-darwin-x64
+        - zip -r blink-darwin-x64.zip installer/*
       deploy:
         provider: releases
         api_key: $ghreleases
@@ -45,5 +45,6 @@ script:
   - npm run build
   - rm -rf src
   - npm run dist
+  - node run setup
   - echo $package_version
   - git tag $package_version

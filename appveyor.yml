@@ -5,6 +5,8 @@ branches:
   only:
     - master
 
+skip_tags: true
+
 artifacts:
   - path: installer/*
 
@@ -22,7 +24,7 @@ build_script:
   - npm run build
   - rm -rf src
   - npm run dist
-  - npm run setup-win
+  - npm run setup
 
 deploy:
   provider: GitHub
