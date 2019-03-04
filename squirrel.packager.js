@@ -19,9 +19,13 @@ if(process.platform === 'win32') {
     dmg({
         appPath: dir,
         name: 'Blink',
-        path: 'installer',
+        out: 'installer',
     }, (err) => {
-        console.log(err);
+        if(err) {
+            console.log(err);
+        } else {
+            console.log('Installer created successfully!')
+        }
     })
 }
 

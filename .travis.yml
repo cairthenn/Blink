@@ -47,4 +47,4 @@ script:
   - npm run dist
   - npm run setup
   - echo $package_version
-  - git tag $package_version
+  - git tag v$package_version
