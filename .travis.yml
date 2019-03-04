@@ -10,7 +10,7 @@ matrix:
     - os: osx
       osx_image: xcode9.4
       before_deploy:
-        - zip -r blink-darwin-x64.zip installer/*
+        - zip -rj blink-darwin-x64.zip installer
       deploy:
         provider: releases
         api_key: $ghreleases
