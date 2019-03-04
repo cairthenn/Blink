@@ -1,10 +1,6 @@
 environment:
   nodejs_version: "10"
 
-branches:
-  only:
-    - master
-
 artifacts:
   - path: installer/setup-win32-x64.exe
     name: Installer
