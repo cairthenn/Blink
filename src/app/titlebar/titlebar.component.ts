@@ -26,6 +26,7 @@ import { ElectronService } from '../electron.service';
 export class TitlebarComponent implements OnInit {
 
     public maximized = false;
+    public version = ElectronService.remote.app.getVersion();
 
     constructor() {
         const window = ElectronService.remote.getCurrentWindow();
