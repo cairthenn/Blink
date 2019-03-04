@@ -1,6 +1,10 @@
 environment:
   nodejs_version: "10"
 
+branches:
+  only:
+    - master
+
 skip_non_tags: true
 
 artifacts:
