@@ -114,7 +114,7 @@ app.on('ready', () => {
 
     update().then((restart) => {
         if(reload) {
-            autoUpdater.quitAndInstall();
+            setTimeout(autoUpdater.quitAndInstall, 1000);
         } else {
             launchApplication();
         }
@@ -141,7 +141,7 @@ function launchApplication() {
         webPreferences: {
             nodeIntegration: true,
         },
-        icon: './dist/assets/icon.png',
+        icon: './dist/icon.ico',
     });
 
     window.on('close', () => {

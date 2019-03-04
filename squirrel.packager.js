@@ -9,6 +9,9 @@ if(process.platform === 'win32') {
         appDirectory: dir,
         authors: author,
         setupExe: `setup-${process.platform}-${process.arch}.exe`,
+        loadingGif: `${process.cwd()}/loading.gif`,
+        iconUrl: `${process.cwd()}/dist/icon.ico`,
+        setupIcon: `${process.cwd()}/dist/icon.ico`,
         noMsi: true,
     });
     
@@ -20,6 +23,7 @@ if(process.platform === 'win32') {
         appPath: dir,
         name: 'Blink',
         out: 'installer',
+        icon: `${process.cwd()}/dist/icon.ico`,
     }, (err) => {
         if(err) {
             console.log(err);
@@ -27,5 +31,7 @@ if(process.platform === 'win32') {
             console.log('Installer created successfully!')
         }
     })
+} else if(process.platform == 'linux') {
+
 }
 
