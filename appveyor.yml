@@ -8,6 +8,7 @@ branches:
 artifacts:
   - path: installer/Setup.exe
     name: blink-win32-x64
+    type: exe
 
   - path: installer/RELEASES
 
