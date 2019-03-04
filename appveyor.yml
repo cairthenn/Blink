@@ -7,7 +7,9 @@ branches:
 
 artifacts:
   - path: installer/Setup.exe
-    name: blink-win32-x64.exe
+    name: blink-win32-x64
+
+  - path: installer/RELEASES
 
 install:
   - ps: Install-Product node $env:nodejs_version $env:node_platform
