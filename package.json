@@ -1,6 +1,6 @@
 {
   "name": "blink",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "A Twitch chat client",
   "license": "GPL-3.0",
   "main": "main.js",
