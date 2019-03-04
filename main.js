@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { app, BrowserWindow, Menu, shell } = require('electron');
+const { app, BrowserWindow, Menu, autoUpdater, dialog } = require('electron');
 const settings = require('electron-settings');
 const platform = require('os').platform();
 const auth = require('./oauth');
@@ -25,9 +25,25 @@ const { IRC } = require('./irc');
 const server = require('https').createServer();
 const io = require('socket.io')(server);
 
+const updateServer = 'https://update.electronjs.org'
+const feed = `${updateServer}/cairthenn/blink/${process.platform}-${process.arch}/${app.getVersion()}`
+
+function update() {
+    const promise = new Promise((resolve, reject) => { 
+        console.log('what');
+        // autoUpdater.checkForUpdates();
+    });
+
+    return promise.then(result => result);
+}
+
 let window;
 let clientSocket;
 let loggingIn = false;
+
+if (handleSquirrelEvent()) {
+    return;
+}
 
 const irc = new IRC();
 
@@ -78,8 +94,48 @@ server.on('error', (err) => {
     window.close();
 });
 
-app.on('ready', function() {
+function update() {
+    autoUpdater.setFeedURL(feed);
 
+    return new Promise((resolve, reject) => {
+        autoUpdater.on('update-not-available', () => {
+            resolve(false);
+        })
+
+        autoUpdater.on('update-downloaded', () => {
+            resolve(true);
+        })
+
+        autoUpdater.on('error', err => {
+            dialog.showErrorBox('Update Error',`There was a problem updating the application: ${err}`);
+            resolve(false);
+        }) 
+
+        autoUpdater.checkForUpdates();
+    });
+}
+
+app.on('ready', () => {
+
+    if(process.env.NODE_ENV == 'dev' || platform === 'linux') {
+        launchApplication();
+        return;
+    }
+    update().then((restart) => {
+        if(reload) {
+            autoUpdater.quitAndInstall();
+            console.log('updates');
+        } else {
+            console.log('no updates')
+            launchApplication();
+        }
+    }).catch(err => {
+        console.log(err);
+        launchApplication();
+    });
+});
+
+function launchApplication() {
     const width = settings.get('width') || 500;
     const height = settings.get('height') || 800;
     const x = settings.get('x');
@@ -122,7 +178,56 @@ app.on('ready', function() {
 
     io.listen(8000);
     window.loadFile('./dist/index.html');
-});
+}
+
+function handleSquirrelEvent() {
+    if (process.argv.length === 1) {
+      return false;
+    }
+  
+    const ChildProcess = require('child_process');
+    const path = require('path');
+  
+    const appFolder = path.resolve(process.execPath, '..');
+    const rootAtomFolder = path.resolve(appFolder, '..');
+    const updateDotExe = path.resolve(path.join(rootAtomFolder, 'Update.exe'));
+    const exeName = path.basename(process.execPath);
+  
+    const spawn = function(command, args) {
+      let spawnedProcess, error;
+  
+      try {
+        spawnedProcess = ChildProcess.spawn(command, args, {detached: true});
+      } catch (error) {}
+  
+      return spawnedProcess;
+    };
+  
+    const spawnUpdate = function(args) {
+      return spawn(updateDotExe, args);
+    };
+  
+    const squirrelEvent = process.argv[1];
+    switch (squirrelEvent) {
+      case '--squirrel-firstrun':
+        return true;
+      case '--squirrel-install':
+      case '--squirrel-updated':
+        spawnUpdate(['--createShortcut', exeName]);
+        setTimeout(app.quit, 1000);
+        return true;
+  
+      case '--squirrel-uninstall':
+        spawnUpdate(['--removeShortcut', exeName]);
+  
+        setTimeout(app.quit, 1000);
+        return true;
+  
+      case '--squirrel-obsolete':  
+        app.quit();
+        return true;
+    }
+  };
 
 const standardTemplate = [
     {

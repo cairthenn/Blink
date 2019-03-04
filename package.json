@@ -4,11 +4,8 @@
   "description": "A Twitch chat client",
   "license": "GPL-3.0",
   "main": "main.js",
-  "author": {
-    "name": "cair",
-    "email": "cairthenn@gmail.com",
-    "url": "https://cairthenn.com/"
-  },
+  "author": "cairthenn",
+  "repository": "https://github.com/cairthenn/Blink/",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -16,10 +13,11 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "electron": "electron .",
-    "electron-build": "ng build --prod && electron .",
-    "fast-build": "ng build --source-map=false && electron .",
-    "dist": "electron-packager . blink --asar"
+    "electron": "set NODE_ENV=dev&& electron .",
+    "electron-build": "set NODE_ENV=dev&& ng build --prod && electron .",
+    "fast-build": "set NODE_ENV=dev&& ng build --source-map=false && electron .",
+    "dist": "electron-packager . blink --asar --overwrite",
+    "setup-win": "node squirrel.packager.js"
   },
   "private": true,
   "dependencies": {
@@ -54,6 +52,7 @@
     "codelyzer": "~4.5.0",
     "electron": "^4.0.6",
     "electron-packager": "^13.1.0",
+    "electron-winstaller": "^3.0.4",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.0.0",

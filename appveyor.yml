@@ -6,7 +6,8 @@ branches:
     - master
 
 artifacts:
-  - path: blink-win32-x64
+  - path: installer/Setup.exe
+    name: blink-win32-x64.exe
 
 install:
   - ps: Install-Product node $env:nodejs_version $env:node_platform
@@ -22,8 +23,9 @@ build_script:
   - npm run build
   - rm -rf src
   - npm run dist
+  - npm run setup-win
 
 deploy:
   provider: GitHub
   auth_token: "%ghreleases%"
-  tag: "%package_version%"
+  tag: "v%package_version%"
