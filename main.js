@@ -245,5 +245,5 @@ const standardTemplate = [
 
 // The first menu slot on Mac OS is reserved by the application
 const macTemplate = [ { label : 'Dawrin Placeholder' } ].concat(standardTemplate);
-const mainMenu = Menu.buildFromTemplate( platform == 'darwin' ? macTemplate : standardTemplate );
+const mainMenu = Menu.buildFromTemplate( process.platform == 'darwin' ? macTemplate : standardTemplate );
 Menu.setApplicationMenu(mainMenu);
