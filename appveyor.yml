@@ -1,6 +1,8 @@
 environment:
   nodejs_version: "10"
 
+skip_non_tags: true
+
 artifacts:
   - path: installer/*
 

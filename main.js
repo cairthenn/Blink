@@ -107,21 +107,18 @@ function update() {
 
 app.on('ready', () => {
 
-    if(process.env.NODE_ENV == 'dev' || platform === 'linux') {
+    if(process.env.NODE_ENV == 'dev' || process.platform === 'linux') {
         launchApplication();
         return;
     }
-    
+
     update().then((restart) => {
         if(reload) {
             autoUpdater.quitAndInstall();
-            console.log('updates');
         } else {
-            console.log('no updates')
             launchApplication();
         }
     }).catch(err => {
-        console.log(err);
         launchApplication();
     });
 });
