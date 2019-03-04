@@ -45,6 +45,6 @@ script:
   - npm run build
   - rm -rf src
   - npm run dist
-  - node run setup
+  - npm run setup
   - echo $package_version
   - git tag $package_version
