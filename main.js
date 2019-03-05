@@ -124,7 +124,7 @@ app.on('ready', () => {
 });
 
 function launchApplication() {
-    const width = settings.get('width') || 500;
+    const width = settings.get('width') || 520;
     const height = settings.get('height') || 800;
     const x = settings.get('x');
     const y = settings.get('y');
