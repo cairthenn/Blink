@@ -124,7 +124,7 @@ function launchApplication() {
     });
 
     ipcMain.on('try-login', (force) => tryLogin(force));
-    window.webContents.toggleDevTools();
+    // window.webContents.toggleDevTools();
     window.loadFile('./dist/index.html');
 }
 
