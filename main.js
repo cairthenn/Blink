@@ -16,19 +16,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { app, BrowserWindow, Menu, autoUpdater, dialog } = require('electron');
+const { app, BrowserWindow, Menu, autoUpdater, dialog, ipcMain } = require('electron');
 const settings = require('electron-settings');
 const auth = require('./oauth');
-const { IRC } = require('./irc');
-
-const server = require('https').createServer();
-const io = require('socket.io')(server);
 
 const updateServer = 'https://update.electronjs.org'
 const feed = `${updateServer}/cairthenn/blink/${process.platform}-${process.arch}/${app.getVersion()}`
 
 let window;
-let clientSocket;
 let loggingIn = false;
 let firstRun = false;
 
@@ -36,16 +31,9 @@ if (handleSquirrelEvent()) {
     return;
 }
 
-const irc = new IRC();
-
 function tryLogin(force = false) {
-
+    console.log('logging in');
     if(loggingIn) {
-        return;
-    }
-
-    if(!clientSocket) {
-        console.log('Local connection not yet established.')
         return;
     }
 
@@ -53,37 +41,13 @@ function tryLogin(force = false) {
 
     auth.getLogin(force).then((login) => {
         loggingIn = false;
-        irc.connect(login.user, login.token).then(() => {
-            clientSocket.emit('irc-connected', login.user, login.token);
-        }).catch(err => {
-            clientSocket.emit('irc-connection-failed');
-            console.log(`Error connecting to IRC: ${err}`);
-        });
+        window.webContents.send('login-success', login.user, login.token);
     }).catch(err => {
         loggingIn = false;
-        clientSocket.emit('irc-connection-failed');
+        window.webContents.send('login-failed', err);
         console.log(`Error connecting to IRC: ${err}`);
     });
 }
-
-io.on('connect', (socket) => {
-    clientSocket = socket;
-    socket.on('outgoing-chat', (channel, message) => irc.sendMessage(channel, message));
-    socket.on('join', (channel) => irc.join(channel));
-    socket.on('part', (channel) => irc.part(channel));
-    socket.on('logout', () => irc.disconnect());
-    socket.on('login', (force) => tryLogin(force));
-
-    irc.on(/(\w*) #(\w*)(?: :(.*))?$/, (type, channel, params, message)  => {
-        socket.emit('irc-data', type, channel, params, message);
-    });
-
-    tryLogin();
-});
-
-server.on('error', (err) => {
-    window.close();
-});
 
 function update() {
     autoUpdater.setFeedURL(feed);
@@ -151,8 +115,6 @@ function launchApplication() {
     });
 
     window.on('closed', () => {
-        irc.disconnect();
-        server.close();
         app.quit();
         window = null;
     });
@@ -161,7 +123,8 @@ function launchApplication() {
         window.show();
     });
 
-    io.listen(8000);
+    ipcMain.on('try-login', (force) => tryLogin(force));
+    window.webContents.toggleDevTools();
     window.loadFile('./dist/index.html');
 }
 

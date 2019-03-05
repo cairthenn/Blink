@@ -77,13 +77,13 @@ export class ChatService {
 
     public commandHandlers = {
         me: (text) => {
-            IrcService.sendMessage(this.channel, `.me ${text}`);
+            this.irc.sendMessage(this.channel, `.me ${text}`);
             const msg = this.processOutgoing(text, true);
             this.addMessage(msg);
         }
     };
 
-    constructor(public settings: SettingsService) {
+    constructor(public settings: SettingsService, private irc: IrcService) {
 
     }
 
@@ -374,7 +374,7 @@ export class ChatService {
     public init(channel: string, username: string, token: string) {
 
         if (this.joined) {
-            IrcService.part(this.channel);
+            this.irc.part(this.channel);
             clearInterval(this.updater);
         }
 
@@ -383,7 +383,7 @@ export class ChatService {
         this.channelDisplay = channel;
         this.channel = channel.toLowerCase();
 
-        IrcService.join(this.channel, {
+        this.irc.join(this.channel, {
             CLEARCHAT : (params, msg) => { this.purge(params, msg); },
             CLEARMSG : (_, msg) => { this.deleteMessage(msg); },
             GLOBALUSERSTATE: (params) => { this.globalUserState(params); },
@@ -398,7 +398,7 @@ export class ChatService {
 
     public close() {
         if (this.joined) {
-            IrcService.part(this.channel);
+            this.irc.part(this.channel);
             clearInterval(this.updater);
         }
     }
@@ -441,7 +441,7 @@ export class ChatService {
         const commandCheck = /^[\.\/]([^ ]*)( .*)?$/.exec(trimmed);
 
         if (!commandCheck) {
-            IrcService.sendMessage(this.channel, trimmed);
+            this.irc.sendMessage(this.channel, trimmed);
             const msg = this.processOutgoing(trimmed);
             this.addMessage(msg);
             return;
@@ -449,7 +449,7 @@ export class ChatService {
 
         const handler = this.commandHandlers[commandCheck[1]];
         if (!handler) {
-            IrcService.sendMessage(this.channel, commandCheck[1]);
+            this.irc.sendMessage(this.channel, commandCheck[1]);
             return;
         }
 

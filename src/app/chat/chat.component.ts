@@ -16,16 +16,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { SettingsComponent } from '../settings/settings.component';
 import { ChatService } from '../chat.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
 import { ChannelDialogComponent } from '../channel-dialog/channel-dialog.component';
-import { ElectronService } from '../electron.service';
 import { IrcService } from '../irc.service';
 import { AES } from 'crypto-js';
 import { SettingsService } from '../settings.service';
+import { ElectronService } from '../electron.service'
 
 @Component({
     selector: 'app-chat',
@@ -48,7 +48,8 @@ export class ChatComponent implements OnInit, AfterViewInit {
     public showTabs = false;
     public viewReady = false;
 
-    constructor(private dialog: MatDialog) { }
+    constructor(private dialog: MatDialog, private zone: NgZone, private irc: IrcService) {
+    }
 
     public saveChannels() {
 
@@ -61,7 +62,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
     }
 
     public createChannel(name: string) {
-        const channel = new ChatService(this.settings);
+        const channel = new ChatService(this.settings, this.irc);
         channel.init(name, this.username, this.token);
         this.tabs.forEach(t => t.active = false);
         channel.active = true;
@@ -162,12 +163,12 @@ export class ChatComponent implements OnInit, AfterViewInit {
     }
 
     public login(force: boolean = false) {
-        IrcService.login(force);
+        ElectronService.ipcRenderer.send('try-login', force);
     }
 
     public logout() {
         this.connected = false;
-        IrcService.logout();
+        this.irc.disconnect();
     }
 
     public dropped(event: CdkDragDrop<ChatService[]>) {
@@ -175,19 +176,26 @@ export class ChatComponent implements OnInit, AfterViewInit {
         this.saveChannels();
     }
 
-    ngAfterViewInit() {
-        this.connected = false;
-        IrcService.init((username, token) => {
-            this.username = username;
-            this.connected = true;
-            this.token = AES.encrypt(token, username);
+    public handleLogin(username: string, token: string) {
+        this.username = username;
+        this.token = AES.encrypt(token, username);
+        this.irc.connect(username, token).then(() => {
             if (!this.loaded) {
                 this.loadChannels();
             }
-        }, (err) => {
+            this.zone.run(() => this.connected = true);
+        }).catch((err) => {
+            console.log(err);
+        })
+    }
 
+    ngAfterViewInit() {
+        
+        ElectronService.ipcRenderer.on('login-success', (sender, username, token) => {
+            this.handleLogin(username, token);
         });
 
+        this.login(false);
     }
 
     ngOnInit() {
