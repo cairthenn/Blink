@@ -30,6 +30,7 @@ const feed = `${updateServer}/cairthenn/blink/${process.platform}-${process.arch
 let window;
 let clientSocket;
 let loggingIn = false;
+let firstRun = false;
 
 if (handleSquirrelEvent()) {
     return;
@@ -107,17 +108,13 @@ function update() {
 
 app.on('ready', () => {
 
-    if(process.env.NODE_ENV == 'dev' || process.platform === 'linux') {
+    if(firstRun || process.env.NODE_ENV == 'dev' || process.platform === 'linux') {
         launchApplication();
         return;
     }
 
     update().then((restart) => {
-        if(reload) {
-            setTimeout(autoUpdater.quitAndInstall, 1000);
-        } else {
-            launchApplication();
-        }
+        launchApplication();
     }).catch(err => {
         launchApplication();
     });
@@ -198,8 +195,8 @@ function handleSquirrelEvent() {
     const squirrelEvent = process.argv[1];
     switch (squirrelEvent) {
       case '--squirrel-firstrun':
-        app.relaunch();
-        return true;
+        firstRun = true;
+        return false;
       case '--squirrel-install':
       case '--squirrel-updated':
         spawnUpdate(['--createShortcut', exeName]);

@@ -8,6 +8,7 @@ if(process.platform === 'win32') {
     const result = ei.createWindowsInstaller({
         appDirectory: dir,
         authors: author,
+        exe: "Blink.exe",
         setupExe: `setup-${process.platform}-${process.arch}.exe`,
         loadingGif: `${process.cwd()}/loading.gif`,
         iconUrl: `${process.cwd()}/dist/icon.ico`,
@@ -23,7 +24,7 @@ if(process.platform === 'win32') {
         appPath: dir,
         name: 'Blink',
         out: 'installer',
-        icon: `${process.cwd()}/dist/icon.ico`,
+        icon: `${process.cwd()}/dist/icon.icns`,
     }, (err) => {
         if(err) {
             console.log(err);

@@ -85,6 +85,7 @@
             ],
             "scripts": [],
             "assets": [
+              "src/icon.icns",
               "src/icon.ico",
               "src/assets"
             ]
