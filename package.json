@@ -16,7 +16,7 @@
     "electron": "set NODE_ENV=dev&& electron .",
     "electron-build": "set NODE_ENV=dev&& ng build --prod && electron .",
     "fast-build": "set NODE_ENV=dev&& ng build --source-map=false && electron .",
-    "dist": "electron-packager . blink --asar --overwrite",
+    "dist": "electron-packager . blink --asar --overwrite --icon=dist/icon.ico",
     "setup": "node squirrel.packager.js"
   },
   "private": true,
