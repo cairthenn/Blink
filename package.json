@@ -17,7 +17,7 @@
     "electron-build": "set NODE_ENV=dev&& ng build --prod && electron .",
     "fast-build": "set NODE_ENV=dev&& ng build --source-map=false && electron .",
     "compile": "ng build --prod",
-    "package": "electron-packager . Blink --asar --overwrite --icon=dist/icon.ico --appCopyright=\"Copyright © 2019 Cairthenn\"",
+    "package": "electron-packager . Blink --asar --overwrite --icon=dist/assets/icon.ico --appCopyright=\"Copyright © 2019 Cairthenn\"",
     "installer": "node squirrel.packager.js",
     "create": "npm run compile && npm run package && npm run installer",
     "clean": "rm -rf installer && rm -rf Blink-*-*"
