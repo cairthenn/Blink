@@ -24,7 +24,7 @@ matrix:
         - sudo apt-get install fakeroot
         - sudo apt-get install rpm
       before_deploy:
-        - zip -r blink-linux-x64.zip -i blink-linux-x64
+        - zip -r blink-linux-x64.zip Blink-linux-x64
       deploy:
         provider: releases
         api_key: $ghreleases

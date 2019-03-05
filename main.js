@@ -72,7 +72,7 @@ function update() {
 
 app.on('ready', () => {
 
-    if(firstRun || process.env.NODE_ENV == 'dev' || process.platform === 'linux') {
+    if(firstRun || process.env.NODE_ENV == 'dev' || process.platform != 'win32') {
         launchApplication();
         return;
     }
