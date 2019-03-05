@@ -21,10 +21,10 @@ test_script:
   - npm --version
 
 build_script:
-  - npm run build
+  - npm run compile
   - rm -rf src
-  - npm run dist
-  - npm run setup
+  - npm run package
+  - npm run installer
 
 deploy:
   provider: GitHub
