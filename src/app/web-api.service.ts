@@ -132,7 +132,7 @@ export class WebApiService {
             }
         }).then(stream => {
             return stream.stream || {};
-        }).catch(err => {});
+        });
     }
 
     public static getChannel(id, key) {
@@ -142,13 +142,13 @@ export class WebApiService {
             }
         }).then(channel => {
             return channel;
-        }).catch(err => {});
+        });
     }
 
     public static getUserList(room: string) {
         return this.get(`${tmiInfo}${room}/chatters`).then(info => {
             return info.chatters;
-        }).catch(err => {});
+        });
     }
 
     public static getEmoji() {
@@ -160,13 +160,13 @@ export class WebApiService {
     public static getBttvGlobal(update: boolean = false) {
         return !update && this.bttv._global || this.get(bttvGlobalUrl).then(global => {
             return this.bttv._global = global.emotes;
-        }).catch(err => []);
+        });
     }
 
     public static getBttvRoom(room: string, update: boolean = false) {
         return !update && this.bttv[room] || this.get(`${bttvChannelUrl}${room}`).then(channel => {
             return this.bttv[room] = channel.emotes;
-        }).catch(err => []);
+        });
     }
 
     public static getBttvEmotes(room: string, update: boolean = false): Promise<any> {
@@ -180,8 +180,6 @@ export class WebApiService {
                 e.type = 'bttv';
              }));
             return values;
-        }).catch(err => {
-            return [[], []];
         });
     }
 
@@ -190,13 +188,13 @@ export class WebApiService {
             return this.ffz._global = global.default_sets.map(n => {
                 return global.sets[n].emoticons;
             }).flat();
-        }).catch(err => []);
+        });
     }
 
     public static getFFzRoom(room: string, update: boolean = false): Promise<any> {
         return !update && this.ffz[room] || this.get(`${ffzChannelUrl}${room}`).then(channel => {
             return this.ffz[room] = channel.sets[channel.room.set].emoticons;
-        }).catch(err => []);
+        });
     }
 
     public static getFfzEmotes(room: string, update: boolean = false): Promise<any> {
@@ -211,10 +209,7 @@ export class WebApiService {
                 e.type = 'ffz';
             }));
             return values;
-        }).catch(err => {
-            return [[], []];
         });
-
     }
 
     public static getTwitchEmoteSets(ids: string[], key: string) {
@@ -263,8 +258,6 @@ export class WebApiService {
 
         return this.getTwitchEmoteSets(needed, key).then(newSets => {
             return have.concat(newSets);
-        }).catch(err => {
-            return have;
         });
     }
 
@@ -272,12 +265,12 @@ export class WebApiService {
 
         const roomPromise = this.get(`${badgeChannelUrl}${room}/display`).then(channel => {
             return channel.badge_sets;
-        }).catch(err => {});
+        });
 
 
         const globalPromise = this.get(badgeGlobalUrl).then(global => {
             return global.badge_sets;
-        }).catch(err => {});
+        });
 
         return Promise.all([roomPromise, globalPromise]).then(values => {
 
@@ -286,8 +279,6 @@ export class WebApiService {
             });
 
             return this.badges[room] = values[1];
-        }).catch(err => {
-            return {};
         });
     }
 
@@ -303,7 +294,7 @@ export class WebApiService {
                 obj[item.prefix.toLowerCase()] = item;
                 return obj;
             }, {});
-        }).catch(err => {});
+        });
     }
 
     public static get(url: string, config: any = {}) {

@@ -79,7 +79,7 @@ export class ChatComponent implements OnInit {
             });
         }
         const duration = names.length * 50;
-        if(duration > 500) {
+        if (duration > 500) {
             setTimeout(() => this.loaded = true, duration);
         } else {
             this.loaded = true;

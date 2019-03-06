@@ -58,7 +58,7 @@ export class ChatService {
     private userState: any = {};
     private roomState: any = {};
     private odd = true;
-    
+
     public joined = false;
     public level = 0;
     public username = '';
@@ -181,7 +181,7 @@ export class ChatService {
     public unTimeout(username: string) {
         this.irc.sendMessage(this.channel, `.untimeout ${username}`);
     }
-    
+
     public timeout(username: any, timeoutTime: number) {
         this.irc.sendMessage(this.channel, `.timeout ${username} ${timeoutTime}`);
     }
@@ -210,10 +210,14 @@ export class ChatService {
         const key = this.key;
         WebApiService.getStream(this.channel, key).then(stream => {
             this.streamInfo = stream;
+        }).catch(err => {
+            console.log(`Error fetching stream info: ${err}`);
         });
 
         WebApiService.getChannel(this.channel, key).then(channel => {
             this.channelInfo = channel;
+        }).catch(err => {
+            console.log(`Error fetching channel info: ${err}`);
         });
     }
 
@@ -235,6 +239,8 @@ export class ChatService {
         WebApiService.getUserList(this.channel).then(users => {
             this.userList = users;
             this.userList.autocomplete = [].concat(users.broadcaster, users.moderators, users.vips, users.staff, users.viewers).sort();
+        }).catch(err => {
+            console.log(`Error fetching users: ${err}`);
         });
     }
 
@@ -242,6 +248,8 @@ export class ChatService {
         WebApiService.getBadges(this.roomState['room-id']).then(badges => {
             this.badges = badges;
             this.updateIfActive();
+        }).catch(err => {
+            console.log(`Error fetching badges: ${err}`);
         });
     }
 
@@ -249,6 +257,8 @@ export class ChatService {
         WebApiService.getCheers(this.roomState['room-id'], this.key).then(cheers => {
             this.cheers = cheers;
             this.updateIfActive();
+        }).catch(err => {
+            console.log(`Error fetching cheers: ${err}`);
         });
     }
 
@@ -261,6 +271,8 @@ export class ChatService {
                 return obj;
             }, {});
             this.updateEmoteLookup();
+        }).catch(err => {
+            console.log(`Error fetching FFZ emotes: ${err}`);
         });
     }
 
@@ -273,6 +285,8 @@ export class ChatService {
                 return obj;
             }, {});
             this.updateEmoteLookup();
+        }).catch(err => {
+            console.log(`Error fetching BTTV emotes: ${err}`);
         });
     }
 
@@ -288,6 +302,8 @@ export class ChatService {
                 return obj;
             }, {});
             this.updateEmoteLookup();
+        }).catch(err => {
+            console.log(`Error fetching Twitch emotes: ${err}`);
         });
 
     }
@@ -309,7 +325,7 @@ export class ChatService {
 
         this.userState = state;
         this.userBadges = this.parseBadges(state.badges);
-        this.level = this.getUserLevel(this.userBadges);
+        this.level = this.checkUserLevel(this.userBadges);
         this.colors = ChatService.colorCorrect(state.color);
     }
 
@@ -436,10 +452,10 @@ export class ChatService {
     }
 
     public updateView() {
-        if(!this.component) {
+        if (!this.component) {
             return;
         }
-        
+
         this.component.update();
     }
 
@@ -555,7 +571,7 @@ export class ChatService {
             const displayName = params['msg-param-recipient-display-name'];
             const count = Number(params['msg-param-sender-count']);
             const message = `gifted a Tier ${tier} subscription to`;
-            const countMessage = count > 0 ? ((count > 1) ? ' They have gifted ${count} subscriptions in the channel!' 
+            const countMessage = count > 0 ? ((count > 1) ? ' They have gifted ${count} subscriptions in the channel!'
                 : ' This is their first gift subscription in the channel!') : '';
             console.log(params);
             return {
@@ -627,15 +643,15 @@ export class ChatService {
         return regex.test(word);
     }
 
-    private getUserLevel(badges) {
-        
-        for(var i in badges) { 
-            const badge = badges[i]
-            if(badge[0] == 'moderator') {
+    private checkUserLevel(badges) {
+
+        for (const i of Object.keys(badges)) {
+            const badge = badges[i];
+            if (badge[0] === 'moderator') {
                 return 1;
-            } else if(badge[0] == 'broadcaster') {
+            } else if (badge[0] === 'broadcaster') {
                 return 2;
-            } else if(badge[0] == 'staff') {
+            } else if (badge[0] === 'staff') {
                 return 3;
             }
         }
@@ -647,7 +663,7 @@ export class ChatService {
 
         const colors = ChatService.colorCorrect(params.color);
 
-        const badges = this.parseBadges(params.badges);
+        const parsedBadges = this.parseBadges(params.badges);
 
         const message = {
             id: params.id,
@@ -658,8 +674,8 @@ export class ChatService {
             lightColor: colors[0],
             darkColor: colors[1],
             text: original,
-            badges: badges,
-            level: this.getUserLevel(badges),
+            badges: parsedBadges,
+            level: this.checkUserLevel(parsedBadges),
             fragments: undefined,
             chat: false,
             friend: false,
