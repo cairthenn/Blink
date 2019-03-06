@@ -17,7 +17,7 @@
 -->
 
 <div class="mat-app-background cc-flex cc-flex-auto cc-flex-column" [style.min-width.px]="showTabs ? tabWidth + contentWidth : contentWidth" [class.chat-light-theme]="settings.lightTheme">
-    <mat-divider [style.border-top-color]="settings.lightTheme ? 'rgba(103,58,183,.3)' : 'rgba(0,0,0,.3)'"></mat-divider>
+    <mat-divider [style.border-top-color]="settings.lightTheme ? 'rgba(94,53,177,.3)' : 'rgba(0,0,0,.3)'"></mat-divider>
     <div *ngIf="!connected || tabs.length == 0; else contentArea" class="mat-app-background cc-flex cc-flex-column cc-flex-auto">
         <div class="cc-flex cc-flex-column cc-flex-auto cc-justify-content-center cc-align-items-center">
             <span class="cc-font-size-4 cc-pd-b-1">Welcome to Blink!</span>
@@ -36,7 +36,7 @@
 
             <mat-sidenav #drawer class="cc-relative" mode="side" [style.width.px]="tabWidth" [opened]="settings.drawer">
 
-                <div class="cc-flex cc-flex-column cc-full-height" [style.background-color]="settings.lightTheme ? 'rgba(103,58,183)' : 'rgba(0,0,0,.3)'">
+                <div class="cc-flex cc-flex-column cc-full-height" [style.background-color]="settings.lightTheme ? 'rgba(94,53,177)' : 'rgba(0,0,0,.3)'">
                     <div class="cc-flex-auto scrollbar--hidden" [cdkDropListData]="tabs" (cdkDropListDropped)="dropped($event)" cdkDropList>
                         <div>
                             <div *ngFor="let tab of tabs" class="cc-relative cc-flex cc-flex-column cc-full-width" [class.tab-new-messages]="tab.newMessages" cdkDrag>
