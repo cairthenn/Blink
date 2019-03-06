@@ -571,9 +571,8 @@ export class ChatService {
             const displayName = params['msg-param-recipient-display-name'];
             const count = Number(params['msg-param-sender-count']);
             const message = `gifted a Tier ${tier} subscription to`;
-            const countMessage = count > 0 ? ((count > 1) ? ' They have gifted ${count} subscriptions in the channel!'
+            const countMessage = count > 0 ? ((count > 1) ? ` They've gifted ${count} subscriptions in the channel!`
                 : ' This is their first gift subscription in the channel!') : '';
-            console.log(params);
             return {
                 subscription: true,
                 subType: 1,
