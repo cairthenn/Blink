@@ -78,7 +78,12 @@ export class ChatComponent implements OnInit {
                 this.addChannel(name);
             });
         }
-        setTimeout(() => this.loaded = true, names.length * 50);
+        const duration = names.length * 50;
+        if(duration > 500) {
+            setTimeout(() => this.loaded = true, duration);
+        } else {
+            this.loaded = true;
+        }
     }
 
     public openSettings(tab: ChatService) {
