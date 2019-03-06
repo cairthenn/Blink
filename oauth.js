@@ -19,6 +19,7 @@
 const { BrowserWindow } = require('electron');
 const qs = require('querystring');
 const axios = require('axios');
+const crypto = require('crypto');
 
 const authUrl = 'https://id.twitch.tv/oauth2/authorize';
 const validateUrl = 'https://id.twitch.tv/oauth2/validate';
@@ -28,13 +29,14 @@ const clientId = 'ut8pnp247zcvfj7gga2lxo8kp2d9lz';
 let authWindow;
 
 module.exports.getLogin = function(forceVerify) {
-
+    const state = crypto.randomBytes(30).toString('hex');
     const urlParams = {
         client_id: clientId,
         response_type: 'token',
         redirect_uri: 'https://cairthenn.com',
         scope: 'chat:edit chat:read whispers:edit whispers:read channel:moderate whispers:edit',
         force_verify: forceVerify || false,
+        state: state,
     };
 
     var promise = new Promise(function(resolve, reject) {
@@ -72,6 +74,10 @@ module.exports.getLogin = function(forceVerify) {
 
             try {
                 const auth = parseOauth(url);
+                if(auth.state !== state) {
+                    reject('The response token was not valid.');
+                    return;
+                }
                 resolve(auth);
                 success = true;
             }
