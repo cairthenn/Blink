@@ -112,8 +112,8 @@ export class MessagesComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        this.cdr.detach();
         this.service.register(this);
+        this.cdr.detach();
     }
 
     ngOnInit() {

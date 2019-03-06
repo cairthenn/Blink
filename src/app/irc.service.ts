@@ -22,38 +22,32 @@ const ircFormat = /^@?(.*):.*tmi.twitch.tv (.*)/;
 const paramsFormat = /([^=]*)=([^;]*);?/g;
 const messageFormat = /(\w*) #(\w*)(?: :(.*))?$/;
 
-import { Injectable } from '@angular/core';
 import { ElectronService } from './electron.service';
+import { NgZone } from '@angular/core';
 
-@Injectable({
-    providedIn: 'root'
-})
 export class IrcService {
     private handlers: any = {};
-    private netSocket : any;
+    private socket: any;
 
     public connected = false;
     public channels = [];
     private callbacks = [];
     public user: string;
 
-    private Socket;
-
-    constructor() {
-        this.Socket = ElectronService.remote.require('net').Socket;
+    constructor(private zone: NgZone) {
     }
 
     public connect(name: string, token: string) {
 
-        if(this.connected) {
+        if (this.connected) {
             this.disconnect();
         }
+
         this.user = name;
-        
-        this.netSocket = new this.Socket();
+        this.socket = new (ElectronService.remote.require('net').Socket)();
 
         return new Promise((resolve, reject) => {
-            this.netSocket.on('connect', () => {
+            this.socket.on('connect', () => {
                 this.connected = true;
                 this.send(`PASS oauth:${token}`);
                 this.send(`NICK ${name}`);
@@ -61,15 +55,15 @@ export class IrcService {
                 this.send(`CAP REQ :twitch.tv/commands`);
                 this.channels.forEach(c => {
                     this.joinImpl(c);
-                })
+                });
                 resolve();
             });
 
-            this.netSocket.on('data', (data) => {
+            this.socket.on('data', (data) => {
                 const msgs = String(data).split(/\r?\n/);
                 msgs.forEach(msg => {
-                    if(msg.length > 0) {
-                        if(msg == 'PING :tmi.twitch.tv') {
+                    if (msg.length > 0) {
+                        if (msg === 'PING :tmi.twitch.tv') {
                             this.send('PONG :tmi.twitch.tv');
                         } else {
                             this.receive(msg);
@@ -78,36 +72,35 @@ export class IrcService {
                 });
             });
 
-            this.netSocket.on('close', () => {
-                console.log('attempting reconnection')
+            this.socket.on('close', () => {
                 setTimeout(() => {
                     this.connect(name, token);
                 }, 15000);
             });
 
-            this.netSocket.on('error', (err) => {
+            this.socket.on('error', (err) => {
                 console.log(err);
-            })
+            });
 
-            this.netSocket.connect(port, host);
+            this.socket.connect(port, host);
         });
     }
 
     public disconnect() {
-        if(!this.connected) {
+        if (!this.connected) {
             return;
         }
         this.send('QUIT');
         this.connected = false;
-        this.netSocket.end();
+        this.socket.end();
     }
 
     public send(data: string) {
-        if(!this.connected) {
+        if (!this.connected) {
             return;
         }
 
-        this.netSocket.write(`${data}\n`, 'utf-8');
+        this.socket.write(`${data}\n`, 'utf-8');
     }
 
     public joinImpl(channel: string) {
@@ -115,27 +108,27 @@ export class IrcService {
     }
 
     public join(channel: string, callbacks: any) {
-        if(this.channels.includes(channel)){
+        if (this.channels.includes(channel)) {
             return;
         }
-        
+
         this.handlers[channel] = callbacks;
         this.channels.push(channel);
         this.joinImpl(channel);
     }
 
     public part(channel) {
-        if(!this.channels.includes(channel)) {
+        if (!this.channels.includes(channel)) {
             return;
         }
 
         delete this.handlers[channel];
-        this.channels = this.channels.filter(x => x != channel);
+        this.channels = this.channels.filter(x => x !== channel);
         this.send(`PART #${channel}`);
     }
 
     public sendMessage(channel: string, message: string) {
-        if(!this.channels.includes(channel)) {
+        if (!this.channels.includes(channel)) {
             return;
         }
         this.send(`:${this.user}!${this.user}@${this.user}.tmi.twitch.tv PRIVMSG #${channel} :${message}`);
@@ -154,19 +147,20 @@ export class IrcService {
 
         const split = ircFormat.exec(data);
 
-        if(!split) {
+        if (!split) {
             console.log(`Unable to parse incoming IRC message: ${data}`);
             return;
         }
 
-        const params = {}
-        var match;
-        while(match = paramsFormat.exec(split[1])) {
+        const params = {};
+        let match = paramsFormat.exec(split[1]);
+        while (match) {
             params[match[1]] = match[2].trim();
+            match = paramsFormat.exec(split[1]);
         }
 
         const msg = messageFormat.exec(split[2]);
-        if(!msg) {
+        if (!msg) {
             return false;
         }
 
@@ -178,7 +172,10 @@ export class IrcService {
             return;
         }
 
-        this.handlers[channel][type](params, message);
+        this.zone.run(() => {
+            this.handlers[channel][type](params, message);
+        });
 
-    };
+
+    }
 }

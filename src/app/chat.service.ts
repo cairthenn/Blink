@@ -153,7 +153,6 @@ export class ChatService {
             h += 360;
         }
 
-        
         let light;
         let dark;
 

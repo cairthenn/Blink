@@ -32,7 +32,6 @@ if (handleSquirrelEvent()) {
 }
 
 function tryLogin(force = false) {
-    console.log('logging in');
     if(loggingIn) {
         return;
     }
@@ -57,7 +56,7 @@ function update() {
             resolve(false);
         })
 
-        autoUpdater.on('update-downloaded', () => {
+        autoUpdater.on('update-available', () => {
             resolve(true);
         })
 

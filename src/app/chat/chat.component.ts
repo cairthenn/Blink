@@ -25,13 +25,13 @@ import { ChannelDialogComponent } from '../channel-dialog/channel-dialog.compone
 import { IrcService } from '../irc.service';
 import { AES } from 'crypto-js';
 import { SettingsService } from '../settings.service';
-import { ElectronService } from '../electron.service'
+import { ElectronService } from '../electron.service';
 
 @Component({
     selector: 'app-chat',
     templateUrl: './chat.component.html',
 })
-export class ChatComponent implements OnInit, AfterViewInit {
+export class ChatComponent implements OnInit {
 
     private loaded = false;
     private token: string;
@@ -47,8 +47,9 @@ export class ChatComponent implements OnInit, AfterViewInit {
     public showSettings = false;
     public showTabs = false;
     public viewReady = false;
+    public irc: IrcService;
 
-    constructor(private dialog: MatDialog, private zone: NgZone, private irc: IrcService) {
+    constructor(private dialog: MatDialog, private zone: NgZone) {
     }
 
     public saveChannels() {
@@ -140,8 +141,9 @@ export class ChatComponent implements OnInit, AfterViewInit {
             this.select(find);
             return;
         }
-
-        this.createChannel(name);
+        this.zone.run(() => {
+            this.createChannel(name);
+        });
     }
 
     public newTab() {
@@ -179,27 +181,27 @@ export class ChatComponent implements OnInit, AfterViewInit {
     public handleLogin(username: string, token: string) {
         this.username = username;
         this.token = AES.encrypt(token, username);
+
         this.irc.connect(username, token).then(() => {
-            if (!this.loaded) {
-                this.loadChannels();
-            }
-            this.zone.run(() => this.connected = true);
+            this.zone.run(() => {
+                if (!this.loaded) {
+                    this.loadChannels();
+                }
+                this.connected = true;
+            });
+
         }).catch((err) => {
             console.log(err);
-        })
+        });
     }
 
-    ngAfterViewInit() {
-        
+    ngOnInit() {
+        this.irc = new IrcService(this.zone);
         ElectronService.ipcRenderer.on('login-success', (sender, username, token) => {
             this.handleLogin(username, token);
         });
 
         this.login(false);
-    }
-
-    ngOnInit() {
-
     }
 
 }

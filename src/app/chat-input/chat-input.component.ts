@@ -79,7 +79,6 @@ export class ChatInputComponent implements OnInit {
         return this.service.emotes.lookup;
     }
 
-
     private filter(value: string): any[] {
 
         if (!value || !value.length) {

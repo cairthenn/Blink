@@ -16,7 +16,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
 import axios from 'axios';
 
 const twitchStreamUrl = 'https://api.twitch.tv/kraken/streams/';
@@ -117,11 +116,6 @@ const fixes = {
         `:)`,
     ],
 };
-
-
-@Injectable({
-    providedIn: 'root'
-})
 export class WebApiService {
 
     public static badges: any = {};
@@ -130,8 +124,6 @@ export class WebApiService {
     public static twitch: any = {};
     public static cheers: any = {};
     public static emoji: any = {};
-
-    constructor() { }
 
     public static getStream(id, key) {
         return this.get(`${twitchStreamUrl}${id}`, {
