@@ -311,7 +311,6 @@ export class ChatService {
         this.userBadges = this.parseBadges(state.badges);
         this.level = this.getUserLevel(this.userBadges);
         this.colors = ChatService.colorCorrect(state.color);
-        console.log(this.level);
     }
 
     private onJoin() {
@@ -437,6 +436,10 @@ export class ChatService {
     }
 
     public updateView() {
+        if(!this.component) {
+            return;
+        }
+        
         this.component.update();
     }
 
@@ -554,7 +557,7 @@ export class ChatService {
             const message = `gifted a Tier ${tier} subscription to`;
             const countMessage = count > 0 ? ((count > 1) ? ' They have gifted ${count} subscriptions in the channel!' 
                 : ' This is their first gift subscription in the channel!') : '';
-
+            console.log(params);
             return {
                 subscription: true,
                 subType: 1,
@@ -611,7 +614,8 @@ export class ChatService {
                 type: 'bits',
                 name: bits[0],
                 amount: spent,
-                color: info.tiers[tier].color,
+                lightColor: info.tiers[tier].color,
+                darkColor: info.tiers[tier].color,
                 dark: info.tiers[tier].images.dark.animated[scale],
                 light: info.tiers[tier].images.light.animated[scale],
             };

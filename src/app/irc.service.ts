@@ -35,6 +35,7 @@ export class IrcService {
     public user: string;
 
     constructor(private zone: NgZone) {
+        ElectronService.remote.getCurrentWindow().on('close', () => this.disconnect());
     }
 
     public connect(name: string, token: string) {

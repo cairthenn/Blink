@@ -18,19 +18,30 @@
 
 <div class="mat-app-background cc-flex cc-flex-auto cc-flex-column" [style.min-width.px]="showTabs ? tabWidth + contentWidth : contentWidth" [class.chat-light-theme]="settings.lightTheme">
     <mat-divider [style.border-top-color]="settings.lightTheme ? 'rgba(0,0,0,.85)' : 'rgba(0,0,0,.3)'"></mat-divider>
-    <div *ngIf="!connected || tabs.length == 0; else contentArea" class="mat-app-background cc-flex cc-flex-column cc-flex-auto">
+    <div *ngIf="!connected || tabs.length == 0; else loadingCheck" class="mat-app-background cc-flex cc-flex-column cc-flex-auto">
         <div class="cc-flex cc-flex-column cc-flex-auto cc-justify-content-center cc-align-items-center">
+                
             <span class="cc-font-size-4 cc-pd-b-1">Welcome to Blink!</span>
             <mat-form-field color="accent" appearance="outline" class="cc-margin-0 cc-dialog">
                 <mat-label>Enter a channel</mat-label>
                 <input #noChannels matInput placeholder="Enter a channel" (keydown.enter)="addChannel(noChannels.value)" cdkFocusInitial [disabled]="!connected">
             </mat-form-field>
-            <span *ngIf="connected" class="cc-font-size-6">Logged in as <strong>{{username}}</strong>! <a (click)="login(true)">Not you?</a></span>
-            <span *ngIf="!connected" class="cc-font-size-6"><a (click)="login()">To get started, connect to your Twitch account</a></span>
+            <span *ngIf="connected; else loginMessage" class="cc-font-size-6">Logged in as <strong>{{username}}</strong>! <a (click)="login(true)">Not you?</a></span>
+            <ng-template #loginMessage>
+                <span class="cc-font-size-6"><a (click)="login()">To get started, connect to your Twitch account</a></span>
+            </ng-template>
         </div>
     </div>
+    <ng-template #loadingCheck>
+        <div *ngIf="!loaded; else contentArea" class="cc-flex cc-flex-column cc-flex-auto cc-align-items-center cc-justify-content-center">
+            <mat-spinner color='accent'></mat-spinner>
+            <span class="cc-mg-t-2 cc-font-size-4" style="opacity: .8">
+                Getting things ready!
+            </span>
+        </div>
+    </ng-template>
     <ng-template #contentArea>
-        <mat-sidenav-container class="cc-full-height">
+        <mat-sidenav-container class="cc-full-height cc-overflow-hidden">
 
             <!-- Chat Tab Area -->
 
@@ -71,8 +82,8 @@
 
             <!-- Main Content Area -->
 
-            <mat-sidenav-content [style.min-width.px]="contentWidth">
-                <div class="cc-full-height cc-full-width cc-relative" [style.background-color]="settings.lightTheme ? 'unset' : 'rgba(0,0,0,.3)'">
+            <mat-sidenav-content [style.min-width.px]="contentWidth" class="cc-overflow-hidden">
+                <div class="cc-full-height cc-full-width cc-relative cc-overflow-hidden" [style.background-color]="settings.lightTheme ? 'unset' : 'rgba(0,0,0,.3)'">
                     <div *ngFor="let tab of tabs" class="cc-absolute cc-full-height cc-full-width" [hidden]="!tab.active">
 
                         <!-- Chat Header -->

@@ -32,7 +32,7 @@ import { ChatInputComponent } from './chat-input/chat-input.component';
 import {    MatDialogModule,   MatInputModule,     MatSidenavModule,    MatFormFieldModule,
             MatMenuModule,     MatToolbarModule,   MatButtonModule,     MatIconModule,
             MatCheckboxModule, MatCardModule,      MatDividerModule,    MatBadgeModule,
-            MatAutocompleteModule, MatOptionModule } from '@angular/material';
+            MatOptionModule,   MatProgressSpinnerModule, MatAutocompleteModule } from '@angular/material';
 import { ViewerDialogComponent } from './viewer-dialog/viewer-dialog.component';
 import { TitlebarComponent } from './titlebar/titlebar.component';
 
@@ -69,8 +69,9 @@ import { TitlebarComponent } from './titlebar/titlebar.component';
         MatCardModule,
         MatDividerModule,
         MatBadgeModule,
-        MatAutocompleteModule,
         MatOptionModule,
+        MatAutocompleteModule,
+        MatProgressSpinnerModule,
     ],
     entryComponents: [
         ChannelDialogComponent,

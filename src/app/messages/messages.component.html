@@ -59,54 +59,67 @@
                 <span class="chat-username">{{msg.raider}}</span> is raiding with a party of {{msg.viewers}}!
             </div>
 
-            <span *ngIf="msg.status">{{msg.text}} </span>
+            <span *ngIf="msg.status; else chatTemplate">{{msg.text}} </span>
 
-            <span *ngIf="msg.chat" >
-                <span *ngIf="!msg.status && settings.timestamps" class="cc-font-size-8" style="opacity: .8">[{{msg.timestamp}}] </span>
-                <span *ngIf="!msg.status && service.level > msg.level && settings.modIcons" class="cc-pd-r-05">
-                    <mat-icon *ngIf="settings.banIcon && !msg.banned" aria-label="Ban User" class="mod-icon" (click)="ban(msg)">gavel</mat-icon>
-                    <mat-icon *ngIf="settings.banIcon && msg.banned" aria-label="Ban User" class="mod-icon" (click)="unban(msg)">done</mat-icon>
-                    <mat-icon *ngIf="settings.timeoutIcon && !msg.timedOut" aria-label="Timeout User" class="mod-icon" (click)="timeout(msg)">schedule</mat-icon>
-                    <mat-icon *ngIf="settings.timeoutIcon && msg.timedOut" aria-label="Timeout User" class="mod-icon" (click)="unTimeout(msg)">restore</mat-icon>
-                    <mat-icon *ngIf="settings.purgeIcon" aria-label="Purge User" class="mod-icon" (click)="purge(msg)">block</mat-icon>
-                    <mat-icon *ngIf="settings.deleteIcon" aria-label="Delete Message" class="mod-icon" (click)="delete(msg)">delete_outline</mat-icon>
-                </span>
-                <span *ngIf="settings.badges"><img *ngFor="let badge of msg.badges" class="chat-badge"
-                    [src]="service.badges[badge[0]] ? service.badges[badge[0]].versions[badge[1]].image_url_1x : null"
-                    /></span>
-                <span *ngIf="msg.action" class="chat-username" [style.color]="settings.lightTheme ? msg.lightColor : msg.darkColor">{{msg.username}} </span>
-                <span *ngIf="!msg.action" class="chat-username" [style.color]="settings.lightTheme ? msg.lightColor : msg.darkColor">{{msg.username}}: </span>
-                <span *ngFor="let f of msg.fragments" [style.color]="settings.lightTheme ? f.lightColor : f.darkColor">
-                    <span [ngSwitch]="f.type">
-                        <span *ngSwitchCase="'twitch'">
-                            <span *ngIf="settings.twitchEmotes"><img class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" >&nbsp;</span>
-                            <span *ngIf="!settings.twitchEmotes">{{f.code}} </span>
-                        </span>
-                        <span *ngSwitchCase="'ffz'">
-                            <span *ngIf="settings.ffzEmotes"><img class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" >&nbsp;</span>
-                            <span *ngIf="!settings.ffzEmotes">{{f.code}} </span>
-                        </span>
-                        <span *ngSwitchCase="'bttv'">
-                            <span *ngIf="settings.bttvEmotes"><img class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" >&nbsp;</span>
-                            <span *ngIf="!settings.bttvEmotes">{{f.code}} </span>
-                        </span>
-                        <span *ngSwitchCase="'bits'">
-                            <span *ngIf="settings.bits">
-                                <img class="cc-inline-block chat-emote" [src]="settings.lightTheme ? f.light : f.dark" [alt]="f.name" >
-                                <span>&nbsp;<strong>{{f.amount}} </strong></span>
+            <ng-template #chatTemplate>
+                <span *ngIf="msg.chat">
+                    <span *ngIf="settings.timestamps" class="cc-font-size-8" style="opacity: .8">[{{msg.timestamp}}] </span>
+                    <span *ngIf="service.level > msg.level && settings.modIcons" class="cc-pd-r-05">
+                        <mat-icon *ngIf="settings.banIcon && !msg.banned" aria-label="Ban User" class="mod-icon" (click)="ban(msg)">gavel</mat-icon>
+                        <mat-icon *ngIf="settings.banIcon && msg.banned" aria-label="Ban User" class="mod-icon" (click)="unban(msg)">done</mat-icon>
+                        <mat-icon *ngIf="settings.timeoutIcon && !msg.timedOut" aria-label="Timeout User" class="mod-icon" (click)="timeout(msg)">schedule</mat-icon>
+                        <mat-icon *ngIf="settings.timeoutIcon && msg.timedOut" aria-label="Timeout User" class="mod-icon" (click)="unTimeout(msg)">restore</mat-icon>
+                        <mat-icon *ngIf="settings.purgeIcon" aria-label="Purge User" class="mod-icon" (click)="purge(msg)">block</mat-icon>
+                        <mat-icon *ngIf="settings.deleteIcon" aria-label="Delete Message" class="mod-icon" (click)="delete(msg)">delete_outline</mat-icon>
+                    </span>
+                    <span *ngIf="settings.badges"><img *ngFor="let badge of msg.badges" class="chat-badge"
+                        [src]="service.badges[badge[0]] ? service.badges[badge[0]].versions[badge[1]].image_url_1x : null"
+                        /></span>
+                    <span *ngIf="msg.action; else nonAction" class="chat-username" [style.color]="settings.lightTheme ? msg.lightColor : msg.darkColor">{{msg.username}} </span>
+                    <ng-template #nonAction>
+                        <span class="chat-username" [style.color]="settings.lightTheme ? msg.lightColor : msg.darkColor">{{msg.username}}: </span>
+                    </ng-template>
+                    <span *ngFor="let f of msg.fragments" [style.color]="settings.lightTheme ? f.lightColor : f.darkColor">
+                        <span [ngSwitch]="f.type">
+                            <span *ngSwitchCase="'twitch'">
+                                <span *ngIf="settings.twitchEmotes; else noTwitch"><img class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" >&nbsp;</span>
+                                <ng-template #noTwitch>
+                                    <span>{{f.code}} </span>
+                                </ng-template>
                             </span>
-                            <span *ngIf="!settings.bits">{{f.name}} </span>
+                            <span *ngSwitchCase="'ffz'">
+                                <span *ngIf="settings.ffzEmotes; else noFFZ"><img class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" >&nbsp;</span>
+                                <ng-template #noFFZ>
+                                    <span>{{f.code}} </span>
+                                </ng-template>
+                            </span>
+                            <span *ngSwitchCase="'bttv'">
+                                <span *ngIf="settings.bttvEmotes; else noBTTV"><img class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" >&nbsp;</span>
+                                <ng-template #noBTTV>
+                                    <span>{{f.code}} </span>
+                                </ng-template>
+                            </span>
+                            <span *ngSwitchCase="'bits'">
+                                <span *ngIf="settings.bits; else noBits">
+                                    <img class="cc-inline-block chat-emote" [src]="settings.lightTheme ? f.light : f.dark" [alt]="f.name" >
+                                    <span>&nbsp;<strong>{{f.amount}} </strong></span>
+                                </span>
+                                <ng-template #noBits>
+                                    <span *ngIf="!settings.bits">{{f.name}} </span>
+                                </ng-template>
+                            </span>
+                            <span *ngSwitchCase="'url'">
+                                <a class="chat-link" (click)="service.openExternal(f.text)">{{f.text}} </a>
+                            </span>
+                            <span *ngSwitchCase="'username'">
+                                <span class="chat-username">{{f.text}} </span>
+                            </span>
+                            <span *ngSwitchDefault>{{f.text}} </span>
                         </span>
-                        <span *ngSwitchCase="'url'">
-                            <a class="chat-link" (click)="service.openExternal(f.text)">{{f.text}} </a>
-                        </span>
-                        <span *ngSwitchCase="'username'">
-                            <span class="chat-username">{{f.text}} </span>
-                        </span>
-                        <span *ngSwitchDefault>{{f.text}} </span>
                     </span>
                 </span>
-            </span>
+            </ng-template>
+
         </div>
         <mat-divider *ngIf="settings.separators" class="chat-line-separator"></mat-divider>
     </div>

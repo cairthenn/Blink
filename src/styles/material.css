@@ -25,6 +25,10 @@
     overflow: hidden!important;
 }
 
+.mat-spinner svg circle {
+    animation-duration: 10s!important;
+}
+
 .user-notice-icon {
     position: relative!important;
     margin-right: 2px!important;
