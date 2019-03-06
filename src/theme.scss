@@ -34,7 +34,7 @@ $chat-theme:   mat-dark-theme($chat-primary, $chat-accent, $chat-warn);
 
 
 // Define an alternate light theme.
-$light-accent:  mat-palette($mat-deep-purple, A200, A100, A400);
+$light-accent:  mat-palette($mat-deep-purple, 400, 300, 600);
 $light-theme:   mat-light-theme($chat-primary, $light-accent, $chat-warn);
 
 .chat-light-theme {

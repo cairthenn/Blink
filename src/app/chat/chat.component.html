@@ -17,7 +17,7 @@
 -->
 
 <div class="mat-app-background cc-flex cc-flex-auto cc-flex-column" [style.min-width.px]="showTabs ? tabWidth + contentWidth : contentWidth" [class.chat-light-theme]="settings.lightTheme">
-    <mat-divider style="opacity: .8"></mat-divider>
+    <mat-divider [style.border-top-color]="settings.lightTheme ? 'rgba(103,58,183,.3)' : 'rgba(0,0,0,.3)'"></mat-divider>
     <div *ngIf="!connected || tabs.length == 0; else contentArea" class="mat-app-background cc-flex cc-flex-column cc-flex-auto">
         <div class="cc-flex cc-flex-column cc-flex-auto cc-justify-content-center cc-align-items-center">
             <span class="cc-font-size-4 cc-pd-b-1">Welcome to Blink!</span>
@@ -36,16 +36,17 @@
 
             <mat-sidenav #drawer class="cc-relative" mode="side" [style.width.px]="tabWidth" [opened]="settings.drawer">
 
-                <div class="cc-flex cc-flex-column cc-full-height" [style.background-color]="settings.lightTheme ?'unset' : 'rgba(0,0,0,.3)'">
+                <div class="cc-flex cc-flex-column cc-full-height" [style.background-color]="settings.lightTheme ? 'rgba(103,58,183)' : 'rgba(0,0,0,.3)'">
                     <div class="cc-flex-auto scrollbar--hidden" [cdkDropListData]="tabs" (cdkDropListDropped)="dropped($event)" cdkDropList>
                         <div>
                             <div *ngFor="let tab of tabs" class="cc-relative cc-flex cc-flex-column cc-full-width" [class.tab-new-messages]="tab.newMessages" cdkDrag>
-                                <button mat-flat-button class="tab-button cc-pd-x-05 cc-full-width" (click)="select(tab)" (dblclick)="rename(tab)" [color]="tab.active ? 'primary' : 'unset'" style="border-radius: 0;">
+                                <button mat-flat-button class="tab-button cc-pd-x-05 cc-full-width" (click)="select(tab)" (dblclick)="rename(tab)" style="border-radius: 0;"
+                                    [color]="tab.active ? (settings.lightTheme ? 'accent' : 'primary') : (settings.lightTheme ? 'primary' : 'unset')">
                                     <div class="cc-flex cc-flex-shrink-0 cc-justify-content-between cc-overflow-visible" [style.background-color]="settings.lightTheme ? 'unset' : 'rgba(0,0,0,.3)'">
                                         <div class="cc-flex cc-full-width cc-relative" style="max-width: 80%">
-                                            <div *ngIf="tab.mentions > 0" class="cc-font-size-6 notification-text">{{tab.mentions}}</div>
-                                            <mat-icon class="cc-absolute" [class.default-indicator]="tab.mentions == 0" [class.notification-indicator]="tab.mentions > 0" [color]="tab.mentions > 0 ? 'accent' : tab.streamInfo._id ? 'warn' : 'auto'">lens</mat-icon>
-                                            <div class="cc-flex cc-align-items-center cc-pd-l-3 cc-font-size-6 cc-overflow-visible">
+                                            <div *ngIf="tab.mentions > 0" class="cc-font-size-6 indicator-text">{{tab.mentions}}</div>
+                                            <div class="indicator" [class.live]="tab.streamInfo._id && true" [class.notification]="tab.mentions > 0"></div>
+                                            <div class="cc-flex cc-align-items-center cc-pd-l-4 cc-font-size-6 cc-overflow-visible">
                                                 <img *ngIf="tab.channelInfo.logo"  [src]="tab.channelInfo.logo" class="avatar-tab-icon cc-inline-block cc-mg-r-05">
                                                 <span class="cc-ellipsis">{{tab.channelDisplay}}</span>
                                             </div>
@@ -60,7 +61,7 @@
                     </div>
                     <mat-divider></mat-divider>
                     <div class="cc-header cc-background-alt cc-flex-none">
-                        <button mat-flat-button color="primary" class="cc-full-height cc-full-width cc-align-items-center cc-flex cc-justify-content-between" (click)="newTab()" tabindex="-1" style="border-radius: 0;">
+                        <button mat-flat-button [color]="settings.lightTheme ? 'accent' : 'primary'" class="cc-full-height cc-full-width cc-align-items-center cc-flex cc-justify-content-between" (click)="newTab()" tabindex="-1" style="border-radius: 0;">
                             <span class="cc-font-size-6">Add Channel</span>
                             <mat-icon aria-label="Add Channel" class="cc-pd-l-05">add</mat-icon>
                         </button>

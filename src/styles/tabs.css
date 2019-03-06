@@ -31,31 +31,36 @@
     background: rgba(0, 0, 0, .30);
 }
 
-.notification-indicator {
-    font-size: 2rem!important;
-    position: absolute!important;
-    line-height: inherit!important;
-    width: auto;
-    opacity: 75%;
+.indicator {
+    position: absolute;
+    border-radius: 50%;
     z-index: 1;
-    margin-left: 3px;
+    width: 8px;
+    height: 8px;
+    margin-left: 18px;
+    margin-top: 14px;
+    margin-bottom: auto;
+    background-color:rgba(255,255,255,.5);
 }
 
-.notification-text {
-    position: absolute!important;
-    width: 24px;
-    height: 24px;
+.indicator.notification {
+    background-color: #9575CD;
+    margin-left: 11px;
+    margin-top: 8px;
+    width: 20px;
+    height: 20px;
+}
+
+.indicator-text {
+    position: absolute;
+    width: 20px;
+    height: 20px;
     z-index: 2;
-    margin-left: 3px;
+    margin-left: 11px;
 }
 
-.default-indicator {
-    font-size: .75rem!important;
-    line-height: inherit!important;
-    position: absolute!important;
-    width: auto;
-    opacity: 75%;
-    margin-left: 3px;
+.indicator.live {
+    background-color: red;
 }
 
 .avatar-tab-icon {
