@@ -45,7 +45,7 @@
 
             <!-- Chat Tab Area -->
 
-            <mat-sidenav #drawer class="cc-relative" mode="side" [style.width.px]="tabWidth" [opened]="settings.drawer">
+            <mat-sidenav #drawer class="cc-relative" mode="side" [style.width.px]="tabWidth" [(opened)]="settings.drawer">
 
                 <div class="cc-flex cc-flex-column cc-full-height tab-container">
                     <div class="cc-flex-auto scrollbar--hidden" [cdkDropListData]="tabs" (cdkDropListDropped)="dropped($event)" cdkDropList style="background-color:rgba(0,0,0,.3)">
