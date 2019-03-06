@@ -70,7 +70,7 @@
 
             <!-- Main Content Area -->
 
-            <mat-sidenav-content [style.min-width]="contentWidth">
+            <mat-sidenav-content [style.min-width.px]="contentWidth">
                 <div class="cc-full-height cc-full-width cc-relative" [style.background-color]="settings.lightTheme ? 'unset' : 'rgba(0,0,0,.3)'">
                     <div *ngFor="let tab of tabs" class="cc-absolute cc-full-height cc-full-width" [hidden]="!tab.active">
 
@@ -78,7 +78,7 @@
 
                         <div class="cc-flex cc-flex-column cc-full-height cc-full-width">
 
-                            <div class="cc-flex-none" [style.min-width]="contentWidth">
+                            <div class="cc-flex-none">
                                 <div class="cc-header cc-flex cc-flex-row cc-align-items-center cc-justify-content-between cc-pd-x-1 cc-alt-background">
                                     <div class="cc-align-items-center cc-align-middle cc-flex cc-font-size-6 cc-overflow-hidden cc-mg-r-1">
                                         <button mat-icon-button #tabButton (click)="drawer.toggle()" tabindex="-1">

@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit, Input, AfterViewInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { SettingsComponent } from '../settings/settings.component';
 import { ChatService } from '../chat.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
