@@ -550,12 +550,17 @@ export class ChatService {
         } else if (/^(?:subgift|anonsubgift)$/.test(params['msg-id'])) {
             const tier = params['msg-param-sub-plan'] / 1000;
             const displayName = params['msg-param-recipient-display-name'];
+            const count = Number(params['msg-param-sender-count']);
             const message = `gifted a Tier ${tier} subscription to`;
+            const countMessage = count > 0 ? ((count > 1) ? ' They have gifted ${count} subscriptions in the channel!' 
+                : ' This is their first gift subscription in the channel!') : '';
+
             return {
                 subscription: true,
                 subType: 1,
                 recipient: displayName,
                 subMessage: message,
+                count: countMessage,
             };
         } else if (params['msg-id'] === 'submysterygift') {
 

@@ -21,11 +21,7 @@
 }
 
 .titlebar-bg {
-    background-color:rgba(0,0,0,.15);
-}
-
-.chat-light-theme .titlebar-bg {
-    background-color:rgba(94,53,177);
+    background-color:rgba(29,29,29);
 }
 
 .titlebar.draggable {

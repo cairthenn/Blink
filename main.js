@@ -44,7 +44,6 @@ function tryLogin(force = false) {
     }).catch(err => {
         loggingIn = false;
         window.webContents.send('login-failed', err);
-        console.log(`Error connecting to IRC: ${err}`);
     });
 }
 

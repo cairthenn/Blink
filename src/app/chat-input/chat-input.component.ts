@@ -225,6 +225,7 @@ export class ChatInputComponent implements OnInit {
             }
             this.duplicated = !this.duplicated;
         } else {
+            this.duplicated = false;
             this.chatHistory.push(message);
         }
 

@@ -27,10 +27,6 @@
     position: absolute;
 }
 
-.chat-light-theme .new-message-indicator {
-    background: rgba(0, 0, 0, .30);
-}
-
 .indicator {
     position: absolute;
     border-radius: 50%;
@@ -69,8 +65,24 @@
     height: 18px;
 }
 
+.tab-container {
+    background: rgba(52,52,52);
+}
+
 .tab-button {
     padding: 0!important;
+}
+
+.tab-inactive {
+    background-color: rgba(52, 52, 52)!important;
+}
+
+.tab-active {
+    background-color: rgba(94, 53, 177)!important;
+}
+
+.chat-light-theme .tab-button {
+    color: whitesmoke!important;
 }
 
 .tab-button .close-button {
