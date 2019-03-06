@@ -28,6 +28,18 @@
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="timestamps">Show timestamps</mat-checkbox>
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="badges">Show user badges</mat-checkbox>
         <mat-checkbox class="cc-pd-b-05" [(ngModel)]="subs">Show subscription messages</mat-checkbox>
+        
+        <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Moderation</h5>
+
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="modIcons">Show moderation icons</mat-checkbox>
+        <ul *ngIf="modIcons" class="cc-pd-l-1">
+            <li><mat-checkbox class="cc-pd-b-05" [(ngModel)]="banIcon">Ban Icon</mat-checkbox></li>
+            <li><mat-checkbox class="cc-pd-b-05" [(ngModel)]="timeoutIcon">Timeout Icon</mat-checkbox>
+                <mat-form-field color="accent" class="cc-pd-l-1" style="width:60px;"><input matInput type="number" placeholder="Time" min="0" [(ngModel)]="timeoutTime"></mat-form-field>
+            </li>
+            <li><mat-checkbox class="cc-pd-b-05" [(ngModel)]="purgeIcon">Purge Icon</mat-checkbox></li>
+            <li><mat-checkbox class="cc-pd-b-05" [(ngModel)]="deleteIcon">Delete Icon</mat-checkbox></li>
+        </ul>
 
         <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Emotes</h5>
 

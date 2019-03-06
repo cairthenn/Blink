@@ -17,7 +17,7 @@
 -->
 
 <div class="mat-app-background cc-flex cc-flex-auto cc-flex-column" [style.min-width.px]="showTabs ? tabWidth + contentWidth : contentWidth" [class.chat-light-theme]="settings.lightTheme">
-    <mat-divider [style.border-top-color]="settings.lightTheme ? 'rgba(94,53,177,.3)' : 'rgba(0,0,0,.3)'"></mat-divider>
+    <mat-divider [style.border-top-color]="settings.lightTheme ? 'rgba(94,53,177,.7)' : 'rgba(0,0,0,.3)'"></mat-divider>
     <div *ngIf="!connected || tabs.length == 0; else contentArea" class="mat-app-background cc-flex cc-flex-column cc-flex-auto">
         <div class="cc-flex cc-flex-column cc-flex-auto cc-justify-content-center cc-align-items-center">
             <span class="cc-font-size-4 cc-pd-b-1">Welcome to Blink!</span>

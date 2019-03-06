@@ -58,11 +58,13 @@ export class ChatService {
     private userState: any = {};
     private roomState: any = {};
     private odd = true;
-
+    
     public joined = false;
+    public level = 0;
     public username = '';
     public channel = '';
     public channelDisplay = '';
+    public userBadges = [];
 
     public userList: any = {};
     public badges: any = {};
@@ -167,6 +169,30 @@ export class ChatService {
         return [light, dark];
     }
 
+
+    public purge(username: string) {
+        this.irc.sendMessage(this.channel, `.timeout ${username} 1`);
+    }
+
+    public delete(id: string) {
+        this.irc.sendMessage(this.channel, `.delete ${id}`);
+    }
+
+    public unTimeout(username: string) {
+        this.irc.sendMessage(this.channel, `.untimeout ${username}`);
+    }
+    
+    public timeout(username: any, timeoutTime: number) {
+        this.irc.sendMessage(this.channel, `.timeout ${username} ${timeoutTime}`);
+    }
+
+    public unban(username: string) {
+        this.irc.sendMessage(this.channel, `.unban ${username}`);
+    }
+
+    public ban(username: string) {
+        this.irc.sendMessage(this.channel, `.ban ${username}`);
+    }
 
     public openExternal(url: string) {
         ElectronService.shell.openExternal(url);
@@ -282,7 +308,10 @@ export class ChatService {
         }
 
         this.userState = state;
+        this.userBadges = this.parseBadges(state.badges);
+        this.level = this.getUserLevel(this.userBadges);
         this.colors = ChatService.colorCorrect(state.color);
+        console.log(this.level);
     }
 
     private onJoin() {
@@ -341,29 +370,34 @@ export class ChatService {
         });
     }
 
-    private purge(params, user: string) {
-
+    public deleteFromUser(id?: string) {
         this.messages.forEach(msg => {
-            if (!user || msg.username === user) {
+            if (!id || msg.userId === id) {
                 msg.deleted = true;
             }
         });
+    }
 
+    private onPurge(params, user: string) {
+
+        this.deleteFromUser(user && params['target-user-id']);
+        this.updateView();
         if (!user) {
             this.addStatus('Chat was cleared by a moderator.');
         }
     }
 
-    private deleteMessage(messageId: string) {
+    private onDeleteMessage(messageId: string) {
 
         this.messages.forEach(m => {
             if (m.id === messageId) {
                 m.deleted = true;
             }
         });
+        this.updateView();
     }
 
-    private globalUserState(state: any) {
+    private onGlobalUserState(state: any) {
         const notice = this.processNotice(state);
 
         this.addMessage(notice);
@@ -383,9 +417,9 @@ export class ChatService {
         this.channel = channel.toLowerCase();
 
         this.irc.join(this.channel, {
-            CLEARCHAT : (params, msg) => { this.purge(params, msg); },
-            CLEARMSG : (_, msg) => { this.deleteMessage(msg); },
-            GLOBALUSERSTATE: (params) => { this.globalUserState(params); },
+            CLEARCHAT : (params, msg) => { this.onPurge(params, msg); },
+            CLEARMSG : (_, msg) => { this.onDeleteMessage(msg); },
+            GLOBALUSERSTATE: (params) => { this.onGlobalUserState(params); },
             PRIVMSG: (params, msg) => { this.onMessage(params, msg); },
             ROOMSTATE: (params) => { this.onRoomState(params); },
             NOTICE: (params, msg) => { this.onNotice(params, msg); },
@@ -448,11 +482,11 @@ export class ChatService {
 
         const handler = this.commandHandlers[commandCheck[1]];
         if (!handler) {
-            this.irc.sendMessage(this.channel, commandCheck[1]);
+            this.irc.sendMessage(this.channel, `.${commandCheck[1]} ${commandCheck[2]}`);
             return;
         }
 
-        handler[0](commandCheck[2]);
+        handler(commandCheck[2]);
     }
 
     private parseTwitchEmotes(str: string) {
@@ -495,7 +529,7 @@ export class ChatService {
 
         if (/^(?:sub|resub)$/.test(params['msg-id'])) {
             const months = params['msg-param-cumulative-months'];
-            const shareStreak = params['msg-param-should-share-streak'] !== 0;
+            const shareStreak = params['msg-param-should-share-streak'] !== '0';
             const streakLength = params['msg-param-streak-months'];
             const plan = params['msg-param-sub-plan'];
             const isPrime = plan === 'Prime';
@@ -584,19 +618,39 @@ export class ChatService {
         return regex.test(word);
     }
 
+    private getUserLevel(badges) {
+        
+        for(var i in badges) { 
+            const badge = badges[i]
+            if(badge[0] == 'moderator') {
+                return 1;
+            } else if(badge[0] == 'broadcaster') {
+                return 2;
+            } else if(badge[0] == 'staff') {
+                return 3;
+            }
+        }
+
+        return 0;
+    }
+
     private processIncoming(params: any, original: string): any {
 
         const colors = ChatService.colorCorrect(params.color);
 
+        const badges = this.parseBadges(params.badges);
+
         const message = {
             id: params.id,
+            userId: params['user-id'],
             username: params['display-name'],
             action: false,
             highlight: false,
             lightColor: colors[0],
             darkColor: colors[1],
             text: original,
-            badges: this.parseBadges(params.badges),
+            badges: badges,
+            level: this.getUserLevel(badges),
             fragments: undefined,
             chat: false,
             friend: false,
@@ -744,7 +798,8 @@ export class ChatService {
             darkColor: this.colors[1],
             text: original,
             fragments: chatFrags,
-            badges: this.parseBadges(this.userState.badges),
+            badges: this.userBadges,
+            level: this.level,
         };
 
         return message;

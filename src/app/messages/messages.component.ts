@@ -30,6 +30,9 @@ export class ChatMessage {
     html: string = undefined;
     badges: string[] = [];
     id: string = undefined;
+    userId: string = undefined;
+    mod = false;
+    incoming = false;
 }
 
 export interface Info {
@@ -74,6 +77,35 @@ export class MessagesComponent implements OnInit, AfterViewInit {
     }
 
     constructor(private el: ElementRef, private cdr: ChangeDetectorRef) {
+    }
+
+
+    public ban(message) {
+        message.banned = true;
+        this.service.ban(message.username);
+    }
+
+    public unban(message) {
+        message.banned = false;
+        this.service.unban(message.username);
+    }
+
+    public timeout(message) {
+        this.service.timeout(message.username, this.settings.timeoutTime);
+    }
+
+    public unTimeout(message) {
+        message.timedOut = false;
+        this.service.unTimeout(message.username);
+    }
+
+    public delete(message) {
+        message.deleted = true;
+        this.service.delete(message.id);
+    }
+
+    public purge(message) {
+        this.service.purge(message.username);
     }
 
     get distance() {

@@ -44,6 +44,18 @@ export class SettingsComponent implements OnInit {
 
     get timestamps() { return this.settings.timestamps; }
     set timestamps(val) { this.settings.timestamps = val; this.data.updateView(); }
+    get modIcons() { return this.settings.modIcons; }
+    set modIcons(val) { this.settings.modIcons = val; this.data.updateView(); }
+    get banIcon() { return this.settings.banIcon; }
+    set banIcon(val) { this.settings.banIcon = val; this.data.updateView(); }
+    get timeoutIcon() { return this.settings.timeoutIcon; }
+    set timeoutIcon(val) { this.settings.timeoutIcon = val; this.data.updateView(); }
+    get purgeIcon() { return this.settings.purgeIcon; }
+    set purgeIcon(val) { this.settings.purgeIcon = val; this.data.updateView(); }
+    get deleteIcon() { return this.settings.deleteIcon; }
+    set deleteIcon(val) { this.settings.deleteIcon = val; this.data.updateView(); }
+    get timeoutTime() { return this.settings.timeoutTime; }
+    set timeoutTime(val) { this.settings.timeoutTime = val; }
     get subs() { return this.settings.subs; }
     set subs(val) { this.settings.subs = val; this.data.updateView(); }
     get bits() { return this.settings.bits; }

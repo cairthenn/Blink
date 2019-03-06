@@ -46,3 +46,13 @@
 .autocomplete .mat-option-text {
     font-size: 1.2rem!important;
 }
+
+.mod-icon {
+    width: 1.6rem!important;
+    height: 1.6rem!important;
+    font-size: 1.6rem!important;
+    cursor: pointer!important;
+    margin-left: 2px;
+    vertical-align: middle;
+    opacity: .5;
+}

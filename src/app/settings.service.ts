@@ -29,6 +29,13 @@ export class SettingsService {
   public separators: boolean;
 
   public timestamps: boolean;
+  public modIcons: boolean;
+  public banIcon: boolean;
+  public purgeIcon: boolean;
+  public timeoutIcon: boolean;
+  public deleteIcon: boolean;
+  public timeoutTime: number;
+
   public subs: boolean;
   public bits: boolean;
   public badges: boolean;
@@ -104,6 +111,12 @@ export class SettingsService {
       this.separators = electronSettings.get('separators') || false;
       this.flash = electronSettings.get('flash') || false;
       this.timestamps = electronSettings.get('timestamps') || false;
+      this.modIcons = electronSettings.get('modIcons') || true;
+      this.banIcon = electronSettings.get('banIcon') || true;
+      this.purgeIcon = electronSettings.get('purgeIcon') || true;
+      this.timeoutIcon = electronSettings.get('timeoutIcon') || true;
+      this.deleteIcon = electronSettings.get('deleteIcon') || true;
+      this.timeoutTime = electronSettings.get('timeoutTime') || 600;
       this.subs = electronSettings.get('subs') || true;
       this.bits = electronSettings.get('bits') || true;
       this.badges = electronSettings.get('badges') || true;

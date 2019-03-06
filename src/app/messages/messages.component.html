@@ -60,8 +60,18 @@
 
             <span *ngIf="msg.status">{{msg.text}} </span>
 
+            <span *ngIf="!msg.status && settings.timestamps" class="cc-font-size-8" style="opacity: .8">[{{msg.timestamp}}] </span>
+
+            <span *ngIf="!msg.status && service.level > msg.level && settings.modIcons" class="cc-pd-r-05">
+                <mat-icon *ngIf="settings.banIcon && !msg.banned" aria-label="Ban User" class="mod-icon" (click)="ban(msg)">gavel</mat-icon>
+                <mat-icon *ngIf="settings.banIcon && msg.banned" aria-label="Ban User" class="mod-icon" (click)="unban(msg)">done</mat-icon>
+                <mat-icon *ngIf="settings.timeoutIcon && !msg.timedOut" aria-label="Timeout User" class="mod-icon" (click)="timeout(msg)">schedule</mat-icon>
+                <mat-icon *ngIf="settings.timeoutIcon && msg.timedOut" aria-label="Timeout User" class="mod-icon" (click)="unTimeout(msg)">restore</mat-icon>
+                <mat-icon *ngIf="settings.purgeIcon" aria-label="Purge User" class="mod-icon" (click)="purge(msg)">block</mat-icon>
+                <mat-icon *ngIf="settings.deleteIcon" aria-label="Delete Message" class="mod-icon" (click)="delete(msg)">delete_outline</mat-icon>
+            </span>
+
             <span *ngIf="msg.chat" >
-                <span *ngIf="settings.timestamps" class="cc-font-size-8" style="opacity: .8">[{{msg.timestamp}}] </span>
                 <span *ngIf="settings.badges"><img *ngFor="let badge of msg.badges" class="chat-badge"
                     [src]="service.badges[badge[0]] ? service.badges[badge[0]].versions[badge[1]].image_url_1x : null"
                     /></span>

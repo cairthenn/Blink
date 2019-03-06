@@ -76,7 +76,7 @@ app.on('ready', () => {
         return;
     }
 
-    update().then((restart) => {
+    update().then((updating) => {
         launchApplication();
     }).catch(err => {
         launchApplication();
@@ -122,7 +122,7 @@ function launchApplication() {
         window.show();
     });
 
-    ipcMain.on('try-login', (force) => tryLogin(force));
+    ipcMain.on('try-login', (sender, force) => tryLogin(force));
     // window.webContents.toggleDevTools();
     window.loadFile('./dist/index.html');
 }
@@ -177,30 +177,18 @@ function handleSquirrelEvent() {
     }
   };
 
-const standardTemplate = [
-    {
-        label: 'Account',
-        submenu: [
-            {
-                label: 'Login',
-                click() {
-                    tryLogin(true);
-                }
-            },
-        ]
-    },
-    {
-        label: "Edit",
-        submenu: [
-            { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
-            { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
-            { type: "separator" },
-            { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
-            { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
-            { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
-            { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
-        ]
-    }];
+const standardTemplate = [{
+    label: "Edit",
+    submenu: [
+        { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+        { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+        { type: "separator" },
+        { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+        { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+        { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+        { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+    ]
+}];
 
 // The first menu slot on Mac OS is reserved by the application
 const macTemplate = [ { label : 'Dawrin Placeholder' } ].concat(standardTemplate);
