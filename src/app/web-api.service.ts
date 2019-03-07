@@ -123,7 +123,10 @@ export class WebApiService {
     public static bttv: any = {};
     public static twitch: any = {};
     public static cheers: any = {};
-    public static emoji: any = {};
+    public static emoji: any = {
+        lookup: {},
+        autocomplete: [],
+    };
 
     public static getStream(id, key) {
         return this.get(`${twitchStreamUrl}${id}`, {
@@ -152,8 +155,27 @@ export class WebApiService {
     }
 
     public static getEmoji() {
-        return this.emoji || this.get(emojiUrl).then(emoji => {
-            this.emoji = emoji;
+        return new Promise((resolve, reject) => {
+            if(this.emoji.lookup) {
+                resolve(this.emoji);
+            }
+            this.get(emojiUrl).then(emoji => {
+                
+                emoji.forEach(e => {
+                    if(e.keywords === 'flag') {
+                        return;
+                    }
+
+                    const name = e.name.replace(/[:"'_-]/,'').replace(' ', '_').toLowerCase();
+                    const emojiShortcut = `:${name}:`;
+                    e.emoji = true;
+                    e.shortcut = emojiShortcut;
+                    e.lower = name;
+                    this.emoji.lookup[emojiShortcut] = e;
+                    this.emoji.autocomplete.push([emojiShortcut, e.char]);
+                });
+                resolve(this.emoji);
+            }).catch(err => console.log(err));
         });
     }
 
@@ -178,6 +200,7 @@ export class WebApiService {
             values.forEach(arr => arr.forEach(e => {
                 e.src = `https://cdn.betterttv.net/emote/${e.id}/1x`;
                 e.type = 'bttv';
+                e.lower = e.code.toLowerCase();
              }));
             return values;
         });
@@ -207,13 +230,13 @@ export class WebApiService {
                 e.code = e.name;
                 e.src = `https://cdn.frankerfacez.com/emoticon/${e.id}/1`;
                 e.type = 'ffz';
+                e.lower = e.code.toLowerCase();
             }));
             return values;
         });
     }
 
     public static getTwitchEmoteSets(ids: string[], key: string) {
-
         const setString = ids.join();
         return this.get(`${twitchEmotesUrl}${setString}`, {
             headers: {
@@ -226,6 +249,7 @@ export class WebApiService {
                     item.userOnly = true;
                     item.type = 'twitch';
                     item.src = `https://static-cdn.jtvnw.net/emoticons/v1/${item.id}/1.0`;
+                    item.lower = item.code.toLowerCase();
 
                     if (item.code in fixes) {
                         fixes[item.code].forEach(x => {

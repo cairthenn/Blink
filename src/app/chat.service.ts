@@ -18,17 +18,12 @@
 
 import CryptoJS from 'crypto-js';
 import dateformat from 'dateformat';
-import { Injectable } from '@angular/core';
 import { IrcService } from './irc.service';
 import { ChatMessage, MessagesComponent } from './messages/messages.component';
 import { WebApiService as WebApiService } from './web-api.service';
 import { SettingsService } from './settings.service';
 import { ElectronService } from './electron.service';
 
-
-@Injectable({
-  providedIn: 'root'
-})
 export class ChatService {
 
     public emotes = {
@@ -85,7 +80,7 @@ export class ChatService {
         }
     };
 
-    constructor(public settings: SettingsService, private irc: IrcService) {
+    constructor(public settings: SettingsService, private irc: IrcService, public emoji: any) {
 
     }
 
@@ -312,10 +307,12 @@ export class ChatService {
         this.emotes.lookup = {
             ...this.emotes.twitch.lookup,
             ...this.emotes.bttv.lookup,
-            ...this.emotes.ffz.lookup
+            ...this.emotes.ffz.lookup,
         };
 
-        this.emotes.autocomplete = Object.keys(this.emotes.lookup).sort().map(x => [x.toLowerCase(), x]);
+        this.emotes.autocomplete = Object.keys(this.emotes.lookup).sort().map(x => {
+            return [ this.emotes.lookup[x].lower, x ];
+        });
     }
 
     private onUserState(state: any) {
@@ -569,10 +566,10 @@ export class ChatService {
         } else if (/^(?:subgift|anonsubgift)$/.test(params['msg-id'])) {
             const tier = params['msg-param-sub-plan'] / 1000;
             const displayName = params['msg-param-recipient-display-name'];
-            const count = Number(params['msg-param-sender-count']);
+            const totalSubs = params['msg-param-sender-count'];
             const message = `gifted a Tier ${tier} subscription to`;
-            const countMessage = count > 0 ? ((count > 1) ? ` They've gifted ${count} subscriptions in the channel!`
-                : ' This is their first gift subscription in the channel!') : '';
+            const countMessage = totalSubs ? ((totalSubs === '1') ? ' This is their first gift subscription in the channel!'
+                : ` They've gifted ${totalSubs} subscriptions in the channel!`) : '';
             return {
                 subscription: true,
                 subType: 1,
@@ -584,15 +581,18 @@ export class ChatService {
 
             const tier = params['msg-param-sub-plan'] / 1000;
             const count = params['msg-param-mass-gift-count'];
-
+            const totalSubs = params['msg-param-sender-count'];
             const amountMessage = count > 1 ? `${count} Tier ${tier} subscriptions` : `a Tier ${tier} subscription`;
             const message = `is gifting ${amountMessage} to `;
+            const countMessage = totalSubs ? ((totalSubs === '1') ? ' This is their first gift subscription in the channel!'
+                : ` They've gifted ${totalSubs} subscriptions in the channel!`) : '';
 
             return {
                 subscription: true,
                 subType: 2,
                 communityGift: true,
                 subMessage: message,
+                count: countMessage,
             };
         } else if (params['msg-id'] === 'raid') {
             return {
