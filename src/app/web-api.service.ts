@@ -156,17 +156,17 @@ export class WebApiService {
 
     public static getEmoji() {
         return new Promise((resolve, reject) => {
-            if(this.emoji.lookup) {
+            if (this.emoji.lookup) {
                 resolve(this.emoji);
             }
             this.get(emojiUrl).then(emoji => {
-                
+
                 emoji.forEach(e => {
-                    if(e.keywords === 'flag') {
+                    if (e.keywords === 'flag') {
                         return;
                     }
 
-                    const name = e.name.replace(/[:"'_-]/,'').replace(' ', '_').toLowerCase();
+                    const name = e.name.replace(/[:"'_-]/, '').replace(' ', '_').toLowerCase();
                     const emojiShortcut = `:${name}:`;
                     e.emoji = true;
                     e.shortcut = emojiShortcut;

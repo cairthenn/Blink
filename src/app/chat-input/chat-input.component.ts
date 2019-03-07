@@ -95,8 +95,8 @@ export class ChatInputComponent implements OnInit {
 
         const current = value.substring(0, this.start);
         const wordStart = current.lastIndexOf(' ') + 1;
-        const before = value.substring(0, wordStart);
-        const after = value.substring(this.start);
+        const beforeText = value.substring(0, wordStart);
+        const afterText = value.substring(this.start);
 
         const word = current.substr(wordStart);
 
@@ -104,11 +104,11 @@ export class ChatInputComponent implements OnInit {
             if (word[0] === '@') {
                 const name = word.substring(1);
                 const results = this.users.filter(x => x.indexOf(name) === 0);
-                return results.slice(0, 10).map(x => { 
+                return results.slice(0, 10).map(x => {
                     return {
                         word: `@${x} `,
-                        before: before,
-                        after: after,
+                        before: beforeText,
+                        after: afterText,
                     };
                 });
             } else if (word[0] === ':' && (word[1] !== '(' || word.length > 2)) {
@@ -119,10 +119,10 @@ export class ChatInputComponent implements OnInit {
                 }).slice(0, 25).map(x => {
                     return {
                         word: `${x[1]} `,
-                        before: before,
-                        after: after,
+                        before: beforeText,
+                        after: afterText,
                         emote: this.emoteLookup[x[1]],
-                    }
+                    };
                 });
 
                 const emoji = this.emoji.filter(x => {
@@ -130,8 +130,8 @@ export class ChatInputComponent implements OnInit {
                 }).slice(0, 25).map(x => {
                     return {
                         word: `${x[1]} `,
-                        before: before,
-                        after: after,
+                        before: beforeText,
+                        after: afterText,
                         emoji: x[0],
                     };
                 });
@@ -193,7 +193,7 @@ export class ChatInputComponent implements OnInit {
             this.tabs.before = this.text.substring(0, wordStart);
             this.tabs.after = this.text.substring(this.start);
             const word = current.substr(wordStart).toLowerCase();
-            const isUserWord = word[0] == '@';
+            const isUserWord = word[0] === '@';
             const userWord = word.substr(1);
 
 
@@ -207,7 +207,7 @@ export class ChatInputComponent implements OnInit {
             }, []);
 
             const emotes = this.emotes.concat(this.emoji).reduce((arr, item) => {
-                if(item[0].indexOf(word) === 0) {
+                if (item[0].indexOf(word) === 0) {
                     arr.push(item[1]);
                 }
                 return arr;
