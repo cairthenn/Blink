@@ -18,17 +18,12 @@
 
 import CryptoJS from 'crypto-js';
 import dateformat from 'dateformat';
-import { Injectable } from '@angular/core';
 import { IrcService } from './irc.service';
 import { ChatMessage, MessagesComponent } from './messages/messages.component';
 import { WebApiService as WebApiService } from './web-api.service';
 import { SettingsService } from './settings.service';
 import { ElectronService } from './electron.service';
 
-
-@Injectable({
-  providedIn: 'root'
-})
 export class ChatService {
 
     public emotes = {
