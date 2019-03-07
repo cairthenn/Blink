@@ -26,6 +26,7 @@ import { IrcService } from '../irc.service';
 import { AES } from 'crypto-js';
 import { SettingsService } from '../settings.service';
 import { ElectronService } from '../electron.service';
+import { WebApiService } from '../web-api.service';
 
 @Component({
     selector: 'app-chat',
@@ -48,6 +49,10 @@ export class ChatComponent implements OnInit {
     public showTabs = false;
     public viewReady = false;
     public irc: IrcService;
+    public emoji = {
+        lookup: {},
+        autocomplete: [],
+    };
 
     constructor(private dialog: MatDialog, private zone: NgZone) {
     }
@@ -69,7 +74,7 @@ export class ChatComponent implements OnInit {
     }
 
     public createChannel(name: string) {
-        const channel = new ChatService(this.settings, this.irc);
+        const channel = new ChatService(this.settings, this.irc, this.emoji);
         channel.init(name, this.username, this.token);
         this.tabs.forEach(t => t.active = false);
         channel.active = true;
@@ -194,15 +199,23 @@ export class ChatComponent implements OnInit {
         this.token = AES.encrypt(token, username);
 
         this.irc.connect(username, token).then(() => {
-            this.zone.run(() => {
-                if (!this.loaded) {
+            if (!this.loaded) {
+                this.zone.run(() => {
                     this.loadChannels();
-                }
-                this.connected = true;
-            });
+                    this.connected = true;
+                });
+            }
 
         }).catch((err) => {
             console.log(err);
+        });
+    }
+
+
+    public updateEmoji() {
+        WebApiService.getEmoji().then((emoji: any) => {
+            this.emoji.autocomplete = emoji.autocomplete;
+            this.emoji.lookup = emoji.lookup;
         });
     }
 
@@ -211,7 +224,7 @@ export class ChatComponent implements OnInit {
         ElectronService.ipcRenderer.on('login-success', (sender, username, token) => {
             this.handleLogin(username, token);
         });
-
+        this.updateEmoji();
         this.login(false);
     }
 

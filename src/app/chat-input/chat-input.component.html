@@ -35,6 +35,7 @@
         <mat-option class="autocomplete" *ngFor="let option of acOptions | async" [value]="option.before + option.word + option.after">
             <img *ngIf="option.emote" [src]="option.emote.src" class="cc-no-flex autocomplete-emote" />
             <span class="cc-mg-l-05 cc-font-size-6 cc-ellipsis" style="opacity: .8">{{option.word}}</span>
+            <span>{{option.emoji}}</span>
         </mat-option>
     </mat-autocomplete>
 

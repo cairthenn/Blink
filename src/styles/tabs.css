@@ -40,7 +40,7 @@
 }
 
 .indicator.notification {
-    background-color: #9575CD;
+    background-color: #9575CD!important;
     margin-left: 11px;
     margin-top: 8px;
     width: 20px;

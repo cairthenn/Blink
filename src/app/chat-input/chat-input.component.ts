@@ -79,6 +79,14 @@ export class ChatInputComponent implements OnInit {
         return this.service.emotes.lookup;
     }
 
+    get emoji() {
+        return this.service.emoji.autocomplete;
+    }
+
+    get emojiLookup() {
+        return this.service.emoji.lookup;
+    }
+
     private filter(value: string): any[] {
 
         if (!value || !value.length) {
@@ -96,25 +104,42 @@ export class ChatInputComponent implements OnInit {
             if (word[0] === '@') {
                 const name = word.substring(1);
                 const results = this.users.filter(x => x.indexOf(name) === 0);
-                return results.slice(0, 10).map(x => this.replacement(`@${x} `, before, after));
-            } else if (word[0] === ':' && (word[1] !== '(' || word.length > 2)) {
-                const name = word.substring(1).toLowerCase();
-                const results = this.emotes.filter(x => {
-                    return x[0].indexOf(name) === 0;
+                return results.slice(0, 10).map(x => { 
+                    return {
+                        word: `@${x} `,
+                        before: before,
+                        after: after,
+                    };
                 });
-                return results.slice(0, 10).map(x => this.replacement(`${x[1]} `, before, after, this.emoteLookup[x[1]]));
+            } else if (word[0] === ':' && (word[1] !== '(' || word.length > 2)) {
+                const name = word.toLowerCase();
+                const emoteName = name.substr(1);
+                const emotes = this.emotes.filter(x => {
+                    return x[0].indexOf(emoteName) === 0;
+                }).slice(0, 25).map(x => {
+                    return {
+                        word: `${x[1]} `,
+                        before: before,
+                        after: after,
+                        emote: this.emoteLookup[x[1]],
+                    }
+                });
+
+                const emoji = this.emoji.filter(x => {
+                    return x[0].indexOf(word) === 0;
+                }).slice(0, 25).map(x => {
+                    return {
+                        word: `${x[1]} `,
+                        before: before,
+                        after: after,
+                        emoji: x[0],
+                    };
+                });
+
+                return emotes.concat(emoji);
             }
         }
 
-    }
-
-    private replacement(replacement: string, beforeText: string, afterText: string, emoteObject?: any) {
-        return {
-            word: replacement,
-            before: beforeText,
-            after: afterText,
-            emote: emoteObject,
-        };
     }
 
     public openStream() {
@@ -168,15 +193,25 @@ export class ChatInputComponent implements OnInit {
             this.tabs.before = this.text.substring(0, wordStart);
             this.tabs.after = this.text.substring(this.start);
             const word = current.substr(wordStart).toLowerCase();
+            const isUserWord = word[0] == '@';
+            const userWord = word.substr(1);
 
-            if (!word || !word.length) {
-                return;
-            }
 
-            const users = this.users.filter(x => x.indexOf(word) === 0);
-            const emotes = this.emotes.filter(x => {
-                return x[0].indexOf(word) === 0;
-            }).map(x => x[1]);
+            const users = this.users.reduce((arr, item) => {
+                if (isUserWord && item.indexOf(userWord) === 0) {
+                    arr.push(`@${item}`);
+                } else if (item.indexOf(word) === 0) {
+                    arr.push(item);
+                }
+                return arr;
+            }, []);
+
+            const emotes = this.emotes.concat(this.emoji).reduce((arr, item) => {
+                if(item[0].indexOf(word) === 0) {
+                    arr.push(item[1]);
+                }
+                return arr;
+            }, []);
 
             this.tabs.results = this.service.settings.emotePriority ? emotes.concat(users) : users.concat(emotes);
 
