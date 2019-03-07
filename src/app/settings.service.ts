@@ -138,12 +138,12 @@ export class SettingsService {
         electronSettings.set('separators', this.separators);
         electronSettings.set('flash', this.flash);
         electronSettings.set('timestamps', this.timestamps);
-        electronSettings.get('modIcons');
-        electronSettings.get('banIcon');
-        electronSettings.get('purgeIcon');
-        electronSettings.get('timeoutIcon');
-        electronSettings.get('deleteIcon');
-        electronSettings.get('timeoutTime');
+        electronSettings.set('modIcons', this.modIcons);
+        electronSettings.set('banIcon', this.banIcon);
+        electronSettings.set('purgeIcon', this.purgeIcon);
+        electronSettings.set('timeoutIcon', this.timeoutIcon);
+        electronSettings.set('deleteIcon', this.deleteIcon);
+        electronSettings.set('timeoutTime', this.timeoutTime);
         electronSettings.set('subs', this.subs);
         electronSettings.set('bits', this.bits);
         electronSettings.set('badges', this.badges);
