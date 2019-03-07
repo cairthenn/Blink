@@ -74,6 +74,7 @@ export class IrcService {
             });
 
             this.socket.on('close', () => {
+                this.notifyConnectionLost();
                 setTimeout(() => {
                     this.connect(name, token);
                 }, 15000);
@@ -85,6 +86,12 @@ export class IrcService {
 
             this.socket.connect(port, host);
         });
+    }
+
+    public notifyConnectionLost() {
+        this.channels.forEach(c => {
+            this.callbacks[c]['CLOSE']();
+        })
     }
 
     public disconnect() {

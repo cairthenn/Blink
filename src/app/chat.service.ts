@@ -438,6 +438,7 @@ export class ChatService {
             USERNOTICE: (params, msg) => { this.onUserNotice(params, msg); },
             USERSTATE: (params) => { this.onUserState(params); },
             JOIN: () => { this.onJoin(); },
+            CLOSE: () => { this.addStatus('Connection lost. Attempting to reconnect.'); }
         });
     }
 
@@ -570,6 +571,7 @@ export class ChatService {
             const message = `gifted a Tier ${tier} subscription to`;
             const countMessage = totalSubs ? ((totalSubs === '1') ? ' This is their first gift subscription in the channel!'
                 : ` They've gifted ${totalSubs} subscriptions in the channel!`) : '';
+
             return {
                 subscription: true,
                 subType: 1,
