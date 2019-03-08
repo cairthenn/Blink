@@ -106,62 +106,52 @@ export class ChatService {
         return bytes.toString(CryptoJS.enc.Utf8);
     }
 
+    public static rgbToHsl(r, g, b) {
+        r /= 255, g /= 255, b /= 255;
+
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        const l = (max + min) / 2;
+        const d = max - min;
+
+        if (max === min) {
+            return [d, d, l];
+        }
+        const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+        let h;
+
+        switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        return [h * 60, s * 100, l * 100]
+    }
+
     public static colorCorrect(color: string) {
 
         if (!color) {
             return [undefined, undefined];
         }
 
-        const r = parseInt(color.substr(1, 2), 16) / 255;
-        const g = parseInt(color.substr(3, 2), 16) / 255;
-        const b = parseInt(color.substr(5, 2), 16) / 255;
+        const r = parseInt(color.substr(1, 2), 16);
+        const g = parseInt(color.substr(3, 2), 16);
+        const b = parseInt(color.substr(5, 2), 16);
+        
+        const hsl = this.rgbToHsl(r, g, b);
 
-        const max = Math.max(r, g, b);
-        const min = Math.min(r, g, b);
+        const hue = hsl[0];
+        const lightSat = Math.min(40, hsl[1]);
+        const lightLum = Math.min(50, hsl[2]);
+        
+        let darkLum = Math.max(hsl[2], 50);
 
-        if (max === min) {
-            return [undefined, undefined];
+        if(darkLum < 60 && hsl[0] > 196 && hsl[0] < 300) {
+            darkLum += Math.sin((hue  - 196) / (300 - 196) * Math.PI) * hsl[1] * .4;
         }
 
-        const l = (max + min) / 2;
-
-        let h;
-        let s;
-
-        const d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
-        switch (max) {
-            case r:
-                h = ((g - b) / d) % 6;
-                break;
-            case g:
-                h = (b - r) / d + 2;
-                break;
-            case b:
-                h = (r - g) / d + 4;
-                break;
-          }
-
-        h *= 60;
-        s *= 100;
-
-        while (h < 0) {
-            h += 360;
-        }
-
-        let light;
-        let dark;
-
-        if (l > .5) {
-            dark = color;
-            light = `hsl(${h},${s}%,30%)`;
-        } else {
-            dark = `hsl(${h},${s}%,70%)`;
-            light = color;
-        }
-
-        return [light, dark];
+        return [`hsl(${hue},${lightSat}%,${lightLum}%)`, `hsl(${hue},${hsl[1]}%,${darkLum}%)`];
     }
 
 
@@ -567,9 +557,9 @@ export class ChatService {
         } else if (/^(?:subgift|anonsubgift)$/.test(params['msg-id'])) {
             const tier = params['msg-param-sub-plan'] / 1000;
             const displayName = params['msg-param-recipient-display-name'];
-            const totalSubs = params['msg-param-sender-count'];
+            const totalSubs = Number(params['msg-param-sender-count']);
             const message = `gifted a Tier ${tier} subscription to`;
-            const countMessage = totalSubs ? ((totalSubs === '1') ? ' This is their first gift subscription in the channel!'
+            const countMessage = totalSubs ? ((totalSubs === 1) ? ' This is their first gift subscription in the channel!'
                 : ` They've gifted ${totalSubs} subscriptions in the channel!`) : '';
 
             return {
@@ -583,10 +573,10 @@ export class ChatService {
 
             const tier = params['msg-param-sub-plan'] / 1000;
             const count = params['msg-param-mass-gift-count'];
-            const totalSubs = params['msg-param-sender-count'];
+            const totalSubs = Number(params['msg-param-sender-count']);
             const amountMessage = count > 1 ? `${count} Tier ${tier} subscriptions` : `a Tier ${tier} subscription`;
             const message = `is gifting ${amountMessage} to `;
-            const countMessage = totalSubs ? ((totalSubs === '1') ? ' This is their first gift subscription in the channel!'
+            const countMessage = totalSubs ? ((totalSubs === 1) ? ' This is their first gift subscription in the channel!'
                 : ` They've gifted ${totalSubs} subscriptions in the channel!`) : '';
 
             return {
