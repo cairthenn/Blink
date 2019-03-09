@@ -93,10 +93,6 @@
     background: rgba(255,0,0,.2);
 }
 
-.chat-subscription {
-    background: rgba(149,124,205, .3);
-}
-
 .message-deleted {
     opacity: .4;
 }
@@ -111,14 +107,15 @@
     height: 100%;
     width: 6px;
     position: absolute;
+    opacity: .75;
 }
 
 .user-notice.raid {
-    background: rgba(149,124,205, .75);
+    background: rgba(149,124,205);
     border-bottom-right-radius: 6px;
     border-top-right-radius: 6px;
 }
 
-.user-notice.friend {
-    opacity: .75;
+.user-notice.subscription {
+    background: rgba(149,124,205);
 }

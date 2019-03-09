@@ -19,44 +19,44 @@
 import { ElectronService } from './electron.service';
 export class SettingsService {
 
-    public drawer: boolean;
+    public drawer = false;
 
-    public lightTheme: boolean;
-    public alternate: boolean;
-    public separators: boolean;
+    public lightTheme = false;
+    public alternate = false;
+    public separators = false;
 
-    public timestamps: boolean;
-    public modIcons: boolean;
-    public banIcon: boolean;
-    public purgeIcon: boolean;
-    public timeoutIcon: boolean;
-    public deleteIcon: boolean;
-    public timeoutTime: number;
+    public timestamps = false;
+    public modIcons = true;
+    public banIcon = true;
+    public purgeIcon = false;
+    public timeoutIcon = true;
+    public deleteIcon = true;
+    public timeoutTime = 60;
 
-    public subs: boolean;
-    public bits: boolean;
-    public badges: boolean;
+    public subs = true;
+    public bits = true;
+    public badges = true;
 
-    public twitchEmotes: boolean;
-    public bttvEmotes: boolean;
-    public ffzEmotes: boolean;
+    public twitchEmotes = true;
+    public bttvEmotes = true;
+    public ffzEmotes = true;
 
-    public duplicates: boolean;
-    public emotePriority: boolean;
-    public anonymous: boolean;
-    public maxHistory: number;
+    public duplicates = false;
+    public emotePriority = true;
+    public anonymous = false;
+    public maxHistory = 300;
 
-    public highlightName: boolean;
-    public flash: boolean;
-    private highlightProxy: string;
-    private blacklistProxy: string;
-    private friendsProxy: string;
-    private ignoredProxy: string;
+    public highlightName = true;
+    public flash = false;
+    private highlightProxy = '';
+    private blacklistProxy = '';
+    private friendsProxy = '';
+    private ignoredProxy = '';
 
-    public highlightWords: string[];
-    public blacklistWords: string[];
-    public friendList: string[];
-    public ignoredUsers: string[];
+    public highlightWords: string[] = [];
+    public blacklistWords: string[] = [];
+    public friendList: string[] = [];
+    public ignoredUsers: string[] = [];
 
     constructor() {
         this.load();
@@ -101,64 +101,64 @@ export class SettingsService {
     get ignored() { return this.ignoredProxy; }
 
     public load() {
-        const electronSettings = ElectronService.settings;
-        this.drawer = electronSettings.get('drawer') || false;
-        this.lightTheme = electronSettings.get('lightTheme') || false;
-        this.alternate = electronSettings.get('alternate') || false;
-        this.separators = electronSettings.get('separators') || false;
-        this.flash = electronSettings.get('flash') || false;
-        this.timestamps = electronSettings.get('timestamps') || false;
-        this.modIcons = electronSettings.get('modIcons') || true;
-        this.banIcon = electronSettings.get('banIcon') || true;
-        this.purgeIcon = electronSettings.get('purgeIcon') || true;
-        this.timeoutIcon = electronSettings.get('timeoutIcon') || true;
-        this.deleteIcon = electronSettings.get('deleteIcon') || true;
-        this.timeoutTime = electronSettings.get('timeoutTime') || 60;
-        this.subs = electronSettings.get('subs') || true;
-        this.bits = electronSettings.get('bits') || true;
-        this.badges = electronSettings.get('badges') || true;
-        this.twitchEmotes = electronSettings.get('twitchEmotes') || true;
-        this.bttvEmotes = electronSettings.get('bttvEmotes') || true;
-        this.ffzEmotes = electronSettings.get('ffzEmotes') || true;
-        this.duplicates = electronSettings.get('duplicates') || false;
-        this.emotePriority = electronSettings.get('emotePriority') || true;
-        this.anonymous = electronSettings.get('anonymous') || false;
-        this.maxHistory = electronSettings.get('maxHistory') || 300;
-        this.highlightName = electronSettings.get('highlightName') || true;
-        this.highlight = electronSettings.get('highlight') || '';
-        this.blacklist = electronSettings.get('blacklist') || '';
-        this.friends = electronSettings.get('friends') || '';
-        this.ignored = electronSettings.get('ignored') || '';
+        const settings = ElectronService.settings;
+        this.drawer = settings.get('drawer');
+        this.lightTheme = settings.get('lightTheme');
+        this.alternate = settings.get('alternate');
+        this.separators = settings.get('separators');
+        this.flash = settings.get('flash');
+        this.timestamps = settings.get('timestamps');
+        this.modIcons = settings.get('modIcons');
+        this.banIcon = settings.get('banIcon');
+        this.purgeIcon = settings.get('purgeIcon');
+        this.timeoutIcon = settings.get('timeoutIcon');
+        this.deleteIcon = settings.get('deleteIcon');
+        this.timeoutTime = settings.get('timeoutTime');
+        this.subs = settings.get('subs');
+        this.bits = settings.get('bits');
+        this.badges = settings.get('badges');
+        this.twitchEmotes = settings.get('twitchEmotes');
+        this.bttvEmotes = settings.get('bttvEmotes');
+        this.ffzEmotes = settings.get('ffzEmotes');
+        this.duplicates = settings.get('duplicates');
+        this.emotePriority = settings.get('emotePriority');
+        this.anonymous = settings.get('anonymous');
+        this.maxHistory = settings.get('maxHistory');
+        this.highlightName = settings.get('highlightName');
+        this.highlight = settings.get('highlight');
+        this.blacklist = settings.get('blacklist');
+        this.friends = settings.get('friends');
+        this.ignored = settings.get('ignored');
     }
 
     save() {
-        const electronSettings = ElectronService.settings;
-        electronSettings.set('lightTheme', this.lightTheme);
-        electronSettings.set('alternate', this.alternate);
-        electronSettings.set('separators', this.separators);
-        electronSettings.set('flash', this.flash);
-        electronSettings.set('timestamps', this.timestamps);
-        electronSettings.set('modIcons', this.modIcons);
-        electronSettings.set('banIcon', this.banIcon);
-        electronSettings.set('purgeIcon', this.purgeIcon);
-        electronSettings.set('timeoutIcon', this.timeoutIcon);
-        electronSettings.set('deleteIcon', this.deleteIcon);
-        electronSettings.set('timeoutTime', this.timeoutTime);
-        electronSettings.set('subs', this.subs);
-        electronSettings.set('bits', this.bits);
-        electronSettings.set('badges', this.badges);
-        electronSettings.set('twitchEmotes', this.twitchEmotes);
-        electronSettings.set('bttvEmotes', this.bttvEmotes);
-        electronSettings.set('ffzEmotes', this.ffzEmotes);
-        electronSettings.set('duplicates', this.duplicates);
-        electronSettings.set('emotePriority', this.emotePriority);
-        electronSettings.set('anonymous', this.anonymous);
-        electronSettings.set('maxHistory', this.maxHistory);
-        electronSettings.set('highlightName', this.highlightName);
-        electronSettings.set('highlight', this.highlight);
-        electronSettings.set('blacklist', this.blacklist);
-        electronSettings.set('friends', this.friends);
-        electronSettings.set('ignored', this.ignored);
+        const settings = ElectronService.settings;
+        settings.set('lightTheme', this.lightTheme);
+        settings.set('alternate', this.alternate);
+        settings.set('separators', this.separators);
+        settings.set('flash', this.flash);
+        settings.set('timestamps', this.timestamps);
+        settings.set('modIcons', this.modIcons);
+        settings.set('banIcon', this.banIcon);
+        settings.set('purgeIcon', this.purgeIcon);
+        settings.set('timeoutIcon', this.timeoutIcon);
+        settings.set('deleteIcon', this.deleteIcon);
+        settings.set('timeoutTime', this.timeoutTime);
+        settings.set('subs', this.subs);
+        settings.set('bits', this.bits);
+        settings.set('badges', this.badges);
+        settings.set('twitchEmotes', this.twitchEmotes);
+        settings.set('bttvEmotes', this.bttvEmotes);
+        settings.set('ffzEmotes', this.ffzEmotes);
+        settings.set('duplicates', this.duplicates);
+        settings.set('emotePriority', this.emotePriority);
+        settings.set('anonymous', this.anonymous);
+        settings.set('maxHistory', this.maxHistory);
+        settings.set('highlightName', this.highlightName);
+        settings.set('highlight', this.highlight);
+        settings.set('blacklist', this.blacklist);
+        settings.set('friends', this.friends);
+        settings.set('ignored', this.ignored);
     }
 
 }
