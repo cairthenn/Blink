@@ -41,6 +41,19 @@
 
     <div class="cc-flex cc-justify-content-between" style="min-width: 200px;">
         <div class="cc-flex">
+            <mat-menu #accountMenu="matMenu" yPosition="above" color="accent" class="account-panel">
+                <div class="cc-mg-1">
+                    <button mat-flat-button color="warn" (click)="account.logout()" type="button" style="margin-right:1rem">
+                        Logout
+                    </button>
+                    <button mat-flat-button color="accent" (click)="account.switch()" type="button" >
+                        Switch Accounts
+                    </button>
+                </div>
+            </mat-menu>
+            <button mat-icon-button [matMenuTriggerFor]="accountMenu" type="button" [disabled]="!service.joined">
+                <mat-icon aria-label="Open Account">account_circle</mat-icon>
+            </button>
             <button mat-icon-button (click)="openViewers()" type="button" [disabled]="!service.joined" class="cc-pd-r-1">
                 <mat-icon aria-label="Viewer List">list</mat-icon>
             </button>

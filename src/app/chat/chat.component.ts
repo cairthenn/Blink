@@ -55,6 +55,11 @@ export class ChatComponent implements OnInit {
         autocomplete: [],
     };
 
+    public account = {
+        logout: () => { this.logout(); },
+        switch: () => { this.login(true); }
+    }
+
     constructor(public overlayContainer: OverlayContainer, private dialog: MatDialog, private zone: NgZone) {
     }
 
@@ -207,7 +212,11 @@ export class ChatComponent implements OnInit {
         this.token = AES.encrypt(token, username);
         this.irc.connect(username, token).then(() => {
             this.zone.run(() => {
-                this.loadChannels();
+                if(this.loaded) {
+                    this.tabs.forEach(c => c.init(c.channel, username, this.token));
+                } else {
+                    this.loadChannels();
+                }
                 this.connected = true;
             });
         });

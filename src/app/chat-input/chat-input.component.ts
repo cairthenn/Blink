@@ -50,6 +50,7 @@ export class ChatInputComponent implements OnInit {
     @ViewChild('messageBox') mb: ElementRef;
     @ViewChild('auto') ac: MatAutocomplete;
     @Input() public service: ChatService;
+    @Input() public account: any;
 
     public get text() { return this.mb.nativeElement.value; }
     public set text(val) { this.mb.nativeElement.value = val; }

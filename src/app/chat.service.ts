@@ -72,7 +72,10 @@ export class ChatService {
     public messages: ChatMessage[] = [];
 
     public commandHandlers = {
-        me: (text) => {
+        me: (text: string) => {
+            if(!text || !text.length) {
+                return;
+            }
             this.irc.sendMessage(this.channel, `.me ${text}`);
             const msg = this.processOutgoing(text, true);
             this.addMessage(msg);
@@ -477,7 +480,7 @@ export class ChatService {
             return;
         }
 
-        const commandCheck = /^[\.\/]([^ ]*)( .*)?$/.exec(trimmed);
+        const commandCheck = /^[\.\/]([^\. ]+)(?: (.*))?$/.exec(trimmed);
 
         if (!commandCheck) {
             this.irc.sendMessage(this.channel, trimmed);
@@ -488,7 +491,7 @@ export class ChatService {
 
         const handler = this.commandHandlers[commandCheck[1]];
         if (!handler) {
-            this.irc.sendMessage(this.channel, `.${commandCheck[1]} ${commandCheck[2]}`);
+            this.irc.sendMessage(this.channel, commandCheck[0]);
             return;
         }
 

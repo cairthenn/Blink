@@ -28,7 +28,7 @@
             </mat-form-field>
             <span *ngIf="connected; else loginMessage" class="cc-font-size-6">Logged in as <strong>{{username}}</strong>! <a (click)="login(true)">Not you?</a></span>
             <ng-template #loginMessage>
-                <span class="cc-font-size-6"><a (click)="login()">To get started, connect to your Twitch account</a></span>
+                <span class="cc-font-size-6"><a (click)="login(true)">To get started, connect to your Twitch account</a></span>
             </ng-template>
         </div>
     </div>
@@ -120,7 +120,7 @@
                                 <!-- Chat Input Box -->
 
                                 <div class="cc-flex-none cc-pd-x-2 cc-pd-y-1">
-                                    <app-chat-input class="chat-input cc-align-center" [service]="tab">
+                                    <app-chat-input class="chat-input cc-align-center" [service]="tab" [account]="account" >
                                     </app-chat-input>
                                 </div>
                             </div>

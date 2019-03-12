@@ -74,10 +74,12 @@ export class IrcService {
             });
 
             this.socket.on('close', () => {
-                this.notifyConnectionLost();
-                setTimeout(() => {
-                    this.connect(name, token);
-                }, 15000);
+                if(this.connected) {
+                    this.notifyConnectionLost();
+                    setTimeout(() => {
+                        this.connect(name, token);
+                    }, 15000);
+                }
             });
 
             this.socket.on('error', (err) => {
