@@ -142,15 +142,6 @@ export class IrcService {
         this.send(`:${this.user}!${this.user}@${this.user}.tmi.twitch.tv PRIVMSG #${channel} :${message}`);
     }
 
-
-    public on(regex: RegExp, callback) {
-        this.callbacks.push([regex, callback, false]);
-    }
-
-    public once(regex, callback) {
-        this.callbacks.push([regex, callback, true]);
-    }
-
     public receive(data: string) {
 
         const split = ircFormat.exec(data);
@@ -160,16 +151,16 @@ export class IrcService {
             return;
         }
 
+        const msg = messageFormat.exec(split[2]);
+        if (!msg) {
+            return false;
+        }
+
         const params = {};
         let match = paramsFormat.exec(split[1]);
         while (match) {
             params[match[1]] = match[2].trim();
             match = paramsFormat.exec(split[1]);
-        }
-
-        const msg = messageFormat.exec(split[2]);
-        if (!msg) {
-            return false;
         }
 
         const type = msg[1];

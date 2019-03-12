@@ -48,6 +48,7 @@ function tryLogin(force = false) {
 }
 
 function autoUpdate() {
+    
     autoUpdater.setFeedURL(feed);
     
     autoUpdater.on('update-downloaded', () => {
@@ -58,21 +59,19 @@ function autoUpdate() {
         dialog.showErrorBox('Update Error',`There was a problem updating the application: ${err}`);
     }) 
 
-    autoUpdater.checkForUpdates();
-    setInterval(autoUpdater.checkForUpdates, 600000);
+    return new Promise((resolve) => {
+        autoUpdater.checkForUpdates();
+        setInterval(autoUpdater.checkForUpdates, 600000);
+        resolve();
+    });
 }
 
-app.on('ready', () => {
-
-    if(!firstRun && process.env.NODE_ENV != 'dev' && process.platform == 'win32') {
-        autoUpdate();
-        return;
-    }
-    
+app.on('ready', () => {    
     launchApplication();
 });
 
 function launchApplication() {
+
     const width = settings.get('width') || 520;
     const height = settings.get('height') || 800;
     const x = settings.get('x');
@@ -114,6 +113,10 @@ function launchApplication() {
     ipcMain.on('try-login', (sender, force) => tryLogin(force));
     // window.webContents.toggleDevTools();
     window.loadFile('./dist/index.html');
+
+    if(!firstRun && process.env.NODE_ENV != 'dev' && process.platform == 'win32') {
+        autoUpdate();
+    }
 }
 
 function handleSquirrelEvent() {
