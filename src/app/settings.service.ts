@@ -22,6 +22,7 @@ export class SettingsService {
     public drawer = false;
 
     public lightTheme = false;
+    public lightThemeView = false;
     public alternate = false;
     public separators = false;
 
@@ -104,6 +105,7 @@ export class SettingsService {
         const settings = ElectronService.settings;
         this.drawer = settings.get('drawer');
         this.lightTheme = settings.get('lightTheme');
+        this.lightThemeView = this.lightTheme;
         this.alternate = settings.get('alternate');
         this.separators = settings.get('separators');
         this.flash = settings.get('flash');

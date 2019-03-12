@@ -27,6 +27,7 @@ import { AES } from 'crypto-js';
 import { SettingsService } from '../settings.service';
 import { ElectronService } from '../electron.service';
 import { WebApiService } from '../web-api.service';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
     selector: 'app-chat',
@@ -54,7 +55,7 @@ export class ChatComponent implements OnInit {
         autocomplete: [],
     };
 
-    constructor(private dialog: MatDialog, private zone: NgZone) {
+    constructor(public overlayContainer: OverlayContainer, private dialog: MatDialog, private zone: NgZone) {
     }
 
     @HostListener('window:beforeunload', ['$event'])
@@ -99,11 +100,18 @@ export class ChatComponent implements OnInit {
 
     public openSettings(tab: ChatService) {
         const ref = this.dialog.open(SettingsComponent, {
-            data: tab,
+            data: this.settings,
         });
 
         ref.afterClosed().subscribe(settings => {
+            this.settings.lightTheme = this.settings.lightThemeView;
+            if (this.settings.lightTheme) {
+                this.overlayContainer.getContainerElement().classList.add('chat-light-theme');
+            } else {
+                this.overlayContainer.getContainerElement().classList.remove('chat-light-theme');
+            }
             this.settings.save();
+            tab.updateView();
         });
     }
 
@@ -197,17 +205,11 @@ export class ChatComponent implements OnInit {
     public handleLogin(username: string, token: string) {
         this.username = username;
         this.token = AES.encrypt(token, username);
-
         this.irc.connect(username, token).then(() => {
-            if (!this.loaded) {
-                this.zone.run(() => {
-                    this.loadChannels();
-                    this.connected = true;
-                });
-            }
-
-        }).catch((err) => {
-            console.log(err);
+            this.zone.run(() => {
+                this.loadChannels();
+                this.connected = true;
+            });
         });
     }
 
@@ -224,6 +226,7 @@ export class ChatComponent implements OnInit {
         ElectronService.ipcRenderer.on('login-success', (sender, username, token) => {
             this.handleLogin(username, token);
         });
+
         this.updateEmoji();
         this.login(false);
     }

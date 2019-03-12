@@ -20,8 +20,6 @@ import { Component } from '@angular/core';
 import { SettingsService } from './settings.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-const themeLight = 'chat-light-theme';
-
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html'
@@ -32,7 +30,7 @@ export class AppComponent {
     constructor(public overlayContainer: OverlayContainer) {
         this.settings = new SettingsService();
         if (this.settings.lightTheme) {
-            this.overlayContainer.getContainerElement().classList.add(themeLight);
+            this.overlayContainer.getContainerElement().classList.add('chat-light-theme');
         }
     }
 }

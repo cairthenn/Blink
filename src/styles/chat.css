@@ -85,7 +85,7 @@
     height: 1px;
 }
 
-.chat-alternate-bg {
+.chat-alternate-bg:nth-child(odd) {
     background: rgba(0,0,0,.1);
 }
 

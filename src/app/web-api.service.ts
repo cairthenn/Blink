@@ -188,7 +188,7 @@ export class WebApiService {
     public static getBttvRoom(room: string, update: boolean = false) {
         return !update && this.bttv[room] || this.get(`${bttvChannelUrl}${room}`).then(channel => {
             return this.bttv[room] = channel.emotes;
-        });
+        }).catch(() => []);
     }
 
     public static getBttvEmotes(room: string, update: boolean = false): Promise<any> {
@@ -217,7 +217,7 @@ export class WebApiService {
     public static getFFzRoom(room: string, update: boolean = false): Promise<any> {
         return !update && this.ffz[room] || this.get(`${ffzChannelUrl}${room}`).then(channel => {
             return this.ffz[room] = channel.sets[channel.room.set].emoticons;
-        });
+        }).catch(() => []);
     }
 
     public static getFfzEmotes(room: string, update: boolean = false): Promise<any> {
