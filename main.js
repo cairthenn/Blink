@@ -59,11 +59,9 @@ function autoUpdate() {
         dialog.showErrorBox('Update Error',`There was a problem updating the application: ${err}`);
     }) 
 
-    return new Promise((resolve) => {
-        autoUpdater.checkForUpdates();
-        setInterval(autoUpdater.checkForUpdates, 600000);
-        resolve();
-    });
+    setInterval(() => { 
+        autoUpdater.checkForUpdates() 
+    }, 600000);
 }
 
 app.on('ready', () => {    

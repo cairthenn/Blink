@@ -16,7 +16,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
-<h5 mat-dialog-title>Settings</h5>
+<div mat-dialog-title class="cc-flex cc-justify-content-between">
+    <span>Settings</span>
+    <button mat-flat-button mat-dialog-close color="primary" style="float:right">Save</button>
+</div>
 <div class="cc-flex-grow-1 cc-margin-0 scrollbar" mat-dialog-content>
     <div class="cc-flex cc-flex-column cc-flex-grow-1 cc-pd-x-2 cc-pd-b-2">
 
@@ -35,7 +38,7 @@
         <ul *ngIf="data.modIcons" class="cc-pd-l-1">
             <li><mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.banIcon">Ban Icon</mat-checkbox></li>
             <li><mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.timeoutIcon">Timeout Icon</mat-checkbox>
-                <mat-form-field color="accent" class="cc-pd-l-1" style="width:60px;"><input matInput type="number" placeholder="Time" min="0" [(ngModel)]="timeoutTime"></mat-form-field>
+                <mat-form-field color="accent" class="cc-pd-l-1" style="width:60px;"><input matInput type="number" placeholder="Time" min="0" [(ngModel)]="data.timeoutTime"></mat-form-field>
             </li>
             <li><mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.purgeIcon">Purge Icon</mat-checkbox></li>
             <li><mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.deleteIcon">Delete Icon</mat-checkbox></li>
