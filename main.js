@@ -60,7 +60,7 @@ function autoUpdate() {
     }) 
 
     setInterval(() => { 
-        autoUpdater.checkForUpdates() 
+        autoUpdater.checkForUpdates();
     }, 600000);
 }
 

@@ -35,7 +35,7 @@ export class TitlebarComponent implements OnInit {
         window.on('unmaximize', () => this.maximized = false);
         ElectronService.ipcRenderer.on('update-downloaded', () => {
             this.update = true;
-        })
+        });
     }
 
     public relaunch() {

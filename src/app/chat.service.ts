@@ -321,7 +321,7 @@ export class ChatService {
         this.updateUserList();
         this.updateFFZ();
         this.updateBTTV();
-        this.joined = true
+        this.joined = true;
         this.updater = window.setInterval(() => {
             this.updateStreamInfo();
             this.updateUserList();
