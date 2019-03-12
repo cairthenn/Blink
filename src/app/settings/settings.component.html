@@ -22,39 +22,38 @@
 
         <h5 class="cc-full-width cc-pd-b-1">Appearance & Display</h5>
 
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="lightTheme">Light theme</mat-checkbox>
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="alternate">Alternate line colors</mat-checkbox>
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="separators">Show chat separators</mat-checkbox>
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="timestamps">Show timestamps</mat-checkbox>
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="badges">Show user badges</mat-checkbox>
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="subs">Show subscription messages</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.lightThemeView">Light theme</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.alternate">Alternate line colors</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.separators">Show chat separators</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.timestamps">Show timestamps</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.badges">Show user badges</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.subs">Show subscription messages</mat-checkbox>
         
         <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Moderation</h5>
 
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="modIcons">Show moderation icons</mat-checkbox>
-        <ul *ngIf="modIcons" class="cc-pd-l-1">
-            <li><mat-checkbox class="cc-pd-b-05" [(ngModel)]="banIcon">Ban Icon</mat-checkbox></li>
-            <li><mat-checkbox class="cc-pd-b-05" [(ngModel)]="timeoutIcon">Timeout Icon</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.modIcons">Show moderation icons</mat-checkbox>
+        <ul *ngIf="data.modIcons" class="cc-pd-l-1">
+            <li><mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.banIcon">Ban Icon</mat-checkbox></li>
+            <li><mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.timeoutIcon">Timeout Icon</mat-checkbox>
                 <mat-form-field color="accent" class="cc-pd-l-1" style="width:60px;"><input matInput type="number" placeholder="Time" min="0" [(ngModel)]="timeoutTime"></mat-form-field>
             </li>
-            <li><mat-checkbox class="cc-pd-b-05" [(ngModel)]="purgeIcon">Purge Icon</mat-checkbox></li>
-            <li><mat-checkbox class="cc-pd-b-05" [(ngModel)]="deleteIcon">Delete Icon</mat-checkbox></li>
+            <li><mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.purgeIcon">Purge Icon</mat-checkbox></li>
+            <li><mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.deleteIcon">Delete Icon</mat-checkbox></li>
         </ul>
 
         <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Emotes</h5>
 
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="twitchEmotes">Twitch emotes</mat-checkbox>
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="bits">Cheer emotes</mat-checkbox>
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="ffzEmotes">FFZ emotes</mat-checkbox>
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="bttvEmotes">BTTV emotes</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.twitchEmotes">Twitch emotes</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.bits">Cheer emotes</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.ffzEmotes">FFZ emotes</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.bttvEmotes">BTTV emotes</mat-checkbox>
 
         <h5 class="cc-full-width cc-pd-b-1 cc-pd-t-1">Functionality</h5>
 
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="duplicates">Allow duplicate chat messages</mat-checkbox>
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="emotePriority">Prioritize emotes for autocomplete</mat-checkbox>
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="anonymous" disabled>Don't appear in chat rooms</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.duplicates">Allow duplicate chat messages</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.emotePriority">Prioritize emotes for autocomplete</mat-checkbox>
         <mat-form-field color="accent" class="cc-margin-0">
-            <input matInput class="cc-pd-b-05" type="number" placeholder="Max chat history" min="50" max="300" [(ngModel)]="maxHistory">
+            <input matInput class="cc-pd-b-05" type="number" placeholder="Max chat history" min="50" max="300" [(ngModel)]="data.maxHistory">
         </mat-form-field>
 
         <h5 class="cc-full-width cc-pd-t-1">Friends</h5>
@@ -62,31 +61,31 @@
         <div class="cc-full-width cc-pd-b-1 cc-pd-t-1">
             <mat-form-field color="accent" appearance="outline" class="cc-full-width cc-margin-0">
                 <mat-label>Friends List</mat-label>
-                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Friends, separated by comma" [(ngModel)]="friends"></textarea>
+                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Friends, separated by comma" [(ngModel)]="data.friends"></textarea>
             </mat-form-field>
         </div>
 
         <h5 class="cc-full-width cc-pd-b-1">Highlight and Ignore</h5>
 
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="highlightName">Highlight messages containing your name</mat-checkbox>
-        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="flash">Flash on notification</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.highlightName">Highlight messages containing your name</mat-checkbox>
+        <mat-checkbox class="cc-pd-b-05" [(ngModel)]="data.flash">Flash on notification</mat-checkbox>
 
         <div class="cc-full-width cc-pd-b-1 cc-pd-t-1">
             <mat-form-field color="accent" appearance="outline" class="cc-full-width cc-margin-0">
                 <mat-label>Highlighted Words</mat-label>
-                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Highlighted keywords, separated by comma" [(ngModel)]="highlight"></textarea>
+                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Highlighted keywords, separated by comma" [(ngModel)]="data.highlight"></textarea>
             </mat-form-field>
         </div>
         <div class="cc-full-width cc-pd-b-1">
             <mat-form-field color="accent" appearance="outline" class="cc-full-width cc-margin-0">
                 <mat-label>Blacklisted Words</mat-label>
-                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Blacklisted keywords, separated by comma" [(ngModel)]="blacklist"></textarea>
+                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Blacklisted keywords, separated by comma" [(ngModel)]="data.blacklist"></textarea>
             </mat-form-field>
         </div>
         <div class="cc-full-width cc-pd-b-1">
             <mat-form-field color="accent" appearance="outline" class="cc-full-width cc-margin-0">
                 <mat-label>Ignored Users</mat-label>
-                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Ignored users, separated by comma" [(ngModel)]="ignored"></textarea>
+                <textarea matNativeControl class="cc-font-size-6" style="min-height:75px" placeholder="Ignored users, separated by comma" [(ngModel)]="data.ignored"></textarea>
             </mat-form-field>
         </div>
     </div>

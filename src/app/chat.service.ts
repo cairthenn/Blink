@@ -52,7 +52,6 @@ export class ChatService {
     private colors = [];
     private userState: any = {};
     private roomState: any = {};
-    private odd = true;
 
     public joined = false;
     public level = 0;
@@ -126,7 +125,7 @@ export class ChatService {
             case g: h = (b - r) / d + 2; break;
             case b: h = (r - g) / d + 4; break;
         }
-        return [h * 60, s * 100, l * 100]
+        return [h * 60, s * 100, l * 100];
     }
 
     public static colorCorrect(color: string) {
@@ -138,16 +137,16 @@ export class ChatService {
         const r = parseInt(color.substr(1, 2), 16);
         const g = parseInt(color.substr(3, 2), 16);
         const b = parseInt(color.substr(5, 2), 16);
-        
+
         const hsl = this.rgbToHsl(r, g, b);
 
         const hue = hsl[0];
         const lightSat = Math.min(40, hsl[1]);
         const lightLum = Math.min(50, hsl[2]);
-        
+
         let darkLum = Math.max(hsl[2], 50);
 
-        if(darkLum < 60 && hsl[0] > 196 && hsl[0] < 300) {
+        if (darkLum < 60 && hsl[0] > 196 && hsl[0] < 300) {
             darkLum += Math.sin((hue  - 196) / (300 - 196) * Math.PI) * hsl[1] * .4;
         }
 
@@ -183,27 +182,11 @@ export class ChatService {
         ElectronService.shell.openExternal(url);
     }
 
-
     public openStream() {
         if (!this.channel || !this.channel.length) {
             return;
         }
         this.openExternal(`https://www.twitch.tv/${this.channel}`);
-    }
-
-    private updateStreamInfo() {
-        const key = this.key;
-        WebApiService.getStream(this.channel, key).then(stream => {
-            this.streamInfo = stream;
-        }).catch(err => {
-            console.log(`Error fetching stream info: ${err}`);
-        });
-
-        WebApiService.getChannel(this.channel, key).then(channel => {
-            this.channelInfo = channel;
-        }).catch(err => {
-            console.log(`Error fetching channel info: ${err}`);
-        });
     }
 
     private updateIfActive(scroll: boolean = false) {
@@ -220,21 +203,36 @@ export class ChatService {
         return false;
     }
 
-    private updateUserList() {
-        WebApiService.getUserList(this.channel).then(users => {
-            this.userList = users;
-            this.userList.autocomplete = [].concat(users.broadcaster, users.moderators, users.vips, users.staff, users.viewers).sort();
+    private updateEmotes(sets: string) {
+        const bytes = CryptoJS.AES.decrypt(this.token, this.username);
+        const key = bytes.toString(CryptoJS.enc.Utf8);
+        WebApiService.getTwitchEmotes(sets, key).then(emotes => {
+            this.emotes.twitch.sets = emotes;
+            this.emotes.twitch.lookup = emotes.reduce((obj, arr) => {
+                arr[1].forEach(e => {
+                    obj[e.code] = e;
+                });
+                return obj;
+            }, {});
+            this.updateEmoteLookup();
         }).catch(err => {
-            console.log(`Error fetching users: ${err}`);
+            console.log(`Error fetching Twitch emotes: ${err}`);
         });
+
     }
 
-    private updateBadges() {
-        WebApiService.getBadges(this.roomState['room-id']).then(badges => {
-            this.badges = badges;
-            this.updateIfActive();
+    private updateStreamInfo() {
+        const key = this.key;
+        WebApiService.getStream(this.channel, key).then(stream => {
+            this.streamInfo = stream;
         }).catch(err => {
-            console.log(`Error fetching badges: ${err}`);
+            console.log(`Error fetching stream info: ${err}`);
+        });
+
+        WebApiService.getChannel(this.channel, key).then(channel => {
+            this.channelInfo = channel;
+        }).catch(err => {
+            console.log(`Error fetching channel info: ${err}`);
         });
     }
 
@@ -275,22 +273,22 @@ export class ChatService {
         });
     }
 
-    private updateEmotes(sets: string) {
-        const bytes = CryptoJS.AES.decrypt(this.token, this.username);
-        const key = bytes.toString(CryptoJS.enc.Utf8);
-        WebApiService.getTwitchEmotes(sets, key).then(emotes => {
-            this.emotes.twitch.sets = emotes;
-            this.emotes.twitch.lookup = emotes.reduce((obj, arr) => {
-                arr[1].forEach(e => {
-                    obj[e.code] = e;
-                });
-                return obj;
-            }, {});
-            this.updateEmoteLookup();
+    private updateUserList() {
+        WebApiService.getUserList(this.channel).then(users => {
+            this.userList = users;
+            this.userList.autocomplete = [].concat(users.broadcaster, users.moderators, users.vips, users.staff, users.viewers).sort();
         }).catch(err => {
-            console.log(`Error fetching Twitch emotes: ${err}`);
+            console.log(`Error fetching users: ${err}`);
         });
+    }
 
+    private updateBadges() {
+        WebApiService.getBadges(this.roomState['room-id']).then(badges => {
+            this.badges = badges;
+            this.updateIfActive();
+        }).catch(err => {
+            console.log(`Error fetching badges: ${err}`);
+        });
     }
 
     private updateEmoteLookup() {
@@ -318,17 +316,14 @@ export class ChatService {
 
     private onJoin() {
         this.addStatus('Welcome to the chat!');
-
         this.updateStreamInfo();
         this.updateUserList();
         this.updateFFZ();
         this.updateBTTV();
-
         this.updater = window.setInterval(() => {
             this.updateStreamInfo();
             this.updateUserList();
         }, 60000);
-        this.joined = true;
     }
 
     private onRoomState(state: any) {
@@ -346,7 +341,6 @@ export class ChatService {
     }
 
     private onUserNotice(params: any, text: string) {
-
         const notice = this.processNotice(params);
         if (!this.settings.subs && notice.subscription) {
             return;
@@ -378,6 +372,7 @@ export class ChatService {
                 msg.deleted = true;
             }
         });
+
     }
 
     private onPurge(params, user: string) {
@@ -386,6 +381,10 @@ export class ChatService {
         this.updateView();
         if (!user) {
             this.addStatus('Chat was cleared by a moderator.');
+        } else if (params['ban-duration']) {
+            this.addStatus(`${user} was timed out for ${params['ban-duration']} seconds.`);
+        } else {
+            this.addStatus(`${user} was banned from the channel.`);
         }
     }
 
@@ -404,7 +403,6 @@ export class ChatService {
 
         this.addMessage(notice);
     }
-
 
     public init(channel: string, username: string, token: string) {
 
@@ -428,7 +426,8 @@ export class ChatService {
             USERNOTICE: (params, msg) => { this.onUserNotice(params, msg); },
             USERSTATE: (params) => { this.onUserState(params); },
             JOIN: () => { this.onJoin(); },
-            CLOSE: () => { this.addStatus('Connection lost. Attempting to reconnect.'); }
+            CLOSE: () => { this.addStatus('Connection lost. Attempting to reconnect.'); },
+            RECONNECT: () => { this.addStatus('Reconnected.'); }
         });
     }
 
@@ -456,9 +455,7 @@ export class ChatService {
             this.messages.shift();
         }
 
-        const now = new Date();
-        message.timestamp = dateformat(now, 'hh:MM');
-        message.odd = this.odd = !this.odd;
+        message.timestamp = dateformat(new Date(), 'hh:MM');
 
         this.messages.push(message);
 
@@ -532,6 +529,57 @@ export class ChatService {
 
     }
 
+    private checkBits(word) {
+        const bits = /([a-z]+)(\d+)/.exec(word);
+
+        if (!bits) {
+            return undefined;
+        }
+
+        const cheerType = bits[1];
+
+        if (cheerType in this.cheers) {
+            const spent = Number(bits[2]);
+            const info = this.cheers[cheerType];
+            const tier = Math.min(spent >= 10000 ? 4 :
+                spent >= 5000 ? 3 :
+                spent >= 1000 ? 2 :
+                spent >= 100 ? 1 : 0, info.tiers.length - 1);
+            const scale = info.scales.sort()[0];
+
+            return {
+                type: 'bits',
+                name: bits[0],
+                amount: spent,
+                lightColor: info.tiers[tier].color,
+                darkColor: info.tiers[tier].color,
+                dark: info.tiers[tier].images.dark.animated[scale],
+                light: info.tiers[tier].images.light.animated[scale],
+            };
+        }
+    }
+
+    private checkUrl(word) {
+        const regex = /(?:https?:\/\/)?(?:www\.)?[-a-zA-Z0-9]{2,256}\.[A-Za-z]{2,6}/;
+        return regex.test(word);
+    }
+
+    private checkUserLevel(badges) {
+
+        for (const i of Object.keys(badges)) {
+            const badge = badges[i];
+            if (badge[0] === 'moderator') {
+                return 1;
+            } else if (badge[0] === 'broadcaster') {
+                return 2;
+            } else if (badge[0] === 'staff') {
+                return 3;
+            }
+        }
+
+        return 0;
+    }
+
     private processNotice(params: any) {
 
         if (/^(?:sub|resub)$/.test(params['msg-id'])) {
@@ -597,57 +645,6 @@ export class ChatService {
         return {
             notice: params['system-msg']
         };
-    }
-
-    private checkBits(word) {
-        const bits = /([a-z]+)(\d+)/.exec(word);
-
-        if (!bits) {
-            return undefined;
-        }
-
-        const cheerType = bits[1];
-
-        if (cheerType in this.cheers) {
-            const spent = Number(bits[2]);
-            const info = this.cheers[cheerType];
-            const tier = Math.min(spent >= 10000 ? 4 :
-                spent >= 5000 ? 3 :
-                spent >= 1000 ? 2 :
-                spent >= 100 ? 1 : 0, info.tiers.length - 1);
-            const scale = info.scales.sort()[0];
-
-            return {
-                type: 'bits',
-                name: bits[0],
-                amount: spent,
-                lightColor: info.tiers[tier].color,
-                darkColor: info.tiers[tier].color,
-                dark: info.tiers[tier].images.dark.animated[scale],
-                light: info.tiers[tier].images.light.animated[scale],
-            };
-        }
-    }
-
-    private checkUrl(word) {
-        const regex = /(?:https?:\/\/)?(?:www\.)?[-a-zA-Z0-9]{2,256}\.[A-Za-z]{2,6}/;
-        return regex.test(word);
-    }
-
-    private checkUserLevel(badges) {
-
-        for (const i of Object.keys(badges)) {
-            const badge = badges[i];
-            if (badge[0] === 'moderator') {
-                return 1;
-            } else if (badge[0] === 'broadcaster') {
-                return 2;
-            } else if (badge[0] === 'staff') {
-                return 3;
-            }
-        }
-
-        return 0;
     }
 
     private processIncoming(params: any, original: string): any {

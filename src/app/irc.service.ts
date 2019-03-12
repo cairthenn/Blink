@@ -90,8 +90,8 @@ export class IrcService {
 
     public notifyConnectionLost() {
         this.channels.forEach(c => {
-            this.callbacks[c]['CLOSE']();
-        })
+            this.callbacks[c].CLOSE();
+        });
     }
 
     public disconnect() {
