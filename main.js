@@ -59,7 +59,7 @@ function autoUpdate() {
     }) 
 
     autoUpdater.checkForUpdates();
-    setInterveal(autoUpdater.checkForUpdates, 600000);
+    setInterval(autoUpdater.checkForUpdates, 600000);
 }
 
 app.on('ready', () => {
