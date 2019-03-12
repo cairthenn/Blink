@@ -316,6 +316,7 @@ export class ChatService {
 
     private onJoin() {
         this.addStatus('Welcome to the chat!');
+        this.joined = true;
         this.updateStreamInfo();
         this.updateUserList();
         this.updateFFZ();
