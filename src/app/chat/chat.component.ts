@@ -95,7 +95,7 @@ export class ChatComponent implements OnInit {
                 this.addChannel(name);
             });
         }
-        const duration = names.length * 50;
+        const duration = name && names.length * 50 || 0;
         if (duration > 500) {
             setTimeout(() => this.loaded = true, duration);
         } else {
