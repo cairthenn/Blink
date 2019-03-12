@@ -47,39 +47,29 @@ function tryLogin(force = false) {
     });
 }
 
-function update() {
+function autoUpdate() {
     autoUpdater.setFeedURL(feed);
-
-    return new Promise((resolve, reject) => {
-        autoUpdater.on('update-not-available', () => {
-            resolve(false);
-        })
-
-        autoUpdater.on('update-available', () => {
-            resolve(true);
-        })
-
-        autoUpdater.on('error', err => {
-            dialog.showErrorBox('Update Error',`There was a problem updating the application: ${err}`);
-            resolve(false);
-        }) 
-
-        autoUpdater.checkForUpdates();
+    
+    autoUpdater.on('update-downloaded', () => {
+        window.webContents.send('update-downloaded');
     });
+
+    autoUpdater.on('error', err => {
+        dialog.showErrorBox('Update Error',`There was a problem updating the application: ${err}`);
+    }) 
+
+    autoUpdater.checkForUpdates();
+    setInterveal(autoUpdater.checkForUpdates, 600000);
 }
 
 app.on('ready', () => {
 
-    if(firstRun || process.env.NODE_ENV == 'dev' || process.platform != 'win32') {
-        launchApplication();
+    if(!firstRun && process.env.NODE_ENV != 'dev' && process.platform == 'win32') {
+        autoUpdate();
         return;
     }
-
-    update().then((updating) => {
-        launchApplication();
-    }).catch(err => {
-        launchApplication();
-    });
+    
+    launchApplication();
 });
 
 function launchApplication() {

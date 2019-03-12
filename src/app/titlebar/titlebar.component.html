@@ -38,3 +38,14 @@
         </div>
     </div>
 </div>
+<div *ngIf="update" class="mat-app-background" style="height: 24px;">
+    <div class="cc-full-height titlebar-bg">
+        <div class="cc-flex cc-justify-content-center">
+            <div>
+                <span class="cc-pd-l-1 cc-font-size-6" style="font-family:consolas; opacity: .9; color:whitesmoke">
+                    A new version is available! <a (click)="relaunch()">Restart</a> to get the lastest changes or <a (click)="update = false">hide this</a> for now.
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

@@ -25,6 +25,7 @@ import { ElectronService } from '../electron.service';
 })
 export class TitlebarComponent implements OnInit {
 
+    public update = false;
     public maximized = false;
     public version = ElectronService.remote.app.getVersion();
 
@@ -32,6 +33,14 @@ export class TitlebarComponent implements OnInit {
         const window = ElectronService.remote.getCurrentWindow();
         window.on('maximize', () => this.maximized = true);
         window.on('unmaximize', () => this.maximized = false);
+        ElectronService.ipcRenderer.on('update-downloaded', () => {
+            this.update = true;
+        })
+    }
+
+    public relaunch() {
+        ElectronService.remote.app.relaunch();
+        ElectronService.remote.getCurrentWindow().close();
     }
 
     public close() {
