@@ -39,8 +39,11 @@ export class TitlebarComponent implements OnInit {
     }
 
     public relaunch() {
-        ElectronService.remote.app.relaunch();
-        ElectronService.remote.getCurrentWindow().close();
+        try {
+            ElectronService.remote.autoUpdater.quitAndInstall();
+        } catch(err) {
+            
+        };
     }
 
     public close() {
