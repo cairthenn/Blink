@@ -34,7 +34,7 @@ module.exports.getLogin = function(forceVerify) {
         client_id: clientId,
         response_type: 'token',
         redirect_uri: 'https://cairthenn.com',
-        scope: 'chat:edit chat:read whispers:edit whispers:read channel:moderate whispers:edit',
+        scope: 'chat:edit chat:read whispers:edit whispers:read channel:moderate',
         force_verify: forceVerify || false,
         state: state,
     };
