@@ -1,6 +1,3 @@
-environment:
-  nodejs_version: "10"
-
 branches:
   only:
     - master
@@ -11,7 +8,7 @@ artifacts:
   - path: installer/*
 
 install:
-  - ps: Install-Product node $env:nodejs_version $env:node_platform
+  - ps: Install-Product node $env:nodejs_version $env:nodejs_platform
   - ps: $env:package_version = (Get-Content -Raw -Path package.json | ConvertFrom-Json).version
   - npm install
   - npm update
