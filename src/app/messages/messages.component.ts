@@ -20,21 +20,6 @@ import { Component, OnInit, Input, ElementRef, HostListener, ChangeDetectorRef, 
 import { ChatService } from '../chat.service';
 import { SettingsService } from '../settings.service';
 
-
-export class ChatMessage {
-    isStatus = false;
-    deleted = false;
-    text: string = undefined;
-    username: string = undefined;
-    color: string = undefined;
-    html: string = undefined;
-    badges: string[] = [];
-    id: string = undefined;
-    userId: string = undefined;
-    mod = false;
-    incoming = false;
-}
-
 export interface Info {
     title: string;
     picture: string;

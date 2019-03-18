@@ -19,7 +19,7 @@
 import CryptoJS from 'crypto-js';
 import dateformat from 'dateformat';
 import { IrcService } from './irc.service';
-import { ChatMessage, MessagesComponent } from './messages/messages.component';
+import { MessagesComponent } from './messages/messages.component';
 import { WebApiService as WebApiService } from './web-api.service';
 import { SettingsService } from './settings.service';
 import { ElectronService } from './electron.service';
@@ -70,7 +70,8 @@ export class ChatService {
     public mentions = 0;
     public newMessages = false;
 
-    public messages: ChatMessage[] = [];
+    public messages: any[] = [];
+    private odd = false;
 
     public commandHandlers = {
         me: (text: string) => {
@@ -412,7 +413,7 @@ export class ChatService {
             this.messages.shift();
         }
 
-        message.timestamp = dateformat(new Date(), 'hh:MM');
+        message.odd = this.odd = !this.odd;
 
         this.messages.push(message);
 

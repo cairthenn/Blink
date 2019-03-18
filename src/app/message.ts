@@ -2,8 +2,6 @@ import { SettingsService } from './settings.service';
 import dateformat from 'dateformat';
 import { EmojiService } from './emoji.service';
 
-let odd = false;
-
 function urlFragment(url) {
     return {
         type: 'url',
@@ -94,10 +92,11 @@ export class Message {
     public chat: boolean;
     public fragments: any[];
     public text: string;
+    public deleted: boolean;
+    public status: boolean;
 
 
     constructor(name: string, text: string, action: boolean) {
-        this.odd = odd = !odd;
         this.timestamp = dateformat(new Date(), 'hh:MM');
         this.username = name;
         this.text = text;

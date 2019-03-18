@@ -17,10 +17,10 @@
 -->
 
 <div class="chat-lines cc-word-break-word">
-    <div #message *ngFor="let msg of messages" class="cc-relative" [class.chat-alternate-bg]="settings.alternate">
+    <div #message *ngFor="let msg of messages" class="cc-relative">
         <div class="user-notice" [class.raid]="msg.raid" [class.friend]="msg.friend" [class.subscription]="msg.subscription"
             [style.background]="msg.friend ? settings.lightTheme ? msg.lightColor : msg.darkColor : null"></div>
-        <div class="chat-message" [class.chat-highlight]="msg.highlight" [class.chat-subscription]="msg.subscription" [class.message-deleted]="msg.deleted">
+        <div class="chat-message" [class.chat-alternate-bg]="msg.odd && settings.alternate" [class.chat-highlight]="msg.highlight" [class.chat-subscription]="msg.subscription" [class.message-deleted]="msg.deleted">
 
             <div *ngIf="msg.subscription" [class.cc-pd-b-05]="msg.hasChat">
                 <span [ngSwitch]="msg.subType">

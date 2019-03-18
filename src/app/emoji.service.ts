@@ -8,6 +8,9 @@ const emoji = {
     }
 }
 
+/*
+    Usage borrowed from: https://github.com/twitter/twemoji
+*/
 function toTwemojiUrl(unicode) {
 
     if(unicode.indexOf('\u200D') < 0) {
