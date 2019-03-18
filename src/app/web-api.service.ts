@@ -153,32 +153,7 @@ export class WebApiService {
             return info.chatters;
         });
     }
-
-    public static getEmoji() {
-        return new Promise((resolve, reject) => {
-            if (this.emoji.lookup) {
-                resolve(this.emoji);
-            }
-            this.get(emojiUrl).then(emoji => {
-
-                emoji.forEach(e => {
-                    if (e.keywords === 'flag') {
-                        return;
-                    }
-
-                    const name = e.name.replace(/[:"'_-]/, '').replace(' ', '_').toLowerCase();
-                    const emojiShortcut = `:${name}:`;
-                    e.emoji = true;
-                    e.shortcut = emojiShortcut;
-                    e.lower = name;
-                    this.emoji.lookup[emojiShortcut] = e;
-                    this.emoji.autocomplete.push([emojiShortcut, e.char]);
-                });
-                resolve(this.emoji);
-            }).catch(err => console.log(err));
-        });
-    }
-
+    
     public static getBttvGlobal(update: boolean = false) {
         return !update && this.bttv._global || this.get(bttvGlobalUrl).then(global => {
             return this.bttv._global = global.emotes;

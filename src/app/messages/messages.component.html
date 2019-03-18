@@ -83,40 +83,44 @@
                     <span *ngFor="let f of msg.fragments" [style.color]="settings.lightTheme ? f.lightColor : f.darkColor">
                         <span [ngSwitch]="f.type">
                             <span *ngSwitchCase="'twitch'">
-                                <span *ngIf="settings.twitchEmotes; else noTwitch"><img class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" >&nbsp;</span>
+                                <span *ngIf="settings.twitchEmotes; else noTwitch"><img class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" ></span>
                                 <ng-template #noTwitch>
                                     <span>{{f.code}} </span>
                                 </ng-template>
                             </span>
+                            <span *ngSwitchCase="'emoji'">
+                                <span><img class="cc-inline-block chat-emoji" [src]="f.src" [alt]="f.emoji"></span>
+                            </span>
                             <span *ngSwitchCase="'ffz'">
-                                <span *ngIf="settings.ffzEmotes; else noFFZ"><img class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" >&nbsp;</span>
+                                <span *ngIf="settings.ffzEmotes; else noFFZ"><img class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" ></span>
                                 <ng-template #noFFZ>
-                                    <span>{{f.code}} </span>
+                                    <span>{{f.code}}</span>
                                 </ng-template>
                             </span>
                             <span *ngSwitchCase="'bttv'">
-                                <span *ngIf="settings.bttvEmotes; else noBTTV"><img class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" >&nbsp;</span>
+                                <span *ngIf="settings.bttvEmotes; else noBTTV"><img class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" ></span>
                                 <ng-template #noBTTV>
-                                    <span>{{f.code}} </span>
+                                    <span>{{f.code}}</span>
                                 </ng-template>
                             </span>
                             <span *ngSwitchCase="'bits'">
                                 <span *ngIf="settings.bits; else noBits">
                                     <img class="cc-inline-block chat-emote" [src]="settings.lightTheme ? f.light : f.dark" [alt]="f.name" >
-                                    <span>&nbsp;<strong>{{f.amount}} </strong></span>
+                                    <span>&nbsp;<strong>{{f.amount}}</strong></span>
                                 </span>
                                 <ng-template #noBits>
-                                    <span *ngIf="!settings.bits">{{f.name}} </span>
+                                    <span *ngIf="!settings.bits">{{f.name}}</span>
                                 </ng-template>
                             </span>
                             <span *ngSwitchCase="'url'">
                                 <a class="chat-link" (click)="service.openExternal(f.text)">{{f.text}} </a>
                             </span>
                             <span *ngSwitchCase="'username'">
-                                <span class="chat-username">{{f.text}} </span>
+                                <span class="chat-username">{{f.text}}</span>
                             </span>
-                            <span *ngSwitchDefault>{{f.text}} </span>
+                            <span *ngSwitchDefault>{{f.text}}</span>
                         </span>
+                        <span>&nbsp;</span>
                     </span>
                 </span>
             </ng-template>

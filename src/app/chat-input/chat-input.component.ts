@@ -23,6 +23,7 @@ import { FormControl} from '@angular/forms';
 import { ViewerDialogComponent } from '../viewer-dialog/viewer-dialog.component';
 import { Observable } from 'rxjs';
 import { map, debounceTime } from 'rxjs/operators';
+import { EmojiService } from '../emoji.service';
 
 const dupChar = ' ⁭';
 
@@ -63,7 +64,7 @@ export class ChatInputComponent implements OnInit {
 
     constructor(private dialog: MatDialog) {
         this.acOptions = this.messageControl.valueChanges.pipe(
-            debounceTime(300),
+            debounceTime(100),
             map(value => this.filter(value))
         );
     }
@@ -78,14 +79,6 @@ export class ChatInputComponent implements OnInit {
 
     get emoteLookup() {
         return this.service.emotes.lookup;
-    }
-
-    get emoji() {
-        return this.service.emoji.autocomplete;
-    }
-
-    get emojiLookup() {
-        return this.service.emoji.lookup;
     }
 
     private filter(value: string): any[] {
@@ -126,14 +119,14 @@ export class ChatInputComponent implements OnInit {
                     };
                 });
 
-                const emoji = this.emoji.filter(x => {
+                const emoji = EmojiService.autocomplete.filter(x => {
                     return x[0].indexOf(word) === 0;
                 }).slice(0, 25).map(x => {
                     return {
-                        word: `${x[1]} `,
+                        word: `${x[0]} `,
                         before: beforeText,
                         after: afterText,
-                        emoji: x[0],
+                        emote: EmojiService.lookup.shortcodes[x[0]],
                     };
                 });
 
@@ -194,6 +187,11 @@ export class ChatInputComponent implements OnInit {
             this.tabs.before = this.text.substring(0, wordStart);
             this.tabs.after = this.text.substring(this.start);
             const word = current.substr(wordStart).toLowerCase();
+
+            if(!word || !word.length) {
+                return;
+            }
+
             const isUserWord = word[0] === '@';
             const userWord = word.substr(1);
 
@@ -207,7 +205,7 @@ export class ChatInputComponent implements OnInit {
                 return arr;
             }, []);
 
-            const emotes = this.emotes.concat(this.emoji).reduce((arr, item) => {
+            const emotes = this.emotes.concat(EmojiService.autocomplete).reduce((arr, item) => {
                 if (item[0].indexOf(word) === 0) {
                     arr.push(item[1]);
                 }

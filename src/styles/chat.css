@@ -65,9 +65,13 @@
     vertical-align: middle;
 }
 
-.chat-emote,.chat-emote-button {
+.chat-emote,.chat-emote-button,.chat-emoji {
     margin: -.5rem 0;
     vertical-align: middle;
+}
+
+.chat-emoji {
+    max-height: 18px;
 }
 
 .chat-emote-button {
@@ -85,7 +89,7 @@
     height: 1px;
 }
 
-.chat-alternate-bg:nth-child(odd) {
+.chat-alternate-bg {
     background: rgba(0,0,0,.1);
 }
 

@@ -50,10 +50,6 @@ export class ChatComponent implements OnInit {
     public showTabs = false;
     public viewReady = false;
     public irc: IrcService;
-    public emoji = {
-        lookup: {},
-        autocomplete: [],
-    };
 
     public account = {
         logout: () => { this.logout(); },
@@ -80,7 +76,7 @@ export class ChatComponent implements OnInit {
     }
 
     public createChannel(name: string) {
-        const channel = new ChatService(this.settings, this.irc, this.emoji);
+        const channel = new ChatService(this.settings, this.irc);
         channel.init(name, this.username, this.token);
         this.tabs.forEach(t => t.active = false);
         channel.active = true;
@@ -222,21 +218,12 @@ export class ChatComponent implements OnInit {
         });
     }
 
-
-    public updateEmoji() {
-        WebApiService.getEmoji().then((emoji: any) => {
-            this.emoji.autocomplete = emoji.autocomplete;
-            this.emoji.lookup = emoji.lookup;
-        });
-    }
-
     ngOnInit() {
         this.irc = new IrcService(this.zone);
         ElectronService.ipcRenderer.on('login-success', (sender, username, token) => {
             this.handleLogin(username, token);
         });
 
-        this.updateEmoji();
         this.login(false);
     }
 
