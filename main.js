@@ -59,6 +59,8 @@ function autoUpdate() {
         dialog.showErrorBox('Update Error',`There was a problem updating the application: ${err}`);
     }) 
 
+    autoUpdater.checkForUpdates();
+    
     setInterval(() => { 
         autoUpdater.checkForUpdates();
     }, 600000);

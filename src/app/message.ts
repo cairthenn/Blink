@@ -359,6 +359,7 @@ export class Message {
 
         const message = new Message(name, ircText.join(''), isAction);
         message.chat = true;
+        message.badges = badges;
         message.lightColor = colors[0];
         message.darkColor = colors[1];
         message.fragments = fragments;

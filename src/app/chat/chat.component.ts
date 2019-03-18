@@ -26,7 +26,6 @@ import { IrcService } from '../irc.service';
 import { AES } from 'crypto-js';
 import { SettingsService } from '../settings.service';
 import { ElectronService } from '../electron.service';
-import { WebApiService } from '../web-api.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
@@ -35,7 +34,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 })
 export class ChatComponent implements OnInit {
 
-    private loaded = false;
+    public loaded = false;
     private token: string;
 
     @Input()
@@ -91,7 +90,7 @@ export class ChatComponent implements OnInit {
                 this.addChannel(name);
             });
         }
-        const duration = name && names.length * 50 || 0;
+        const duration = names && names.length * 50 || 0;
         if (duration > 500) {
             setTimeout(() => this.loaded = true, duration);
         } else {
