@@ -200,6 +200,7 @@ export class Message {
         msg.chat = true;
         msg.badges = this.parseBadges(params.badges);
         const colors = this.colorCorrect(params.color);
+        msg.id = params.id;
         msg.lightColor = colors[0];
         msg.darkColor = colors[1];
         msg.level = Message.checkUserLevel(msg.badges);

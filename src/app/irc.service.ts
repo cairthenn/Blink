@@ -155,7 +155,7 @@ export class IrcService {
 
         const msg = messageFormat.exec(split[2]);
         if (!msg) {
-            return false;
+            return;
         }
 
         const params = {};
@@ -176,7 +176,5 @@ export class IrcService {
         this.zone.run(() => {
             this.handlers[channel][type](params, message);
         });
-
-
     }
 }
