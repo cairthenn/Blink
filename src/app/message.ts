@@ -21,6 +21,7 @@ function usernameFragment(name: string) {
     return {
         type: 'username',
         name: name,
+        text: `@${name}`,
     };
 }
 
@@ -178,7 +179,7 @@ export class Message {
 
     }
 
-    public static fromIncoming(text: string, params: any, emotes: any, cheers: any, settings: SettingsService) {
+    public static fromIncoming(text: string, params: any, emotes: any, cheers: any, settings: SettingsService, ownUsername: string) {
 
         
         const isAction = /\u0001ACTION (.*)\u0001$/.exec(text);
@@ -219,6 +220,9 @@ export class Message {
 
             const username = checkUsername(word);
             if(username) {
+                if(settings.highlightName && username[1].toLowerCase() === ownUsername) {
+                    msg.highlight = true;
+                }
                 return usernameFragment(username[1]);
             }
 
@@ -232,7 +236,7 @@ export class Message {
                 msg.ignore = true;
             }
 
-            if(settings.highlightWords.find(x => x === lower)) {
+            if((settings.highlightName && lower === ownUsername) || settings.highlightWords.find(x => x === lower)) {
                 msg.highlight = true;
             }
 
