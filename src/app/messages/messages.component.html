@@ -85,7 +85,7 @@
                             <span *ngSwitchCase="'twitch'">
                                 <span *ngIf="settings.twitchEmotes; else noTwitch"><img class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" ></span>
                                 <ng-template #noTwitch>
-                                    <span>{{f.code}} </span>
+                                    <span>{{f.code}}</span>
                                 </ng-template>
                             </span>
                             <span *ngSwitchCase="'emoji'">
@@ -109,18 +109,18 @@
                                     <span>&nbsp;<strong>{{f.amount}}</strong></span>
                                 </span>
                                 <ng-template #noBits>
-                                    <span *ngIf="!settings.bits">{{f.name}}</span>
+                                    <span *ngIf="!settings.bits">{{f.name}} </span>
                                 </ng-template>
                             </span>
                             <span *ngSwitchCase="'url'">
-                                <a class="chat-link" (click)="service.openExternal(f.text)">{{f.text}} </a>
+                                <a class="chat-link" (click)="service.openExternal(f.text)">{{f.text}}</a>
                             </span>
                             <span *ngSwitchCase="'username'">
                                 <span class="chat-username">{{f.text}}</span>
                             </span>
                             <span *ngSwitchDefault>{{f.text}}</span>
                         </span>
-                        <span>&nbsp;</span>
+                        {{' '}}
                     </span>
                 </span>
             </ng-template>
