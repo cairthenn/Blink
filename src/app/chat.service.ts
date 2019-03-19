@@ -17,7 +17,6 @@
  */
 
 import CryptoJS from 'crypto-js';
-import dateformat from 'dateformat';
 import { IrcService } from './irc.service';
 import { MessagesComponent } from './messages/messages.component';
 import { WebApiService as WebApiService } from './web-api.service';
@@ -57,6 +56,7 @@ export class ChatService {
     public joined = false;
     public level = 0;
     public username = '';
+    public usernameLower = '';
     public channel = '';
     public channelDisplay = '';
     public userBadges = [];
@@ -370,6 +370,7 @@ export class ChatService {
         }
 
         this.username = username;
+        this.usernameLower = username.toLowerCase();
         this.token = token;
         this.channelDisplay = channel;
         this.channel = channel.toLowerCase();
@@ -469,7 +470,7 @@ export class ChatService {
 
     private processIncoming(params: any, original: string): any {
 
-        const message = Message.fromIncoming(original, params, this.emotes, this.cheers, this.settings);
+        const message = Message.fromIncoming(original, params, this.emotes, this.cheers, this.settings, this.usernameLower);
 
         if (message.highlight && !this.active) {
             this.mentions++;
