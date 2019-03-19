@@ -289,7 +289,7 @@ export class Message {
         return msg;
     }
 
-    public static fromOutgoing(name: string, text: string, colors: string[], badges, emotes: any, isAction: boolean) {
+    public static fromOutgoing(name: string, text: string, colors: string[], badges: string[][], emotes: any, isAction: boolean) {
         
         const ircText = [];
         const fragments = [];

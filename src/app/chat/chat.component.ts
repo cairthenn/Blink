@@ -59,7 +59,7 @@ export class ChatComponent implements OnInit {
     }
 
     @HostListener('window:beforeunload', ['$event'])
-    private saveDrawer() {
+    private beforeUnload() {
         this.irc.disconnect();
         ElectronService.settings.set('drawer', this.settings.drawer);
     }

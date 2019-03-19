@@ -484,6 +484,6 @@ export class ChatService {
     }
 
     private processOutgoing(original: string, isAction: boolean = false): any {
-        return Message.fromOutgoing(this.username, original, this.colors, this.badges, this.emotes, isAction); 
+        return Message.fromOutgoing(this.username, original, this.colors, this.userBadges, this.emotes, isAction); 
     }
 }
