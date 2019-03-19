@@ -266,7 +266,7 @@ export class ChatService {
 
         this.userState = state;
         this.userBadges = Message.parseBadges(state.badges);
-        this.level = this.checkUserLevel(this.userBadges);
+        this.level = Message.checkUserLevel(this.userBadges);
         this.colors = Message.colorCorrect(state.color);
     }
 
@@ -449,22 +449,6 @@ export class ChatService {
         }
 
         handler(commandCheck[2]);
-    }
-
-    private checkUserLevel(badges) {
-
-        for (const i of Object.keys(badges)) {
-            const badge = badges[i];
-            if (badge[0] === 'moderator') {
-                return 1;
-            } else if (badge[0] === 'broadcaster') {
-                return 2;
-            } else if (badge[0] === 'staff') {
-                return 3;
-            }
-        }
-
-        return 0;
     }
 
     private processIncoming(params: any, original: string): any {

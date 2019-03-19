@@ -127,6 +127,22 @@ export class Message {
         return [h * 60, s * 100, l * 100];
     }
 
+    public static checkUserLevel(badges) {
+
+        for (const i of Object.keys(badges)) {
+            const badge = badges[i];
+            if (badge[0] === 'moderator') {
+                return 1;
+            } else if (badge[0] === 'broadcaster') {
+                return 2;
+            } else if (badge[0] === 'staff') {
+                return 3;
+            }
+        }
+
+        return 0;
+    }
+
     public static colorCorrect(color: string) {
 
         if (!color) {
@@ -185,6 +201,7 @@ export class Message {
         const colors = this.colorCorrect(params.color);
         msg.lightColor = colors[0];
         msg.darkColor = colors[1];
+        msg.level = Message.checkUserLevel(msg.badges);
 
         const processWord = (arr: string[]) => {
 
