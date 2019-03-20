@@ -322,7 +322,7 @@ export class Message {
 
             const emoji = EmojiService.lookup.shortcodes[word];
             if (emoji) {
-                ircText.push(`${emoji.text} `);
+                ircText.push(`${emoji.code} `);
                 return emoji;
             }
 
