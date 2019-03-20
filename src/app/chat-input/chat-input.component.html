@@ -18,7 +18,7 @@
 
 <form class="cc-flex cc-flex-column" matAutocompleteOrigin #origin="matAutocompleteOrigin" (ngSubmit)="onSubmit()">
     <div class="cc-relative">
-        <mat-card *ngIf="showEmotes" cdkDrag class="emote-menu">
+        <mat-card *ngIf="showEmotes" cdkDrag class="emote-menu" style="position:absolute">
             <app-emote-menu [helper]="emoteHelper"></app-emote-menu>
         </mat-card>
     </div>
