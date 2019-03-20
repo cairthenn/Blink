@@ -18,6 +18,7 @@ test_script:
   - npm --version
 
 build_script:
+  - node get-emote-sets
   - npm run compile
   - rm -rf src
   - npm run package

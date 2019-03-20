@@ -18,30 +18,20 @@
 
 import axios from 'axios';
 
+const twitchEmoteSets = require('../assets/emote-sets.json');
+
 const twitchStreamUrl = 'https://api.twitch.tv/kraken/streams/';
 const twitchChannelUrl = 'https://api.twitch.tv/kraken/channels/';
-
 const bttvGlobalUrl = 'https://api.betterttv.net/2/emotes';
 const bttvChannelUrl = 'https://api.betterttv.net/2/channels/';
-
 const ffzGlobalUrl = 'https://api.frankerfacez.com/v1/set/global';
 const ffzChannelUrl = 'https://api.frankerfacez.com/v1/room/';
-
 const badgeChannelUrl = 'https://badges.twitch.tv/v1/badges/channels/';
 const badgeGlobalUrl = 'https://badges.twitch.tv/v1/badges/global/display';
-
 const twitchEmotesUrl = 'https://api.twitch.tv/kraken/chat/emoticon_images?emotesets=';
 const tmiInfo = 'https://tmi.twitch.tv/group/user/';
-
-const emojiUrl = 'https://unpkg.com/emoji.json/emoji.json';
-
 const cheersUrl = 'https://api.twitch.tv/kraken/bits/actions?channel_id=';
 
-/*
-    Twitch is Really Dumb For Real and provides RegEx for like 12 emotes which
-    is stupidly inefficient because everything else can just check for key existence
-    :-?)
-*/
 const fixes = {
     'R-?\\)': [
         `R-)`,
@@ -236,7 +226,13 @@ export class WebApiService {
 
                     return arr;
                 }, []);
-                return this.twitch[id] = [ id, noRegex ];
+                const setInfo = twitchEmoteSets[id] || {
+                    set_id: id,
+                    channel_name: `Unknown Set ${id}`,
+                    channel_id: '0',
+                    tier: 0,
+                };
+                return this.twitch[id] = [ setInfo, noRegex ];
             });
         });
 

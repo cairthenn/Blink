@@ -23,7 +23,7 @@
                     <mat-accordion multi="true">
                         <mat-expansion-panel *ngFor="let set of helper.emotes.twitch.sets">
                             <mat-expansion-panel-header collapsedHeight="28px" expandedHeight="28px">
-                                <mat-panel-title class="cc-font-size-6">Twitch Emotes</mat-panel-title>
+                                <mat-panel-title class="cc-font-size-6">{{set[0].channel_name}}</mat-panel-title>
                             </mat-expansion-panel-header>
                             <ng-template matExpansionPanelContent>
                                 <img *ngFor="let emote of set[1]" class="cc-inline-block emote-button" [src]="emote.src" (click)="helper.append(emote.code)">

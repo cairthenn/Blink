@@ -42,6 +42,7 @@ install:
   - npm update
 
 script:
+  - node get-emote-sets
   - npm run compile
   - rm -rf src
   - npm run package
