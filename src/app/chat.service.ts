@@ -324,23 +324,17 @@ export class ChatService {
         });
     }
 
-    public deleteFromUser(id?: string): boolean {
-        let ret = false;
+    public deleteFromUser(id?: string) {
         this.messages.forEach(msg => {
             if (!id || msg.userId === id) {
                 msg.deleted = true;
-                ret = true;
             }
         });
-        return ret;
     }
 
     private onPurge(params, user: string) {
 
-        const success = this.deleteFromUser(user && params['target-user-id']);
-        if (!success) {
-            return;
-        }
+        this.deleteFromUser(user && params['target-user-id']);
 
         this.updateView();
         if (!user) {
@@ -356,8 +350,8 @@ export class ChatService {
 
         this.messages.forEach(m => {
             if (m.id === messageId) {
+                this.addStatus(`${m.username}'s message was deleted.`);
                 m.deleted = true;
-                console.log(params);
             }
         });
         this.updateView();
