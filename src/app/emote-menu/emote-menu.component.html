@@ -1,0 +1,100 @@
+<!--
+    Blink, a chat client for Twitch
+    Copyright (C) 2019 cairthenn
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
+
+<mat-tab-group class="emote-tabs cc-font-size-6" mat-align-tabs="center">
+    <mat-tab label="Twitch">
+        <ng-template matTabContent>
+            <div class="scrollbar">
+                    <mat-accordion multi="true">
+                        <mat-expansion-panel *ngFor="let set of helper.emotes.twitch.sets">
+                            <mat-expansion-panel-header collapsedHeight="28px" expandedHeight="28px">
+                                <mat-panel-title class="cc-font-size-6">Twitch Emotes</mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <ng-template matExpansionPanelContent>
+                                <img *ngFor="let emote of set[1]" class="cc-inline-block emote-button" [src]="emote.src" (click)="helper.append(emote.code)">
+                            </ng-template>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+        </ng-template>
+    </mat-tab>
+    <mat-tab label="FFZ">
+        <ng-template matTabContent>
+        <div class="scrollbar">
+            <mat-accordion multi="true">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header collapsedHeight="28px" expandedHeight="28px">
+                        <mat-panel-title class="cc-font-size-6">Channel Emotes</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <ng-template matExpansionPanelContent>
+                        <img *ngFor="let emote of helper.emotes.ffz.channel" class="cc-inline-block emote-button" [src]="emote.src" (click)="helper.append(emote.code)">
+                    </ng-template>
+                </mat-expansion-panel>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header collapsedHeight="28px" expandedHeight="28px">
+                        <mat-panel-title class="cc-font-size-6">Global Emotes</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <ng-template matExpansionPanelContent>
+                        <img *ngFor="let emote of helper.emotes.ffz.global" class="cc-inline-block emote-button" [src]="emote.src" (click)="helper.append(emote.code)">
+                    </ng-template>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+        </ng-template>
+    </mat-tab>
+    <mat-tab label="BTTV">
+        <ng-template matTabContent>
+            <div class="scrollbar">
+            <mat-accordion multi="true">
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header collapsedHeight="28px" expandedHeight="28px">
+                            <mat-panel-title class="cc-font-size-6">Channel Emotes</mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <ng-template matExpansionPanelContent>
+                            <img *ngFor="let emote of helper.emotes.bttv.channel" class="cc-inline-block emote-button" [src]="emote.src" (click)="helper.append(emote.code)">
+                        </ng-template>
+                    </mat-expansion-panel>
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header collapsedHeight="28px" expandedHeight="28px">
+                            <mat-panel-title class="cc-font-size-6">Global Emotes</mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <ng-template matExpansionPanelContent>
+                            <img *ngFor="let emote of helper.emotes.bttv.global" class="cc-inline-block emote-button" [src]="emote.src" (click)="helper.append(emote.code)">
+                        </ng-template>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
+        </ng-template>
+    </mat-tab>
+    <mat-tab label="Emoji">
+        <ng-template matTabContent>
+            <div class="scrollbar">
+                <mat-accordion multi="true">
+                    <mat-expansion-panel *ngFor="let category of helper.emoji.categoryNames">
+                        <mat-expansion-panel-header collapsedHeight="28px" expandedHeight="28px">
+                            <mat-panel-title class="cc-font-size-6">{{category}}</mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <ng-template matExpansionPanelContent>
+                            <img *ngFor="let emote of helper.emoji[category]" class="cc-inline-block emote-button" [src]="emote.src" (click)="helper.append(emote.code)">
+                        </ng-template>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
+        </ng-template>
+    </mat-tab>
+</mat-tab-group>

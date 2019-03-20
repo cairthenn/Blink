@@ -33,6 +33,7 @@ const dupChar = ' ⁭';
 })
 export class ChatInputComponent implements OnInit {
 
+    public showEmotes: boolean;
     public messageControl = new FormControl();
     public acOptions: Observable<string[]>;
     private chatHistory: string[] = [];
@@ -61,6 +62,8 @@ export class ChatInputComponent implements OnInit {
 
     public get end() { return this.mb.nativeElement.selectionEnd; }
     public set end(val) { this.mb.nativeElement.selectionEnd = val; }
+
+    public emoteHelper: any;
 
     constructor(private dialog: MatDialog) {
         this.acOptions = this.messageControl.valueChanges.pipe(
@@ -105,7 +108,7 @@ export class ChatInputComponent implements OnInit {
                         after: afterText,
                     };
                 });
-            } else if (word[0] === ':' && (word[1] !== '(' || word.length > 2)) {
+            } else if (word[0] === ':' && word.length > 3) {
                 const name = word.toLowerCase();
                 const emoteName = name.substr(1);
                 const emotes = this.emotes.filter(x => {
@@ -188,7 +191,7 @@ export class ChatInputComponent implements OnInit {
             this.tabs.after = this.text.substring(this.start);
             const word = current.substr(wordStart).toLowerCase();
 
-            if(!word || !word.length) {
+            if (!word || !word.length) {
                 return;
             }
 
@@ -273,7 +276,18 @@ export class ChatInputComponent implements OnInit {
     }
 
     ngOnInit(): void {
-
+        this.emoteHelper = {
+            emoji: EmojiService.menu,
+            emotes: this.service.emotes,
+            append: (word: string) => {
+                if(this.text.length) {
+                    const hasSpace = this.text[this.text.length - 1] === ' ';
+                    this.text += `${hasSpace ? '' : ' '}${word} `;
+                } else {
+                    this.text = word;
+                }
+            }
+        }
     }
 
 

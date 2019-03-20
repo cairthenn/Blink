@@ -18,7 +18,7 @@
 
 <div class="chat-lines cc-word-break-word">
     <div #message *ngFor="let msg of messages" class="cc-relative">
-        <div class="user-notice" [class.raid]="msg.raid" [class.friend]="msg.friend" [class.subscription]="msg.subscription"
+        <div class="user-notice" [class.raid]="msg.raid" [class.friend]="msg.friend" [class.subscription]="msg.subscription" [class.]
             [style.background]="msg.friend ? settings.lightTheme ? msg.lightColor : msg.darkColor : null"></div>
         <div class="chat-message" [class.chat-alternate-bg]="msg.odd && settings.alternate" [class.chat-highlight]="msg.highlight" [class.chat-subscription]="msg.subscription" [class.message-deleted]="msg.deleted">
 
@@ -89,7 +89,7 @@
                                 </ng-template>
                             </span>
                             <span *ngSwitchCase="'emoji'">
-                                <span><img class="cc-inline-block chat-emoji" [src]="f.src" [alt]="f.emoji"></span>
+                                <span><img class="cc-inline-block chat-emoji" [src]="f.src" [alt]="f.code"></span>
                             </span>
                             <span *ngSwitchCase="'ffz'">
                                 <span *ngIf="settings.ffzEmotes; else noFFZ"><img class="cc-inline-block chat-emote" [src]="f.src" [alt]="f.code" ></span>

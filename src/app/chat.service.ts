@@ -38,7 +38,7 @@ export class ChatService {
             lookup: {},
         },
         twitch: {
-            sets: {},
+            sets: [],
             lookup: {},
         },
         lookup: {},
@@ -75,7 +75,7 @@ export class ChatService {
 
     public commandHandlers = {
         me: (text: string) => {
-            if(!text || !text.length) {
+            if (!text || !text.length) {
                 return;
             }
             const msg = this.processOutgoing(text, true);
@@ -324,18 +324,24 @@ export class ChatService {
         });
     }
 
-    public deleteFromUser(id?: string) {
+    public deleteFromUser(id?: string): boolean {
+        let ret = false;
         this.messages.forEach(msg => {
             if (!id || msg.userId === id) {
                 msg.deleted = true;
+                ret = true;
             }
         });
-
+        return ret;
     }
 
     private onPurge(params, user: string) {
 
-        this.deleteFromUser(user && params['target-user-id']);
+        const success = this.deleteFromUser(user && params['target-user-id']);
+        if (!success) {
+            return;
+        }
+
         this.updateView();
         if (!user) {
             this.addStatus('Chat was cleared by a moderator.');
@@ -346,11 +352,12 @@ export class ChatService {
         }
     }
 
-    private onDeleteMessage(messageId: string) {
+    private onDeleteMessage(params: any, messageId: string) {
 
         this.messages.forEach(m => {
             if (m.id === messageId) {
                 m.deleted = true;
+                console.log(params);
             }
         });
         this.updateView();
@@ -377,7 +384,7 @@ export class ChatService {
 
         this.irc.join(this.channel, {
             CLEARCHAT : (params, msg) => { this.onPurge(params, msg); },
-            CLEARMSG : (_, msg) => { this.onDeleteMessage(msg); },
+            CLEARMSG : (params, msg) => { this.onDeleteMessage(params, msg); },
             GLOBALUSERSTATE: (params) => { this.onGlobalUserState(params); },
             PRIVMSG: (params, msg) => { this.onMessage(params, msg); },
             ROOMSTATE: (params) => { this.onRoomState(params); },
@@ -469,6 +476,6 @@ export class ChatService {
     }
 
     private processOutgoing(original: string, isAction: boolean = false): any {
-        return Message.fromOutgoing(this.username, original, this.colors, this.userBadges, this.emotes, isAction); 
+        return Message.fromOutgoing(this.username, original, this.colors, this.userBadges, this.emotes, isAction);
     }
 }

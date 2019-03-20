@@ -32,9 +32,11 @@ import { ChatInputComponent } from './chat-input/chat-input.component';
 import {    MatDialogModule,   MatInputModule,     MatSidenavModule,    MatFormFieldModule,
             MatMenuModule,     MatToolbarModule,   MatButtonModule,     MatIconModule,
             MatCheckboxModule, MatCardModule,      MatDividerModule,    MatBadgeModule,
-            MatOptionModule,   MatProgressSpinnerModule, MatAutocompleteModule } from '@angular/material';
+            MatOptionModule,   MatTabsModule,      MatExpansionModule,
+            MatProgressSpinnerModule, MatAutocompleteModule } from '@angular/material';
 import { ViewerDialogComponent } from './viewer-dialog/viewer-dialog.component';
 import { TitlebarComponent } from './titlebar/titlebar.component';
+import { EmoteMenuComponent } from './emote-menu/emote-menu.component';
 
 @NgModule({
     declarations: [
@@ -46,6 +48,7 @@ import { TitlebarComponent } from './titlebar/titlebar.component';
         ChannelDialogComponent,
         ViewerDialogComponent,
         TitlebarComponent,
+        EmoteMenuComponent,
     ],
     imports: [
         FormsModule,
@@ -70,13 +73,16 @@ import { TitlebarComponent } from './titlebar/titlebar.component';
         MatDividerModule,
         MatBadgeModule,
         MatOptionModule,
-        MatAutocompleteModule,
+        MatTabsModule,
+        MatExpansionModule,
         MatProgressSpinnerModule,
+        MatAutocompleteModule,
     ],
     entryComponents: [
         ChannelDialogComponent,
         SettingsComponent,
         ViewerDialogComponent,
+        EmoteMenuComponent,
     ],
     providers: [],
     bootstrap: [AppComponent]

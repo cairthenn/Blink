@@ -17,30 +17,30 @@ function twitchEmoteFragment(id, name) {
     };
 }
 
-function usernameFragment(name: string) {
+function usernameFragment(username: string) {
     return {
         type: 'username',
-        name: name,
-        text: `@${name}`,
+        name: username,
+        text: `@${username}`,
     };
 }
 
-function cheerFragment(name, spent, info) {
-    
+function cheerFragment(cheerName: string, spent: number, cheerInfo: any) {
+
     const tier = Math.min(spent >= 10000 ? 4 :
         spent >= 5000 ? 3 :
         spent >= 1000 ? 2 :
-        spent >= 100 ? 1 : 0, info.tiers.length - 1);
-    const scale = info.scales.sort()[0];
+        spent >= 100 ? 1 : 0, cheerInfo.tiers.length - 1);
+    const scale = cheerInfo.scales.sort()[0];
 
     return {
         type: 'bits',
-        name: name,
+        name: cheerName,
         amount: spent,
-        lightColor: info.tiers[tier].color,
-        darkColor: info.tiers[tier].color,
-        dark: info.tiers[tier].images.dark.animated[scale],
-        light: info.tiers[tier].images.light.animated[scale],
+        lightColor: cheerInfo.tiers[tier].color,
+        darkColor: cheerInfo.tiers[tier].color,
+        dark: cheerInfo.tiers[tier].images.dark.animated[scale],
+        light: cheerInfo.tiers[tier].images.light.animated[scale],
     };
 }
 
@@ -181,9 +181,8 @@ export class Message {
 
     public static fromIncoming(text: string, params: any, emotes: any, cheers: any, settings: SettingsService, ownUsername: string) {
 
-        
         const isAction = /\u0001ACTION (.*)\u0001$/.exec(text);
-        if(isAction) {
+        if (isAction) {
             text = isAction[1];
         }
 
@@ -193,7 +192,7 @@ export class Message {
         msg.friend = settings.friendList.find(x => x === lowerUsername) && true;
         msg.ignore = settings.ignoredUsers.find(x => x === lowerUsername) && true;
 
-        if(!text || !text.length) {
+        if (!text || !text.length) {
             return msg;
         }
 
@@ -201,6 +200,7 @@ export class Message {
         msg.badges = this.parseBadges(params.badges);
         const colors = this.colorCorrect(params.color);
         msg.id = params.id;
+        msg.userId = params['user-id'];
         msg.lightColor = colors[0];
         msg.darkColor = colors[1];
         msg.level = Message.checkUserLevel(msg.badges);
@@ -210,40 +210,40 @@ export class Message {
             const word = arr.join('');
 
             const emoji = EmojiService.lookup.shortcodes[word];
-            if(emoji) {
+            if (emoji) {
                 return emoji;
             }
 
             const emote = emotes.lookup[word];
-            if(emote && !emote.userOnly) {
+            if (emote && !emote.userOnly) {
                 return emote;
             }
 
             const username = checkUsername(word);
-            if(username) {
-                if(settings.highlightName && username[1].toLowerCase() === ownUsername) {
+            if (username) {
+                if (settings.highlightName && username[1].toLowerCase() === ownUsername) {
                     msg.highlight = true;
                 }
                 return usernameFragment(username[1]);
             }
 
-            if(checkUrl(word)) {
+            if (checkUrl(word)) {
                 return urlFragment(word);
             }
 
             const boundary = /.*\b/.exec(word);
             const lower = boundary ? boundary[0].toLowerCase() : word.toLowerCase();
-            if(settings.blacklistWords.find(x => x === lower)) {
+            if (settings.blacklistWords.find(x => x === lower)) {
                 msg.ignore = true;
             }
 
-            if((settings.highlightName && lower === ownUsername) || settings.highlightWords.find(x => x === lower)) {
+            if ((settings.highlightName && lower === ownUsername) || settings.highlightWords.find(x => x === lower)) {
                 msg.highlight = true;
             }
 
-            if(params.bits) {
+            if (params.bits) {
                 const bits = checkBits(lower);
-                if(bits && bits[1] in cheers) {
+                if (bits && bits[1] in cheers) {
                     const spent = Number(bits[2]);
                     const info = cheers[bits[1]];
                     return cheerFragment(word, spent, info);
@@ -257,11 +257,10 @@ export class Message {
                 darkColor: isAction ? colors[1] : undefined,
              };
         };
-        
-        
+
         let wordArr = [];
         const flush = () => {
-            if(!wordArr.length) {
+            if (!wordArr.length) {
                 return;
             }
             const fragment = processWord(wordArr);
@@ -269,7 +268,7 @@ export class Message {
                 msg.fragments.push(fragment);
             }
             wordArr = [];
-        }
+        };
 
         const emoteLocations = parseTwitchEmotes(params.emotes);
         let cursor = 0;
@@ -277,9 +276,9 @@ export class Message {
         let twitchEmote;
 
         Array.from(`${text} `).forEach(char => {
-            if(twitchEmote) {
+            if (twitchEmote) {
                 wordArr.push(char);
-                if(cursor === twitchEmoteEnd) {
+                if (cursor === twitchEmoteEnd) {
                     const word = wordArr.join('');
                     msg.fragments.push(twitchEmoteFragment(twitchEmote[0], word));
                     wordArr = [];
@@ -289,7 +288,7 @@ export class Message {
                 return;
             }
             const check = cursor++;
-            if(check in emoteLocations) {
+            if (check in emoteLocations) {
                 wordArr.push(char);
                 twitchEmote = emoteLocations[check];
                 twitchEmoteEnd = twitchEmote[1];
@@ -297,11 +296,11 @@ export class Message {
             }
 
             const emoji = EmojiService.lookup.unicode[char];
-            if(emoji) {
+            if (emoji) {
                 flush();
                 msg.fragments.push(emoji);
                 return;
-            } else if(char == ' ') {
+            } else if (char === ' ') {
                 flush();
                 return;
             }
@@ -312,7 +311,7 @@ export class Message {
     }
 
     public static fromOutgoing(name: string, text: string, colors: string[], badges: string[][], emotes: any, isAction: boolean) {
-        
+
         const ircText = [];
         const fragments = [];
         let wordArr = [];
@@ -322,24 +321,24 @@ export class Message {
             const word = arr.join('');
 
             const emoji = EmojiService.lookup.shortcodes[word];
-            if(emoji) {
-                ircText.push(`${emoji.emoji} `);
+            if (emoji) {
+                ircText.push(`${emoji.text} `);
                 return emoji;
             }
 
             const emote = emotes.lookup[word];
-            if(emote) {
+            if (emote) {
                 ircText.push(`${word} `);
                 return emote;
             }
 
             const username = checkUsername(word);
-            if(username) {
+            if (username) {
                 ircText.push(`${word} `);
                 return usernameFragment(username[1]);
             }
 
-            if(checkUrl(word)) {
+            if (checkUrl(word)) {
                 ircText.push(`${word} `);
                 return urlFragment(word);
             }
@@ -355,7 +354,7 @@ export class Message {
         };
 
         const flush = () => {
-            if(!wordArr.length) {
+            if (!wordArr.length) {
                 return;
             }
             const fragment = processWord(wordArr);
@@ -363,16 +362,16 @@ export class Message {
                 fragments.push(fragment);
             }
             wordArr = [];
-        }
+        };
 
-        Array.from(`${text} `).forEach(char => { 
+        Array.from(`${text} `).forEach(char => {
             const emoji = EmojiService.lookup.unicode[char];
-            if(emoji) {
+            if (emoji) {
                 flush();
                 ircText.push(`${char} `);
                 fragments.push(emoji);
                 return;
-            } else if(char == ' ') {
+            } else if (char === ' ') {
                 flush();
                 return;
             }
@@ -452,6 +451,7 @@ export class Message {
         }
 
         return {
+            ukNotice: true,
             notice: params['system-msg']
         };
     }

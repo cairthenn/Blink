@@ -153,7 +153,7 @@ export class WebApiService {
             return info.chatters;
         });
     }
-    
+
     public static getBttvGlobal(update: boolean = false) {
         return !update && this.bttv._global || this.get(bttvGlobalUrl).then(global => {
             return this.bttv._global = global.emotes;

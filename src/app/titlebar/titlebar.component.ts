@@ -41,9 +41,9 @@ export class TitlebarComponent implements OnInit {
     public relaunch() {
         try {
             ElectronService.remote.autoUpdater.quitAndInstall();
-        } catch(err) {
-            
-        };
+        } catch (err) {
+            console.log('Unable to quit and install update.');
+        }
     }
 
     public close() {

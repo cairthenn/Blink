@@ -127,3 +127,19 @@
 .user-notice.subscription {
     background: rgba(149,124,205);
 }
+
+.mod-icon {
+    width: 1.6rem!important;
+    height: 1.6rem!important;
+    font-size: 1.6rem!important;
+    cursor: pointer!important;
+    margin-left: 2px;
+    vertical-align: middle;
+    opacity: .5;
+}
+
+.emote-button {
+    margin: 5px;
+    max-height: 28px;
+    cursor: pointer;
+}

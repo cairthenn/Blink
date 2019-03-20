@@ -17,9 +17,11 @@
 -->
 
 <form class="cc-flex cc-flex-column" matAutocompleteOrigin #origin="matAutocompleteOrigin" (ngSubmit)="onSubmit()">
-    <mat-menu #emoteMenu="matMenu" yPosition="above" color="accent" class="emote-panel">
-        <mat-card>Coming soon!</mat-card>
-    </mat-menu>
+    <div class="cc-relative">
+        <mat-card *ngIf="showEmotes" cdkDrag class="emote-menu">
+            <app-emote-menu [helper]="emoteHelper"></app-emote-menu>
+        </mat-card>
+    </div>
     <div class="cc-full-width cc-relative" style="min-width: 200px;">
         <mat-form-field color="accent" class="cc-full-width cc-margin-0" appearance="outline" style="min-width: 200px;">
             <mat-label>Send a message</mat-label>
@@ -27,7 +29,7 @@
             [formControl]="messageControl" [matAutocomplete]="auto" [matAutocompleteConnectedTo]="origin" maxlength="500"
             (keydown.enter)="send($event)" (keydown)="keydownHandler($event)"></textarea>
         </mat-form-field>
-        <button class="cc-top-0 cc-right-0" mat-icon-button [matMenuTriggerFor]="emoteMenu" style="position: absolute;" [disabled]="!service.joined">
+        <button class="cc-top-0 cc-right-0" mat-icon-button (click)="showEmotes = !showEmotes" type="button" style="position: absolute;" [disabled]="!service.joined">
             <mat-icon aria-label="Emote List">sentiment_very_satisfied</mat-icon>
         </button>
     </div>
@@ -35,7 +37,6 @@
         <mat-option class="autocomplete" *ngFor="let option of acOptions | async" [value]="option.before + option.word + option.after">
             <img *ngIf="option.emote" [src]="option.emote.src" class="cc-no-flex autocomplete-emote" />
             <span class="cc-mg-l-05 cc-font-size-6 cc-ellipsis" style="opacity: .8">{{option.word}}</span>
-            <span>{{option.emoji}}</span>
         </mat-option>
     </mat-autocomplete>
 
