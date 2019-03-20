@@ -6,7 +6,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class EmoteMenuComponent implements OnInit {
 
-  @Input() public helper: any;  
+  @Input() public helper: any;
 
   constructor() {
 

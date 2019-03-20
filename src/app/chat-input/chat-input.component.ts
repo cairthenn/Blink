@@ -280,14 +280,14 @@ export class ChatInputComponent implements OnInit {
             emoji: EmojiService.menu,
             emotes: this.service.emotes,
             append: (word: string) => {
-                if(this.text.length) {
+                if (this.text.length) {
                     const hasSpace = this.text[this.text.length - 1] === ' ';
                     this.text += `${hasSpace ? '' : ' '}${word} `;
                 } else {
                     this.text = word;
                 }
             }
-        }
+        };
     }
 
 

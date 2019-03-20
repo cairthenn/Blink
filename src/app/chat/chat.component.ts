@@ -16,17 +16,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit, Input, NgZone, HostListener } from '@angular/core';
+import { Component, OnInit, Input, HostListener } from '@angular/core';
 import { SettingsComponent } from '../settings/settings.component';
 import { ChatService } from '../chat.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
 import { ChannelDialogComponent } from '../channel-dialog/channel-dialog.component';
-import { IrcService } from '../irc.service';
-import { AES } from 'crypto-js';
 import { SettingsService } from '../settings.service';
 import { ElectronService } from '../electron.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { TwitchService } from '../twitch.service';
 
 @Component({
     selector: 'app-chat',
@@ -35,10 +34,8 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 export class ChatComponent implements OnInit {
 
     public loaded = false;
-    private token: string;
 
-    @Input()
-    public settings: SettingsService;
+    @Input() public settings: SettingsService;
     public tabWidth = 175;
     public contentWidth = 340;
 
@@ -48,19 +45,17 @@ export class ChatComponent implements OnInit {
     public showSettings = false;
     public showTabs = false;
     public viewReady = false;
-    public irc: IrcService;
 
     public account = {
         logout: () => { this.logout(); },
         switch: () => { this.login(true); }
     };
 
-    constructor(public overlayContainer: OverlayContainer, private dialog: MatDialog, private zone: NgZone) {
+    constructor(public twitch: TwitchService, public overlayContainer: OverlayContainer, private dialog: MatDialog) {
     }
 
     @HostListener('window:beforeunload', ['$event'])
     private beforeUnload() {
-        this.irc.disconnect();
         ElectronService.settings.set('drawer', this.settings.drawer);
     }
 
@@ -75,8 +70,8 @@ export class ChatComponent implements OnInit {
     }
 
     public createChannel(name: string) {
-        const channel = new ChatService(this.settings, this.irc);
-        channel.init(name, this.username, this.token);
+        const channel = new ChatService(this.settings, this.twitch);
+        channel.init(name);
         this.tabs.forEach(t => t.active = false);
         channel.active = true;
         this.tabs.unshift(channel);
@@ -149,7 +144,7 @@ export class ChatComponent implements OnInit {
                 return;
             }
 
-            tab.init(channel, this.username, this.token);
+            tab.init(channel);
             this.saveChannels();
         });
     }
@@ -165,9 +160,8 @@ export class ChatComponent implements OnInit {
             this.select(find);
             return;
         }
-        this.zone.run(() => {
-            this.createChannel(name);
-        });
+
+        this.createChannel(name);
     }
 
     public newTab() {
@@ -189,12 +183,12 @@ export class ChatComponent implements OnInit {
     }
 
     public login(force: boolean = false) {
-        ElectronService.ipcRenderer.send('try-login', force);
+        this.twitch.login(force);
     }
 
     public logout() {
         this.connected = false;
-        this.irc.disconnect();
+        this.twitch.logout();
     }
 
     public dropped(event: CdkDragDrop<ChatService[]>) {
@@ -202,28 +196,21 @@ export class ChatComponent implements OnInit {
         this.saveChannels();
     }
 
-    public handleLogin(username: string, token: string) {
-        this.username = username;
-        this.token = AES.encrypt(token, username);
-        this.irc.connect(username, token).then(() => {
-            this.zone.run(() => {
-                if (this.loaded) {
-                    this.tabs.forEach(c => c.init(c.channel, username, this.token));
-                } else {
-                    this.loadChannels();
-                }
-                this.connected = true;
-            });
-        });
+    public handleLogin() {
+        if (this.loaded) {
+            this.tabs.forEach(c => c.init(c.channel));
+        } else {
+            this.loadChannels();
+        }
+        this.connected = true;
     }
 
     ngOnInit() {
-        this.irc = new IrcService(this.zone);
-        ElectronService.ipcRenderer.on('login-success', (sender, username, token) => {
-            this.handleLogin(username, token);
+        this.twitch.login(false).then(success => {
+            if (success) {
+                this.handleLogin();
+            }
         });
-
-        this.login(false);
     }
 
 }

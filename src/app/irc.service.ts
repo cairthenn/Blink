@@ -23,8 +23,11 @@ const paramsFormat = /([^=]*)=([^;]*);?/g;
 const messageFormat = /(\w*) #(\w*)(?: :(.*))?$/;
 
 import { ElectronService } from './electron.service';
-import { NgZone } from '@angular/core';
+import { NgZone, Injectable } from '@angular/core';
 
+@Injectable({
+    providedIn: 'root'
+})
 export class IrcService {
     private handlers: any = {};
     private socket: any;
