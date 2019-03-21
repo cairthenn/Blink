@@ -91,22 +91,19 @@
                         <div class="cc-flex cc-flex-column cc-full-height cc-full-width">
 
                             <div class="cc-flex-none">
-                                <div class="cc-header cc-flex cc-flex-row cc-align-items-center cc-justify-content-between cc-pd-x-1 cc-alt-background">
-                                    <div class="cc-align-items-center cc-align-middle cc-flex cc-font-size-6 cc-overflow-hidden cc-mg-r-1">
+                                <div class="cc-header cc-flex cc-flex-row cc-align-items-center cc-justify-content-between cc-pd-r-1 cc-pd-l-05 cc-alt-background">
+                                    <div class="cc-align-items-center cc-align-middle cc-flex cc-font-size-6 cc-overflow-hidden cc-mg-r-05">
                                         <button mat-icon-button #tabButton (click)="drawer.toggle()" tabindex="-1">
                                             <mat-icon aria-label="Close Tabs">{{drawer.opened ? "chevron_left" : "chevron_right"}}</mat-icon>
                                         </button>
-                                        <img *ngIf="tab.channelInfo.logo"  [src]="tab.channelInfo.logo" class="avatar-icon cc-inline cc-mg-r-05">
+                                        <img *ngIf="tab.channelInfo.logo"  [src]="tab.channelInfo.logo" class="avatar-icon cc-inline cc-mg-x-05 ">
                                         {{tab.channelDisplay}}
                                         <span class="cc-pd-x-05" [style.color]="tab.streamInfo._id ? 'red' : 'grey'">●</span>
                                         <span *ngIf="tab.streamInfo.game" class="cc-font-size-8 cc-ellipsis">{{tab.streamInfo.game}}</span>
                                     </div>
 
-                                    <button mat-button (click)="openSettings(tab)" class="cc-flex-none" tabindex="-1">
-                                        <div class="cc-flex cc-align-items-center">
-                                            <span class="cc-font-size-6">Settings&nbsp;</span>
-                                            <mat-icon aria-label="Settings">settings</mat-icon>
-                                        </div>
+                                    <button mat-icon-button (click)="openSettings(tab)" class="cc-flex-none" tabindex="-1">
+                                        <mat-icon aria-label="Settings">settings</mat-icon>
                                     </button>
                                 </div>
                                 <mat-divider></mat-divider>
