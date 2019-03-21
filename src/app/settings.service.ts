@@ -103,34 +103,34 @@ export class SettingsService {
 
     public load() {
         const settings = ElectronService.settings;
-        this.drawer = settings.get('drawer');
-        this.lightTheme = settings.get('lightTheme');
+        if(settings.has('drawer')) { this.drawer = settings.get('drawer'); }
+        if(settings.has('lightTheme')) { this.lightTheme = settings.get('lightTheme'); }
         this.lightThemeView = this.lightTheme;
-        this.alternate = settings.get('alternate');
-        this.separators = settings.get('separators');
-        this.flash = settings.get('flash');
-        this.timestamps = settings.get('timestamps');
-        this.modIcons = settings.get('modIcons');
-        this.banIcon = settings.get('banIcon');
-        this.purgeIcon = settings.get('purgeIcon');
-        this.timeoutIcon = settings.get('timeoutIcon');
-        this.deleteIcon = settings.get('deleteIcon');
-        this.timeoutTime = settings.get('timeoutTime');
-        this.subs = settings.get('subs');
-        this.bits = settings.get('bits');
-        this.badges = settings.get('badges');
-        this.twitchEmotes = settings.get('twitchEmotes');
-        this.bttvEmotes = settings.get('bttvEmotes');
-        this.ffzEmotes = settings.get('ffzEmotes');
-        this.duplicates = settings.get('duplicates');
-        this.emotePriority = settings.get('emotePriority');
-        this.anonymous = settings.get('anonymous');
-        this.maxHistory = settings.get('maxHistory');
-        this.highlightName = settings.get('highlightName');
-        this.highlight = settings.get('highlight');
-        this.blacklist = settings.get('blacklist');
-        this.friends = settings.get('friends');
-        this.ignored = settings.get('ignored');
+        if(settings.has('alternate')) { this.alternate = settings.get('alternate'); }
+        if(settings.has('separators')) { this.separators = settings.get('separators'); }
+        if(settings.has('flash')) { this.flash = settings.get('flash'); }
+        if(settings.has('timestamps')) { this.timestamps = settings.get('timestamps'); }
+        if(settings.has('modIcons')) { this.modIcons = settings.get('modIcons'); }
+        if(settings.has('banIcon')) { this.banIcon = settings.get('banIcon'); }
+        if(settings.has('purgeIcon')) { this.purgeIcon = settings.get('purgeIcon'); }
+        if(settings.has('timeoutIcon')) { this.timeoutIcon = settings.get('timeoutIcon'); }
+        if(settings.has('deleteIcon')) { this.deleteIcon = settings.get('deleteIcon'); }
+        if(settings.has('timeoutTime')) { this.timeoutTime = settings.get('timeoutTime'); }
+        if(settings.has('subs')) { this.subs = settings.get('subs'); }
+        if(settings.has('bits')) { this.bits = settings.get('bits'); }
+        if(settings.has('badges')) { this.badges = settings.get('badges'); }
+        if(settings.has('twitchEmotes')) { this.twitchEmotes = settings.get('twitchEmotes'); }
+        if(settings.has('bttvEmotes')) { this.bttvEmotes = settings.get('bttvEmotes'); }
+        if(settings.has('ffzEmotes')) { this.ffzEmotes = settings.get('ffzEmotes'); }
+        if(settings.has('duplicates')) { this.duplicates = settings.get('duplicates'); }
+        if(settings.has('emotePriority')) { this.emotePriority = settings.get('emotePriority'); }
+        if(settings.has('anonymous')) { this.anonymous = settings.get('anonymous'); }
+        if(settings.has('maxHistory')) { this.maxHistory = settings.get('maxHistory'); }
+        if(settings.has('highlightName')) { this.highlightName = settings.get('highlightName'); }
+        if(settings.has('highlight')) { this.highlight = settings.get('highlight'); }
+        if(settings.has('blacklist')) { this.blacklist = settings.get('blacklist'); }
+        if(settings.has('friends')) { this.friends = settings.get('friends'); }
+        if(settings.has('ignored')) { this.ignored = settings.get('ignored'); }
     }
 
     save() {

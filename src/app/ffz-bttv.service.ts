@@ -23,11 +23,10 @@ const bttvChannelUrl = 'https://api.betterttv.net/2/channels/';
 const ffzGlobalUrl = 'https://api.frankerfacez.com/v1/set/global';
 const ffzChannelUrl = 'https://api.frankerfacez.com/v1/room/';
 
-export class WebApiService {
+export class FfzBttvService {
 
     public static ffz: any = {};
     public static bttv: any = {};
-
 
     public static getBttvGlobal(update: boolean = false) {
         return !update && this.bttv._global || Web.get(bttvGlobalUrl).then(global => {
