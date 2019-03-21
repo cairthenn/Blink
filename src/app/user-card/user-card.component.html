@@ -1,0 +1,46 @@
+<mat-card class="cc-relative" *ngIf="helper.data" (click)="$event.stopPropagation()">
+    <button class="close-button" mat-icon-button (click)="helper.close($event)" tabindex="-1" 
+        style="margin: 5px; position: absolute; right:0; top:0">&times;</button>
+    <mat-card-header>
+      <img mat-card-avatar [src]="helper.data.logo">
+      <mat-card-title style="overflow:hidden; text-overflow:ellipsis; max-width: 99%;">
+          <span class="cc-font-size-4" (click)="helper.openTwitch(helper.data.display_name)" style="cursor:pointer">{{helper.data.display_name}}</span>
+        </mat-card-title>
+      <mat-card-subtitle>
+        <div class="cc-flex cc-align-items-center cc-font-size-5">
+          <mat-icon aria-label="Signup Date" class="usercard-icon cc-mg-r-05">cake</mat-icon>
+          <span>{{helper.data.signup}}</span>
+        </div>
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content style="margin:0px">
+      <div class="cc-flex cc-align-items-center" style="opacity:.9">
+        <mat-icon aria-label="viewer-icon" color="accent" class="cc-mg-r-05">favorite</mat-icon>
+        <span>{{helper.data.followers || '0'}}</span>
+        <mat-icon aria-label="viewer-icon" color="accent" class="cc-mg-r-05 cc-mg-l-1">local_see</mat-icon>
+        <span>{{helper.data.views || '0'}}</span>
+      </div>
+      <div *ngIf="helper.data.status" class="cc-mg-t-05">
+        <mat-divider></mat-divider>
+        <div class="cc-font-size-6 cc-pd-t-05" style="opacity:.9">{{helper.data.status}}</div>
+      </div>
+    </mat-card-content>
+    <mat-card-actions *ngIf="helper.mod" style="padding:0">
+        <button *ngIf="!helper.banned" mat-button (click)="helper.ban(helper.data.display_name)">
+          <mat-icon aria-label="Ban User" class="mod-icon cc-mg-r-05">gavel</mat-icon>
+          <span class="cc-font-size-6">Ban</span>
+        </button>
+        <button *ngIf="helper.banned" mat-button (click)="helper.unban(helper.data.display_name)">
+            <mat-icon aria-label="Unban User" class="mod-icon cc-mg-r-05">done</mat-icon>
+            <span class="cc-font-size-6">Unban</span>
+          </button>
+        <button mat-button (click)="helper.timeout(helper.data.display_name)" >
+            <mat-icon aria-label="Timeout User" class="mod-icon cc-mg-r-05">schedule</mat-icon>
+            <span class="cc-font-size-6">Timeout</span>
+        </button>
+        <button mat-button (click)="helper.purge(helper.data.display_name)" >
+            <mat-icon aria-label="Timeout User" class="mod-icon cc-mg-r-05">block</mat-icon>
+            <span class="cc-font-size-6">Purge</span>
+        </button>
+  </mat-card-actions>
+</mat-card>

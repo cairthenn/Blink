@@ -8,23 +8,25 @@ const emoji = {
     },
     menu: {
       categoryNames: [
-        'Smileys & People', 
+        'Smileys & People',
         'Animals & Nature',
         'Food & Drink',
-        'Travel & Places', 
-        'Activities', 
-        'Objects', 
-        'Symbols', 
+        'Travel & Places',
+        'Activities',
+        'Objects',
+        'Symbols',
         'Flags'
       ],
+      /* tslint:disable:object-literal-key-quotes */
       'Smileys & People': [],
       'Animals & Nature': [],
       'Food & Drink': [],
       'Travel & Places': [],
       'Activities': [],
       'Objects': [],
-      'Symbols':[],
+      'Symbols': [],
       'Flags': [],
+      /* tslint:enable:object-literal-key-quotes */
     },
 };
 
@@ -45,6 +47,7 @@ function toTwemojiUrl(unicode) {
     while (i < unicode.length) {
       c = unicode.charCodeAt(i++);
       if (p) {
+        // tslint:disable-next-line:no-bitwise
         r.push((0x10000 + ((p - 0xD800) << 10) + (c - 0xDC00)).toString(16));
         p = 0;
       } else if (0xD800 <= c && c <= 0xDBFF) {
@@ -66,9 +69,9 @@ Object.keys(shortcodes).forEach(k => {
     emoji.autocomplete.push([shortcodes[k].colons, shortcodes[k].colons]);
     emoji.lookup.shortcodes[shortcodes[k].colons] = e;
     emoji.lookup.unicode[shortcodes[k].code] = e;
-    
+
     const category = emoji.menu[shortcodes[k].category];
-    if(category) {
+    if (category) {
       category.push(e);
     }
 });

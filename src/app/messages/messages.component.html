@@ -15,10 +15,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
-
+<app-user-card [helper]="userCard" *ngIf="userCard.opened" cdkDrag class="usercard" 
+    [style.top.px]="userCard.top" [style.left.px]="userCard.left" [style.width.px]="userCard.width">
+</app-user-card>
 <div class="chat-lines cc-word-break-word">
     <div #message *ngFor="let msg of messages" class="cc-relative">
-        <div class="user-notice" [class.raid]="msg.raid" [class.friend]="msg.friend" [class.subscription]="msg.subscription" [class.]
+        <div class="user-notice" [class.raid]="msg.raid" [class.friend]="msg.friend" [class.subscription]="msg.subscription"
             [style.background]="msg.friend ? settings.lightTheme ? msg.lightColor : msg.darkColor : null"></div>
         <div class="chat-message" [class.chat-alternate-bg]="msg.odd && settings.alternate" [class.chat-highlight]="msg.highlight" [class.chat-subscription]="msg.subscription" [class.message-deleted]="msg.deleted">
 
@@ -27,25 +29,25 @@
                     <div *ngSwitchCase="1" class="c-full-height cc-font-size-4">
                         <span class="cc-pd-r-05">❤</span>
                         <span class="cc-font-size-6">
-                            <span class="message-display-name">{{msg.username}}</span>
+                            <span class="chat-username" (click)="openUserCard(msg.username, $event)">{{msg.username}}</span>
                             {{msg.subMessage}}
-                            <span class="message-display-name">{{msg.recipient}}</span>!
+                            <span class="chat-username" (click)="openUserCard(msg.recipient, $event)">{{msg.recipient}}</span>!
                             <span>{{msg.count}}</span>
                         </span>
                     </div>
                     <div *ngSwitchCase="2" class="c-full-height cc-font-size-4">
                         <span class="cc-pd-r-05">❇</span>
                         <span class="cc-font-size-6">
-                            <span class="message-display-name">{{msg.username}}</span>
+                            <span class="chat-username" (click)="openUserCard(msg.username, $event)">{{msg.username}}</span>
                             {{msg.subMessage}}
-                            <span class="message-display-name">{{service.channel}}</span>'s community!
+                            <span class="chat-username">{{service.channel}}</span>'s community!
                             <span>{{msg.count}}</span>
                         </span>
                     </div>
                     <div *ngSwitchDefault class="cc-full-height cc-font-size-4">
                         <span class="cc-pd-r-05">★</span>
                         <span class="cc-font-size-6">
-                            <span class="message-display-name">{{msg.username}}</span>
+                            <span class="chat-username" (click)="openUserCard(msg.username, $event)">{{msg.username}}</span>
                             {{msg.subMessage}}
                         </span>
                     </div>
@@ -76,9 +78,9 @@
                     <span *ngIf="settings.badges"><img *ngFor="let badge of msg.badges" class="chat-badge"
                         [src]="service.badges[badge[0]] ? service.badges[badge[0]].versions[badge[1]].image_url_1x : null"
                         /></span>
-                    <span *ngIf="msg.action; else nonAction" class="chat-username" [style.color]="settings.lightTheme ? msg.lightColor : msg.darkColor">{{msg.username}} </span>
+                    <span *ngIf="msg.action; else nonAction" class="chat-username" [style.color]="settings.lightTheme ? msg.lightColor : msg.darkColor" (click)="openUserCard(msg.username, $event)">{{msg.username}} </span>
                     <ng-template #nonAction>
-                        <span class="chat-username" [style.color]="settings.lightTheme ? msg.lightColor : msg.darkColor">{{msg.username}}: </span>
+                        <span class="chat-username" [style.color]="settings.lightTheme ? msg.lightColor : msg.darkColor" (click)="openUserCard(msg.username, $event)">{{msg.username}}: </span>
                     </ng-template>
                     <span *ngFor="let f of msg.fragments" [style.color]="settings.lightTheme ? f.lightColor : f.darkColor">
                         <span [ngSwitch]="f.type">
@@ -116,7 +118,7 @@
                                 <a class="chat-link" (click)="service.openExternal(f.text)">{{f.text}}</a>
                             </span>
                             <span *ngSwitchCase="'username'">
-                                <span class="chat-username">{{f.text}}</span>
+                                <span class="chat-username" (click)="openUserCard(f.name, $event)">{{f.text}}</span>
                             </span>
                             <span *ngSwitchDefault>{{f.text}}</span>
                         </span>

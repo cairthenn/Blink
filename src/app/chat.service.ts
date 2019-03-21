@@ -16,15 +16,17 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import CryptoJS from 'crypto-js';
-import { IrcService } from './irc.service';
+
 import { MessagesComponent } from './messages/messages.component';
 import { WebApiService as WebApiService } from './web-api.service';
 import { SettingsService } from './settings.service';
 import { ElectronService } from './electron.service';
 import { Message } from './message';
+import { TwitchService } from './twitch.service';
 
 export class ChatService {
+
+    public channel: string;
 
     public emotes = {
         ffz: {
@@ -45,7 +47,6 @@ export class ChatService {
         autocomplete: [],
     };
 
-    private token = '';
     private component: MessagesComponent;
     private updater: number;
 
@@ -55,9 +56,6 @@ export class ChatService {
 
     public joined = false;
     public level = 0;
-    public username = '';
-    public usernameLower = '';
-    public channel = '';
     public channelDisplay = '';
     public userBadges = [];
 
@@ -79,13 +77,21 @@ export class ChatService {
                 return;
             }
             const msg = this.processOutgoing(text, true);
-            this.irc.sendMessage(this.channel, `.me ${msg.text}`);
+            this.twitch.sendMessage(this.channel, `.me ${msg.text}`);
             this.addMessage(msg);
         }
     };
 
-    constructor(public settings: SettingsService, private irc: IrcService) {
+    constructor(public settings: SettingsService, public twitch: TwitchService) {
 
+    }
+
+    public get username() {
+        return this.twitch.username;
+    }
+
+    public get usernameLower() {
+        return this.twitch.usernameLower;
     }
 
     private activeProxy = false;
@@ -105,33 +111,28 @@ export class ChatService {
         return this.activeProxy;
     }
 
-    private get key() {
-        const bytes = CryptoJS.AES.decrypt(this.token, this.username);
-        return bytes.toString(CryptoJS.enc.Utf8);
-    }
-
     public purge(username: string) {
-        this.irc.sendMessage(this.channel, `.timeout ${username} 1`);
+        this.twitch.sendMessage(this.channel, `.timeout ${username} 1`);
     }
 
     public delete(id: string) {
-        this.irc.sendMessage(this.channel, `.delete ${id}`);
+        this.twitch.sendMessage(this.channel, `.delete ${id}`);
     }
 
     public unTimeout(username: string) {
-        this.irc.sendMessage(this.channel, `.untimeout ${username}`);
+        this.twitch.sendMessage(this.channel, `.untimeout ${username}`);
     }
 
     public timeout(username: any, timeoutTime: number) {
-        this.irc.sendMessage(this.channel, `.timeout ${username} ${timeoutTime}`);
+        this.twitch.sendMessage(this.channel, `.timeout ${username} ${timeoutTime}`);
     }
 
     public unban(username: string) {
-        this.irc.sendMessage(this.channel, `.unban ${username}`);
+        this.twitch.sendMessage(this.channel, `.unban ${username}`);
     }
 
     public ban(username: string) {
-        this.irc.sendMessage(this.channel, `.ban ${username}`);
+        this.twitch.sendMessage(this.channel, `.ban ${username}`);
     }
 
     public openExternal(url: string) {
@@ -159,17 +160,10 @@ export class ChatService {
         return false;
     }
 
-    private updateEmotes(sets: string) {
-        const bytes = CryptoJS.AES.decrypt(this.token, this.username);
-        const key = bytes.toString(CryptoJS.enc.Utf8);
-        WebApiService.getTwitchEmotes(sets, key).then(emotes => {
-            this.emotes.twitch.sets = emotes;
-            this.emotes.twitch.lookup = emotes.reduce((obj, arr) => {
-                arr[1].forEach(e => {
-                    obj[e.code] = e;
-                });
-                return obj;
-            }, {});
+    private updateEmotes() {
+        this.twitch.getEmotes().then(emotes => {
+            this.emotes.twitch.sets = emotes.sets;
+            this.emotes.twitch.lookup = emotes.lookup;
             this.updateEmoteLookup();
         }).catch(err => {
             console.log(`Error fetching Twitch emotes: ${err}`);
@@ -178,14 +172,13 @@ export class ChatService {
     }
 
     private updateStreamInfo() {
-        const key = this.key;
-        WebApiService.getStream(this.channel, key).then(stream => {
+        this.twitch.getStream(this.channel).then(stream => {
             this.streamInfo = stream;
         }).catch(err => {
             console.log(`Error fetching stream info: ${err}`);
         });
 
-        WebApiService.getChannel(this.channel, key).then(channel => {
+        this.twitch.getChannel(this.channel).then(channel => {
             this.channelInfo = channel;
         }).catch(err => {
             console.log(`Error fetching channel info: ${err}`);
@@ -193,7 +186,7 @@ export class ChatService {
     }
 
     private updateCheers() {
-        WebApiService.getCheers(this.roomState['room-id'], this.key).then(cheers => {
+        this.twitch.getCheers(this.roomState['room-id']).then(cheers => {
             this.cheers = cheers;
             this.updateIfActive();
         }).catch(err => {
@@ -230,7 +223,7 @@ export class ChatService {
     }
 
     private updateUserList() {
-        WebApiService.getUserList(this.channel).then(users => {
+        this.twitch.getUserList(this.channel).then(users => {
             this.userList = users;
             this.userList.autocomplete = [].concat(users.broadcaster, users.moderators, users.vips, users.staff, users.viewers).sort();
         }).catch(err => {
@@ -239,7 +232,7 @@ export class ChatService {
     }
 
     private updateBadges() {
-        WebApiService.getBadges(this.roomState['room-id']).then(badges => {
+        this.twitch.getBadges(this.roomState['room-id']).then(badges => {
             this.badges = badges;
             this.updateIfActive();
         }).catch(err => {
@@ -260,10 +253,6 @@ export class ChatService {
     }
 
     private onUserState(state: any) {
-        if (this.userState['emote-sets'] !== state['emote-sets']) {
-            this.updateEmotes(state['emote-sets']);
-        }
-
         this.userState = state;
         this.userBadges = Message.parseBadges(state.badges);
         this.level = Message.checkUserLevel(this.userBadges);
@@ -277,8 +266,10 @@ export class ChatService {
         this.updateUserList();
         this.updateFFZ();
         this.updateBTTV();
+        this.updateEmotes();
         this.joined = true;
         this.updater = window.setInterval(() => {
+            this.updateEmotes();
             this.updateStreamInfo();
             this.updateUserList();
         }, 60000);
@@ -363,20 +354,17 @@ export class ChatService {
         this.addMessage(notice);
     }
 
-    public init(channel: string, username: string, token: string) {
+    public init(channel: string) {
 
         if (this.joined) {
-            this.irc.part(this.channel);
+            this.twitch.part(this.channel);
             clearInterval(this.updater);
         }
 
-        this.username = username;
-        this.usernameLower = username.toLowerCase();
-        this.token = token;
         this.channelDisplay = channel;
         this.channel = channel.toLowerCase();
 
-        this.irc.join(this.channel, {
+        this.twitch.join(this.channel, {
             CLEARCHAT : (params, msg) => { this.onPurge(params, msg); },
             CLEARMSG : (params, msg) => { this.onDeleteMessage(params, msg); },
             GLOBALUSERSTATE: (params) => { this.onGlobalUserState(params); },
@@ -393,7 +381,7 @@ export class ChatService {
 
     public close() {
         if (this.joined) {
-            this.irc.part(this.channel);
+            this.twitch.part(this.channel);
             clearInterval(this.updater);
         }
     }
@@ -408,6 +396,10 @@ export class ChatService {
 
     public register(component: MessagesComponent) {
         this.component = component;
+    }
+
+    public unregister() {
+        this.component = undefined;
     }
 
     public addMessage(message: any) {
@@ -439,14 +431,14 @@ export class ChatService {
 
         if (!commandCheck) {
             const msg = this.processOutgoing(trimmed);
-            this.irc.sendMessage(this.channel, msg.text);
+            this.twitch.sendMessage(this.channel, msg.text);
             this.addMessage(msg);
             return;
         }
 
         const handler = this.commandHandlers[commandCheck[1]];
         if (!handler) {
-            this.irc.sendMessage(this.channel, commandCheck[0]);
+            this.twitch.sendMessage(this.channel, commandCheck[0]);
             return;
         }
 

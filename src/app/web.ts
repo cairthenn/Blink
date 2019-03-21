@@ -16,25 +16,23 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
+import axios from 'axios';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ElectronService {
+export class Web {
 
-  static ipcRenderer = window.require('electron').ipcRenderer;
-  static webFrame = window.require('electron').webFrame;
-  static remote = window.require('electron').remote;
-  static shell = window.require('electron').shell;
-  static settings = window.require('electron').remote.require('electron-settings');
-  static crypto = window.require('electron').remote.require('crypto');
+    public static get(url: string, config: any = {}) {
+        return axios.get(url, config).then((response) => {
+            return response.data;
+        }).catch(err => {
+            throw err;
+        });
+    }
 
-  constructor() {
-
-  }
-
-  static isElectron = () => {
-    return window && window.process && window.process.type;
-  }
+    public static post(url, config: any = {}) {
+        return axios.post(url, config).then(() => {
+            return true;
+        }).catch(err => {
+            return false;
+        });
+    }
 }

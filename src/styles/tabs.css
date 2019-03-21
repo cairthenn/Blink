@@ -39,8 +39,12 @@
     background-color:rgba(255,255,255,.5);
 }
 
+.indicator.vod{
+    background-color: goldenrod;
+}
+
 .indicator.notification {
-    background-color: #9575CD!important;
+    background-color: #9575cd;
     margin-left: 11px;
     margin-top: 8px;
     width: 20px;
