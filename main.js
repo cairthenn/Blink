@@ -98,7 +98,7 @@ function launchApplication() {
         window.show();
     });
 
-    window.webContents.toggleDevTools();
+    // window.webContents.toggleDevTools();
     window.loadFile('./dist/index.html');
 
     if(!firstRun && process.env.NODE_ENV != 'dev' && process.platform == 'win32') {
