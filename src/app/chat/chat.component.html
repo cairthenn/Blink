@@ -55,8 +55,8 @@
                                     [class.tab-inactive]="!tab.active" [class.tab-active]="tab.active">
                                     <div class="cc-flex cc-flex-shrink-0 cc-justify-content-between cc-overflow-visible" style="background-color: rgba(0,0,0,.3)">
                                         <div class="cc-flex cc-full-width cc-relative" style="max-width: 80%">
-                                            <div *ngIf="tab.mentions > 0" class="cc-font-size-6 indicator-text">{{tab.mentions}}</div>
-                                            <div class="indicator" [class.live]="tab.streamInfo._id && true" [class.notification]="tab.mentions > 0"></div>
+                                            <div *ngIf="tab.mentions > 0" class="cc-font-size-6 indicator-text">{{tab.mentions > 99 ? '99+' : tab.mentions}}</div>
+                                            <div class="indicator" [class.live]="tab.streamInfo.live" [class.vod]="tab.streamInfo.vod" [class.notification]="tab.mentions > 0"></div>
                                             <div class="cc-flex cc-align-items-center cc-pd-l-4 cc-font-size-6 cc-overflow-visible">
                                                 <img *ngIf="tab.channelInfo.logo"  [src]="tab.channelInfo.logo" class="avatar-tab-icon cc-inline-block cc-mg-r-05">
                                                 <span class="cc-ellipsis">{{tab.channelDisplay}}</span>

@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit, Input, ElementRef, HostListener, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, ElementRef, HostListener, ChangeDetectorRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { ChatService } from '../chat.service';
 import { SettingsService } from '../settings.service';
 
@@ -31,7 +31,7 @@ export interface Info {
     selector: 'app-messages',
     templateUrl: './messages.component.html',
 })
-export class MessagesComponent implements OnInit, AfterViewInit {
+export class MessagesComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private userActivity = false;
     private isLocked = false;
@@ -39,6 +39,35 @@ export class MessagesComponent implements OnInit, AfterViewInit {
 
     @Input() public settings: SettingsService;
     @Input() public service: ChatService;
+    public userCard: any = {
+        width: 325,
+        top: 0,
+        left: 0,
+        opened: false,
+        mod: false,
+        data: undefined,
+        banned: false,
+        openTwitch: (user: string) => {
+            this.service.openExternal(`https://www.twitch.tv/${user}`);
+        },
+        close: (event: MouseEvent) => {
+            this.closeUserCard(event);
+        },
+        ban: (user: string) => {
+            this.userCard.banned = true;
+            this.service.ban(user);
+        },
+        unban: (user: string) => {
+            this.userCard.banned = false;
+            this.service.unban(user);
+        },
+        timeout: (user: string) => {
+            this.service.timeout(user, this.settings.timeoutTime);
+        },
+        purge: (user: string) => {
+            this.service.purge(user);
+        },
+    };
 
     @HostListener('click') onClick() {
         this.userActivity = true;
@@ -62,6 +91,27 @@ export class MessagesComponent implements OnInit, AfterViewInit {
     }
 
     constructor(private el: ElementRef, private cdr: ChangeDetectorRef) {
+
+    }
+
+    public closeUserCard(event: MouseEvent) {
+        event.stopPropagation();
+        this.userCard.opened = false;
+        this.update();
+    }
+
+    public openUserCard(name: string, event: MouseEvent) {
+        event.stopPropagation();
+        const overhang = event.offsetX + this.userCard.width - this.el.nativeElement.clientWidth;
+        this.userCard.left = overhang > 0 ? event.offsetX - overhang : event.offsetX;
+        this.userCard.top = event.clientY - 75;
+        this.userCard.opened = true;
+        this.userCard.banned = false;
+        this.userCard.mod = this.service.level > 0;
+        this.service.twitch.getChannel(name).then(channel => {
+            this.userCard.data = channel;
+            this.update();
+        })
     }
 
 
@@ -135,5 +185,9 @@ export class MessagesComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
 
+    }
+
+    ngOnDestroy() {
+        this.service.unregister();
     }
 }

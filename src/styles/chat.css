@@ -138,8 +138,29 @@
     opacity: .5;
 }
 
+
 .emote-button {
     margin: 5px;
     max-height: 28px;
     cursor: pointer;
+}
+
+.usercard {
+    z-index: 10;
+    padding: 5px;
+    position: absolute;
+}
+
+.usercard-avatar {
+    max-width: 28px;
+    border-radius: 5px;
+}
+
+.usercard-icon {
+    width: 1.5rem!important;
+    height: 1.5rem!important;
+    font-size: 1.5rem!important;
+    line-height: 1.3rem!important;
+    vertical-align: middle;
+    opacity: .8;
 }

@@ -183,12 +183,19 @@ export class ChatComponent implements OnInit {
     }
 
     public login(force: boolean = false) {
-        this.twitch.login(force);
+        this.twitch.login(force).then(success => {
+            if (success) {
+                this.handleLogin();
+            }
+        });
     }
 
     public logout() {
-        this.connected = false;
-        this.twitch.logout();
+        this.twitch.logout().then(result => {
+            if (result) {
+                this.connected = false;
+            }
+        });
     }
 
     public dropped(event: CdkDragDrop<ChatService[]>) {
@@ -197,9 +204,7 @@ export class ChatComponent implements OnInit {
     }
 
     public handleLogin() {
-        if (this.loaded) {
-            this.tabs.forEach(c => c.init(c.channel));
-        } else {
+        if (!this.loaded) {
             this.loadChannels();
         }
         this.connected = true;

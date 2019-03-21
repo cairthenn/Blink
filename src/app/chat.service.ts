@@ -82,7 +82,7 @@ export class ChatService {
         }
     };
 
-    constructor(public settings: SettingsService, private twitch: TwitchService) {
+    constructor(public settings: SettingsService, public twitch: TwitchService) {
 
     }
 
@@ -160,15 +160,10 @@ export class ChatService {
         return false;
     }
 
-    private updateEmotes(sets: string) {
-        this.twitch.getEmotes(sets).then(emotes => {
-            this.emotes.twitch.sets = emotes;
-            this.emotes.twitch.lookup = emotes.reduce((obj, arr) => {
-                arr[1].forEach(e => {
-                    obj[e.code] = e;
-                });
-                return obj;
-            }, {});
+    private updateEmotes() {
+        this.twitch.getEmotes().then(emotes => {
+            this.emotes.twitch.sets = emotes.sets;
+            this.emotes.twitch.lookup = emotes.lookup;
             this.updateEmoteLookup();
         }).catch(err => {
             console.log(`Error fetching Twitch emotes: ${err}`);
@@ -258,8 +253,6 @@ export class ChatService {
     }
 
     private onUserState(state: any) {
-        this.updateEmotes(state['emote-sets']);
-
         this.userState = state;
         this.userBadges = Message.parseBadges(state.badges);
         this.level = Message.checkUserLevel(this.userBadges);
@@ -273,8 +266,10 @@ export class ChatService {
         this.updateUserList();
         this.updateFFZ();
         this.updateBTTV();
+        this.updateEmotes();
         this.joined = true;
         this.updater = window.setInterval(() => {
+            this.updateEmotes();
             this.updateStreamInfo();
             this.updateUserList();
         }, 60000);
@@ -401,6 +396,10 @@ export class ChatService {
 
     public register(component: MessagesComponent) {
         this.component = component;
+    }
+
+    public unregister() {
+        this.component = undefined;
     }
 
     public addMessage(message: any) {

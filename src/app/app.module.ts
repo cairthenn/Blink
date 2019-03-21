@@ -37,6 +37,7 @@ import {    MatDialogModule,   MatInputModule,     MatSidenavModule,    MatFormF
 import { ViewerDialogComponent } from './viewer-dialog/viewer-dialog.component';
 import { TitlebarComponent } from './titlebar/titlebar.component';
 import { EmoteMenuComponent } from './emote-menu/emote-menu.component';
+import { UserCardComponent } from './user-card/user-card.component';
 
 @NgModule({
     declarations: [
@@ -49,6 +50,7 @@ import { EmoteMenuComponent } from './emote-menu/emote-menu.component';
         ViewerDialogComponent,
         TitlebarComponent,
         EmoteMenuComponent,
+        UserCardComponent,
     ],
     imports: [
         FormsModule,

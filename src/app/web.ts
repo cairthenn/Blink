@@ -27,4 +27,12 @@ export class Web {
             throw err;
         });
     }
+
+    public static post(url, config: any = {}) {
+        return axios.post(url, config).then(() => {
+            return true;
+        }).catch(err => {
+            return false;
+        })
+    }
 }

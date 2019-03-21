@@ -3,14 +3,16 @@ import { ElectronService } from './electron.service';
 import { IrcService } from './irc.service';
 import CryptoJS from 'crypto-js';
 import * as qs from 'querystring';
-import axios from 'axios';
 import { Web } from './web';
 
 const twitchEmoteSets = require('../assets/emote-sets.json');
 
-const authUrl = 'https://id.twitch.tv/oauth2/authorize';
-const validateUrl = 'https://id.twitch.tv/oauth2/validate';
+const authBase = 'https://id.twitch.tv/oauth2';
+const authUrl = `${authBase}/authorize`
+const validateUrl = `${authBase}/validate`
+const revokeUrl = `${authBase}/revoke`
 const redirect = 'https://cairthenn.com';
+const scopes = 'chat:edit chat:read whispers:edit whispers:read channel:moderate user_subscriptions'
 const clientId = 'ut8pnp247zcvfj7gga2lxo8kp2d9lz';
 
 const badgeChannelUrl = 'https://badges.twitch.tv/v1/badges/channels/';
@@ -19,7 +21,6 @@ const badgeGlobalUrl = 'https://badges.twitch.tv/v1/badges/global/display';
 const tmiInfo = 'https://tmi.twitch.tv/group/user/';
 const twitchApi = 'https://api.twitch.tv';
 const apiVersion = 'kraken';
-const emoteEp = 'chat/emoticon_images';
 const cheersEp = 'bits/actions';
 const streamEp = 'streams';
 const channelEp = 'channels';
@@ -113,19 +114,24 @@ export class TwitchService {
     private channels: any = {};
     private badges: any = {};
     private emotes: any = {};
+    private validation: any = {};
     private enckey: string;
     private loggedIn: boolean;
+    private emoteCheck: number;
 
     private updates: any = {
-        emote: 600000,
+        emotes: 600000,
         badges: 600000,
-        user: 60000,
-        stream: 60000,
+        users: 60000,
+        streams: 60000,
     };
 
     constructor(public irc: IrcService) { }
 
     public needsUpdate(lastupdate, type) {
+        if(!lastupdate) {
+            return true;
+        }
         return Date.now() - lastupdate >= (this.updates[type] || 0);
     }
 
@@ -142,10 +148,18 @@ export class TwitchService {
     }
 
     public logout() {
-        this.loggedIn = false;
-        this.enckey = undefined;
-        this.username = undefined;
-        this.usernameLower = undefined;
+        return Web.post(`${revokeUrl}?client_id=${clientId}&token=${this.key}`).then(success => {
+            if(success) {
+                this.loggedIn = false;
+                this.enckey = undefined;
+                this.username = undefined;
+                this.usernameLower = undefined;
+                this.irc.disconnect();
+                return true;
+            }
+            return false;
+        });
+
     }
 
     public login(forceVerify: boolean) {
@@ -155,7 +169,7 @@ export class TwitchService {
             client_id: clientId,
             redirect_uri: redirect,
             response_type: 'token',
-            scope: 'chat:edit chat:read whispers:edit whispers:read channel:moderate',
+            scope: scopes,
             force_verify: forceVerify || false,
             state: random,
         };
@@ -212,34 +226,58 @@ export class TwitchService {
         });
 
         return promise.then((auth: any) => {
-            return this.validateUsername(auth.access_token).then(username => {
-                this.username = username;
-                this.usernameLower = username.toLowerCase();
-                this.enckey = CryptoJS.AES.encrypt(auth.access_token, username);
-                this.loggedIn = false;
-                return this.irc.connect(username, auth.access_token).then(() => {
-                    return true;
+            return Web.get(validateUrl, {
+                headers: {
+                    Authorization : `OAuth ${auth.access_token}`
+                }
+            }).then(validatation => {
+                this.validation = validatation;
+                this.username = validatation.login;
+                this.usernameLower = validatation.login.toLowerCase();
+                this.enckey = CryptoJS.AES.encrypt(auth.access_token, validatation.login);
+                this.loggedIn = true;
+                return this.irc.connect(validatation.login, auth.access_token).then(() => {
+                    return this.getEmotes().then(() => {
+                        return true;
+                    });
                 }).catch(err => false);
             });
         }).catch(err => false);
     }
 
-    public getStream(id: string) {
+    public getStream(id: string, update?: boolean) {
+        const fetch = update || this.streams[id] ? this.needsUpdate(this.streams[id][1], 'streams') : true;
+        if (!fetch) {
+            return Promise.resolve(this.streams[id][0]);
+        }
+        
         return Web.get(`${twitchApi}/${apiVersion}/${streamEp}/${id}`, {
             headers: {
                 Authorization : `OAuth ${this.key}`
             }
         }).then(stream => {
-            return stream.stream || {};
+            const info = stream.stream || {};
+            info.live = info.stream_type === "live";
+            info.vod = info.stream_type === "playlist";
+            this.streams[id] = [ info, Date.now() ];
+            return info;
         });
     }
 
-    public getChannel(id: string) {
+    public getChannel(id: string, update?: boolean) {
+
+        const fetch = update || this.channels[id] ? this.needsUpdate(this.channels[id][1], 'channels') : true;
+        if (!fetch) {
+            return Promise.resolve(this.channels[id][0]);
+        }
+
         return Web.get(`${twitchApi}/${apiVersion}/${channelEp}/${id}`, {
             headers: {
                 Authorization : `OAuth ${this.key}`
             }
         }).then(channel => {
+            channel.signup = new Date(channel.created_at).toDateString();
+            this.channels[id] = [ channel, Date.now() ];
             return channel;
         });
     }
@@ -247,9 +285,8 @@ export class TwitchService {
     public getBadges(room: string, update: boolean = false): Promise<any> {
 
         const fetch = update || this.badges[room] ? this.needsUpdate(this.badges[room][1], 'badges') : true;
-
         if (!fetch) {
-            return this.badges[room];
+            return Promise.resolve(this.badges[room][0]);
         }
 
         const roomPromise = Web.get(`${badgeChannelUrl}${room}/display`).then(channel => {
@@ -271,14 +308,19 @@ export class TwitchService {
         });
     }
 
-    private getEmotesImpl(ids: string[], key: string) {
-        const setString = ids.join();
-        return Web.get(`${twitchApi}/${apiVersion}/${emoteEp}?emotesets=${setString}`, {
+    public getEmotes(update?: boolean) {
+
+        const fetch = update || this.emotes ? this.needsUpdate(this.emoteCheck, 'emotes') : true;
+        if(!fetch) {
+            return Promise.resolve(this.emotes);
+        }
+
+        return Web.get(`${twitchApi}/${apiVersion}/users/${this.username}/emotes`, {
             headers: {
-                Authorization : `OAuth ${key}`
+                Authorization : `OAuth ${this.key}`
             }
         }).then(emotes => {
-            return ids.map(id => {
+            this.emotes.sets = Object.keys(emotes.emoticon_sets).map(id => {
                 const set = emotes.emoticon_sets[id];
                 const noRegex = set.reduce((arr, item) => {
                     item.userOnly = true;
@@ -302,36 +344,25 @@ export class TwitchService {
                     channel_id: '0',
                     tier: 0,
                 };
-                return this.emotes[id] = [ setInfo, noRegex, Date.now() ];
+                return [ setInfo, noRegex ];
             });
+            this.emotes.lookup = this.emotes.sets.reduce((obj, arr) => {
+                arr[1].forEach(e => {
+                    obj[e.code] = e;
+                });
+                return obj;
+            }, {});
+            this.emoteCheck = Date.now();
+            return this.emotes;
         });
 
-    }
-
-    public getEmotes(sets: string, update: boolean = false): Promise<any> {
-
-        const needed = [];
-        const have = [];
-
-        sets.split(',').forEach(x => {
-            const fetch = update || this.emotes[x] ? this.needsUpdate(this.emotes[x][2], 'emote') : true;
-            if (fetch) {
-                needed.push(x);
-            } else {
-                have.push(this.emotes[x]);
-            }
-        });
-
-        return this.getEmotesImpl(needed, this.key).then(newSets => {
-            return have.concat(newSets);
-        });
     }
 
     public getCheers(room: string, update: boolean = false) {
 
-        const fetch = update || this.cheers[room] ? this.needsUpdate(this.emotes[room][1], 'cheer') : true;
+        const fetch = update || this.cheers[room] ? this.needsUpdate(this.cheers[room][1], 'cheer') : true;
         if (!fetch) {
-            return this.cheers[room][0];
+            return Promise.resolve(this.cheers[room][0]);
         }
 
         return Web.get(`${twitchApi}/${apiVersion}/${cheersEp}?channel_id=${room}`, {
@@ -364,18 +395,6 @@ export class TwitchService {
             match = oauthRegex.exec(url);
         }
         return matches;
-    }
-
-    private validateUsername(token): any {
-        return axios.get(validateUrl, {
-            headers: {
-                Authorization : `OAuth ${token}`
-            }
-        }).then((response) => {
-            return response.data.login;
-        }).catch(err => {
-            throw err;
-        });
     }
 
     private get key() {

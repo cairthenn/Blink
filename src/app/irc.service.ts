@@ -95,25 +95,22 @@ export class IrcService {
 
     public notifyConnectionLost() {
         this.channels.forEach(c => {
-            this.callbacks[c].CLOSE();
+            this.handlers[c].CLOSE();
         });
     }
 
     public disconnect() {
-        if (!this.connected) {
-            return;
+        if (this.connected) {
+            this.send('QUIT');
+            this.connected = false;
+            this.socket.end();
         }
-        this.send('QUIT');
-        this.connected = false;
-        this.socket.end();
     }
 
     public send(data: string) {
-        if (!this.connected) {
-            return;
+        if (this.connected) {
+            this.socket.write(`${data}\n`, 'utf-8');
         }
-
-        this.socket.write(`${data}\n`, 'utf-8');
     }
 
     public joinImpl(channel: string) {
@@ -121,30 +118,25 @@ export class IrcService {
     }
 
     public join(channel: string, callbacks: any) {
-        if (this.channels.includes(channel)) {
-            return;
+        if (!this.channels.includes(channel)) {
+            this.handlers[channel] = callbacks;
+            this.channels.push(channel);
+            this.joinImpl(channel);
         }
-
-        this.handlers[channel] = callbacks;
-        this.channels.push(channel);
-        this.joinImpl(channel);
     }
 
     public part(channel) {
-        if (!this.channels.includes(channel)) {
-            return;
+        if (this.channels.includes(channel)) {
+            delete this.handlers[channel];
+            this.channels = this.channels.filter(x => x !== channel);
+            this.send(`PART #${channel}`);
         }
-
-        delete this.handlers[channel];
-        this.channels = this.channels.filter(x => x !== channel);
-        this.send(`PART #${channel}`);
     }
 
     public sendMessage(channel: string, message: string) {
-        if (!this.channels.includes(channel)) {
-            return;
+        if (this.channels.includes(channel)) {
+            this.send(`:${this.user}!${this.user}@${this.user}.tmi.twitch.tv PRIVMSG #${channel} :${message}`);
         }
-        this.send(`:${this.user}!${this.user}@${this.user}.tmi.twitch.tv PRIVMSG #${channel} :${message}`);
     }
 
     public receive(data: string) {
