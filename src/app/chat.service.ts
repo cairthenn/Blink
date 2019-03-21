@@ -18,7 +18,7 @@
 
 
 import { MessagesComponent } from './messages/messages.component';
-import { WebApiService as WebApiService } from './web-api.service';
+import { FfzBttvService } from './ffz-bttv.service';
 import { SettingsService } from './settings.service';
 import { ElectronService } from './electron.service';
 import { Message } from './message';
@@ -195,7 +195,7 @@ export class ChatService {
     }
 
     private updateFFZ() {
-        WebApiService.getFfzEmotes(this.channel).then(emotes => {
+        FfzBttvService.getFfzEmotes(this.channel).then(emotes => {
             this.emotes.ffz.channel = emotes[0];
             this.emotes.ffz.global = emotes[1];
             this.emotes.ffz.lookup = emotes.flat().reduce((obj, item) => {
@@ -209,7 +209,7 @@ export class ChatService {
     }
 
     private updateBTTV() {
-        WebApiService.getBttvEmotes(this.channel).then(emotes => {
+        FfzBttvService.getBttvEmotes(this.channel).then(emotes => {
             this.emotes.bttv.channel = emotes[0];
             this.emotes.bttv.global = emotes[1];
             this.emotes.bttv.lookup = emotes.flat().reduce((obj, item) => {

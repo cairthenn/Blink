@@ -101,7 +101,7 @@ export class MessagesComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public openUserCard(name: string, event: MouseEvent) {
-        event.stopPropagation();
+        this.closeUserCard(event);
         this.service.twitch.getChannel(name).then(channel => {
             const overhang = event.offsetX + this.userCard.width - this.el.nativeElement.clientWidth;
             this.userCard.left = overhang > 0 ? event.offsetX - overhang : event.offsetX;
