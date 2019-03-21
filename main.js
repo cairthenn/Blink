@@ -16,8 +16,11 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { app, BrowserWindow, Menu, autoUpdater, dialog, ipcMain } = require('electron');
+const { app, BrowserWindow, Menu, autoUpdater } = require('electron');
 const settings = require('electron-settings');
+const ChildProcess = require('child_process');
+const path = require('path');
+const fs = require('fs');
 
 const updateServer = 'https://update.electronjs.org'
 const feed = `${updateServer}/cairthenn/blink/${process.platform}-${process.arch}/${app.getVersion()}`
@@ -38,7 +41,10 @@ function autoUpdate() {
     });
 
     autoUpdater.on('error', err => {
-        dialog.showErrorBox('Update Error',`There was a problem updating the application: ${err}`);
+        const errorLog = `${process.execPath}/error.log`;
+        fs.writeFile(errorLog, `There was a problem updating the application: ${err}`, 'a+', (err) => {
+
+        });
     }) 
 
     autoUpdater.checkForUpdates();
@@ -92,7 +98,7 @@ function launchApplication() {
         window.show();
     });
 
-    // window.webContents.toggleDevTools();
+    window.webContents.toggleDevTools();
     window.loadFile('./dist/index.html');
 
     if(!firstRun && process.env.NODE_ENV != 'dev' && process.platform == 'win32') {
@@ -104,9 +110,6 @@ function handleSquirrelEvent() {
     if (process.argv.length === 1) {
       return false;
     }
-  
-    const ChildProcess = require('child_process');
-    const path = require('path');
   
     const appFolder = path.resolve(process.execPath, '..');
     const rootAtomFolder = path.resolve(appFolder, '..');
