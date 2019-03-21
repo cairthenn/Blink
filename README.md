@@ -5,6 +5,15 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/0rf9ysedohiyy58w?svg=true)](https://ci.appveyor.com/project/cairthenn/blink-cxr13)
 [![Discord Chat](https://img.shields.io/discord/551637138093899786.svg?logo=discord&colorB=7289da)](https://discord.gg/kpMknTN)
 
+# Installation
+
+Find the latest release [here](https://github.com/cairthenn/Blink/releases) and download the appropriate file:
+
+* Windows: `setup_win32-x64.exe`
+    * Subsequent updates will be installed automatically
+* MacOS: `blink-darwin-x64.zip`
+* Linux: `blink-linux-x64.zip`
+
 # Blink
 
 A clean, customizable Twitch chat client.
