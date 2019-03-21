@@ -8,11 +8,11 @@ import { Web } from './web';
 const twitchEmoteSets = require('../assets/emote-sets.json');
 
 const authBase = 'https://id.twitch.tv/oauth2';
-const authUrl = `${authBase}/authorize`
-const validateUrl = `${authBase}/validate`
-const revokeUrl = `${authBase}/revoke`
+const authUrl = `${authBase}/authorize`;
+const validateUrl = `${authBase}/validate`;
+const revokeUrl = `${authBase}/revoke`;
 const redirect = 'https://cairthenn.com';
-const scopes = 'chat:edit chat:read whispers:edit whispers:read channel:moderate user_subscriptions'
+const scopes = 'chat:edit chat:read whispers:edit whispers:read channel:moderate user_subscriptions';
 const clientId = 'ut8pnp247zcvfj7gga2lxo8kp2d9lz';
 
 const badgeChannelUrl = 'https://badges.twitch.tv/v1/badges/channels/';
@@ -129,7 +129,7 @@ export class TwitchService {
     constructor(public irc: IrcService) { }
 
     public needsUpdate(lastupdate, type) {
-        if(!lastupdate) {
+        if (!lastupdate) {
             return true;
         }
         return Date.now() - lastupdate >= (this.updates[type] || 0);
@@ -149,7 +149,7 @@ export class TwitchService {
 
     public logout() {
         return Web.post(`${revokeUrl}?client_id=${clientId}&token=${this.key}`).then(success => {
-            if(success) {
+            if (success) {
                 this.loggedIn = false;
                 this.enckey = undefined;
                 this.username = undefined;
@@ -250,15 +250,15 @@ export class TwitchService {
         if (!fetch) {
             return Promise.resolve(this.streams[id][0]);
         }
-        
+
         return Web.get(`${twitchApi}/${apiVersion}/${streamEp}/${id}`, {
             headers: {
                 Authorization : `OAuth ${this.key}`
             }
         }).then(stream => {
             const info = stream.stream || {};
-            info.live = info.stream_type === "live";
-            info.vod = info.stream_type === "playlist";
+            info.live = info.stream_type === 'live';
+            info.vod = info.stream_type === 'playlist';
             this.streams[id] = [ info, Date.now() ];
             return info;
         });
@@ -311,7 +311,7 @@ export class TwitchService {
     public getEmotes(update?: boolean) {
 
         const fetch = update || this.emotes ? this.needsUpdate(this.emoteCheck, 'emotes') : true;
-        if(!fetch) {
+        if (!fetch) {
             return Promise.resolve(this.emotes);
         }
 

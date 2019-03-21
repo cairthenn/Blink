@@ -33,6 +33,6 @@ export class Web {
             return true;
         }).catch(err => {
             return false;
-        })
+        });
     }
 }

@@ -40,7 +40,7 @@ export class ViewerDialogComponent implements OnInit {
       this.moderators = this.data.moderators.filter(x => regex.test(x));
       this.staff = this.data.staff.filter(x => regex.test(x));
       this.vips = this.data.vips.filter(x => regex.test(x));
-      this.viewers = this.data.viewers.filter(x => regex.test(x));
+      this.viewers = this.data.viewers.filter(x => regex.test(x)).slice(0, 1000);
       this.error = false;
     } catch (e) {
       this.error = true;
@@ -52,7 +52,7 @@ export class ViewerDialogComponent implements OnInit {
     this.moderators = data.moderators;
     this.staff = data.staff;
     this.vips = data.vips;
-    this.viewers = data.viewers;
+    this.viewers = data.viewers.slice(0, 1000);
   }
 
   ngOnInit() {

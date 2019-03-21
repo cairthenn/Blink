@@ -111,7 +111,7 @@ export class MessagesComponent implements OnInit, AfterViewInit, OnDestroy {
         this.service.twitch.getChannel(name).then(channel => {
             this.userCard.data = channel;
             this.update();
-        })
+        });
     }
 
 
