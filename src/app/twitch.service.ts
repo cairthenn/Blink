@@ -5,8 +5,6 @@ import CryptoJS from 'crypto-js';
 import * as qs from 'querystring';
 import { Web } from './web';
 
-const twitchEmoteSets = require('../assets/emote-sets.json');
-
 const authBase = 'https://id.twitch.tv/oauth2';
 const authUrl = `${authBase}/authorize`;
 const validateUrl = `${authBase}/validate`;
@@ -17,6 +15,7 @@ const clientId = 'ut8pnp247zcvfj7gga2lxo8kp2d9lz';
 
 const badgeChannelUrl = 'https://badges.twitch.tv/v1/badges/channels/';
 const badgeGlobalUrl = 'https://badges.twitch.tv/v1/badges/global/display';
+const emoteSetUrl = 'https://api.twitchemotes.com/api/v4/sets'
 
 const tmiInfo = 'https://tmi.twitch.tv/group/user/';
 const twitchApi = 'https://api.twitch.tv';
@@ -114,6 +113,7 @@ export class TwitchService {
     private channels: any = {};
     private badges: any = {};
     private emotes: any = {};
+    private setNames: any = {};
     private validation: any = {};
     private enckey: string;
     private loggedIn: boolean;
@@ -308,6 +308,18 @@ export class TwitchService {
         });
     }
 
+    public getEmoteSets(sets: string[]) {
+        return Web.get(`${emoteSetUrl}?id=${sets.join()}`).then(results => {
+            return results.reduce((obj, item) => {
+                obj[item.set_id] = item;
+                return obj;
+            }, this.setNames);
+        }).catch(err => {
+            console.log(err);
+            return {};
+        });
+    }
+
     public getEmotes(update?: boolean) {
 
         const fetch = update || this.emotes ? this.needsUpdate(this.emoteCheck, 'emotes') : true;
@@ -320,40 +332,44 @@ export class TwitchService {
                 Authorization : `OAuth ${this.key}`
             }
         }).then(emotes => {
-            this.emotes.sets = Object.keys(emotes.emoticon_sets).map(id => {
-                const set = emotes.emoticon_sets[id];
-                const noRegex = set.reduce((arr, item) => {
-                    item.userOnly = true;
-                    item.type = 'twitch';
-                    item.src = `https://static-cdn.jtvnw.net/emoticons/v1/${item.id}/1.0`;
-                    item.lower = item.code.toLowerCase();
-
-                    if (item.code in fixes) {
-                        fixes[item.code].forEach(x => {
-                            arr.push(Object.assign({}, item, { code: x }));
-                        });
-                    } else {
-                        arr.push(item);
-                    }
-
-                    return arr;
-                }, []);
-                const setInfo = twitchEmoteSets[id] || {
-                    set_id: id,
-                    channel_name: `Unknown Set ${id}`,
-                    channel_id: '0',
-                    tier: 0,
-                };
-                return [ setInfo, noRegex ];
-            });
-            this.emotes.lookup = this.emotes.sets.reduce((obj, arr) => {
-                arr[1].forEach(e => {
-                    obj[e.code] = e;
+            const keys = Object.keys(emotes.emoticon_sets);
+            return this.getEmoteSets(keys).then((sets) => {
+                console.log(sets);
+                this.emotes.sets = keys.map(id => {
+                    const set = emotes.emoticon_sets[id];
+                    const noRegex = set.reduce((arr, item) => {
+                        item.userOnly = true;
+                        item.type = 'twitch';
+                        item.src = `https://static-cdn.jtvnw.net/emoticons/v1/${item.id}/1.0`;
+                        item.lower = item.code.toLowerCase();
+    
+                        if (item.code in fixes) {
+                            fixes[item.code].forEach(x => {
+                                arr.push(Object.assign({}, item, { code: x }));
+                            });
+                        } else {
+                            arr.push(item);
+                        }
+    
+                        return arr;
+                    }, []);
+                    const setInfo = sets[id] || {
+                        set_id: id,
+                        channel_name: `Unknown Set ${id}`,
+                        channel_id: '0',
+                        tier: 0,
+                    };
+                    return [ setInfo, noRegex ];
                 });
-                return obj;
-            }, {});
-            this.emoteCheck = Date.now();
-            return this.emotes;
+                this.emotes.lookup = this.emotes.sets.reduce((obj, arr) => {
+                    arr[1].forEach(e => {
+                        obj[e.code] = e;
+                    });
+                    return obj;
+                }, {});
+                this.emoteCheck = Date.now();
+                return this.emotes;
+            });
         });
 
     }
