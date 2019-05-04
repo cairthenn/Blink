@@ -158,13 +158,22 @@ export class Message {
 
         const hue = hsl[0];
         const lightSat = Math.min(40, hsl[1]);
-        const lightLum = Math.min(50, hsl[2]);
+        let lightLum = Math.min(50, hsl[2]);
 
         let darkLum = Math.max(hsl[2], 50);
+        // Color correction concept from: https://github.com/fourtf/chatterino
 
         if (darkLum < 60 && hsl[0] > 196 && hsl[0] < 300) {
             darkLum += Math.sin((hue  - 196) / (300 - 196) * Math.PI) * hsl[1] * .4;
         }
+
+        if (darkLum < 80 && (hsl[0] < 22 || hsl[0] > 331))
+        {
+            darkLum += (hsl[1] * .1);
+        }
+
+        darkLum = Math.min(darkLum, 95);
+        lightLum = Math.min(lightLum, 95);
 
         return [`hsl(${hue},${lightSat}%,${lightLum}%)`, `hsl(${hue},${hsl[1]}%,${darkLum}%)`];
     }

@@ -232,17 +232,26 @@ export class TwitchService {
                 }
             }).then(validatation => {
                 this.validation = validatation;
-                this.username = validatation.login;
-                this.usernameLower = validatation.login.toLowerCase();
+                this.usernameLower = validatation.login;
                 this.enckey = CryptoJS.AES.encrypt(auth.access_token, validatation.login);
                 this.loggedIn = true;
-                return this.irc.connect(validatation.login, auth.access_token).then(() => {
-                    return this.getEmotes().then(() => {
-                        return true;
-                    });
-                }).catch(err => false);
+                
+                const displayNamePromise = this.getChannel(validatation.login).then(channel => {
+                    this.username = channel.display_name;
+                    return true;
+                }).catch(err => {
+                    console.log(`Error fetching channel info: ${err}`);
+                    return false;
+                });
+
+                const ircPromise = this.irc.connect(validatation.login, auth.access_token).then(() => true).catch(err => false);
+                const emotePromise = this.getEmotes().then(() => true).catch(err => false);
+                return Promise.all([displayNamePromise, ircPromise, emotePromise]).then(results => {
+                    console.log(results);
+                    return results.every(x => x);
+                }).catch(err => { console.log(`Error fetching channel info: ${err}`); return false; });
             });
-        }).catch(err => false);
+        }).catch(err => { console.log(`Error fetching channel info: ${err}`); return false; });
     }
 
     public getStream(id: string, update?: boolean) {
@@ -327,14 +336,13 @@ export class TwitchService {
             return Promise.resolve(this.emotes);
         }
 
-        return Web.get(`${twitchApi}/${apiVersion}/users/${this.username}/emotes`, {
+        return Web.get(`${twitchApi}/${apiVersion}/users/${this.usernameLower}/emotes`, {
             headers: {
                 Authorization : `OAuth ${this.key}`
             }
         }).then(emotes => {
             const keys = Object.keys(emotes.emoticon_sets);
             return this.getEmoteSets(keys).then((sets) => {
-                console.log(sets);
                 this.emotes.sets = keys.map(id => {
                     const set = emotes.emoticon_sets[id];
                     const noRegex = set.reduce((arr, item) => {
@@ -414,7 +422,7 @@ export class TwitchService {
     }
 
     private get key() {
-        const bytes = CryptoJS.AES.decrypt(this.enckey, this.username);
+        const bytes = CryptoJS.AES.decrypt(this.enckey, this.validation.login);
         return bytes.toString(CryptoJS.enc.Utf8);
     }
 }

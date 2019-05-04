@@ -39,11 +39,11 @@
 .scrollbar::-webkit-scrollbar
 {
 	width: 10px;
-	background: inherit;
+    background: inherit;
 }
 
 .scrollbar::-webkit-scrollbar-thumb
 {
-	border-radius: 10px;
-	background: #201c2b;
+    border-radius: 10px;
+    background: rgba(71, 62, 95, .5);
 }
