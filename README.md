@@ -3,7 +3,7 @@
 [![NPM Version](https://img.shields.io/npm/v/npm.svg?style=flat)](https://www.npmjs.com/)
 [![Build Status](https://travis-ci.com/cairthenn/Blink.svg?branch=master)](https://travis-ci.com/cairthenn/Blink)
 [![Build status](https://ci.appveyor.com/api/projects/status/0rf9ysedohiyy58w?svg=true)](https://ci.appveyor.com/project/cairthenn/blink-cxr13)
-[![Discord Chat](https://img.shields.io/discord/551637138093899786.svg?logo=discord&colorB=7289da)](https://discord.gg/TpdwZcp)
+[![Discord Chat](https://img.shields.io/discord/515164869880840192.svg?logo=discord&colorB=7289da)](https://discord.gg/TpdwZcp)
 
 # Installation
 
