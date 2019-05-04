@@ -42,7 +42,7 @@ function autoUpdate() {
 
     autoUpdater.on('error', err => {
         const errorLog = `${process.execPath}/error.log`;
-        fs.writeFile(errorLog, `There was a problem updating the application: ${err}`, 'a+', (err) => {
+        fs.appendFile(errorLog, `There was a problem updating the application: ${err}`, (err) => {
 
         });
     }) 
