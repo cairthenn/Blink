@@ -98,9 +98,10 @@ function launchApplication() {
         window.show();
     });
 
-    // if(process.env.NODE_ENV == 'dev') {
-    //     window.webContents.toggleDevTools();
-    // }
+    if(process.env.NODE_ENV == 'dev') {
+        window.webContents.toggleDevTools();
+    }
+    
     window.loadFile('./dist/index.html');
 
     if(!firstRun && process.env.NODE_ENV != 'dev' && process.platform == 'win32') {
