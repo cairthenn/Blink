@@ -42,7 +42,7 @@ function autoUpdate() {
 
     autoUpdater.on('error', err => {
         const errorLog = `${process.execPath}/error.log`;
-        fs.writeFile(errorLog, `There was a problem updating the application: ${err}`, 'a+', (err) => {
+        fs.appendFile(errorLog, `There was a problem updating the application: ${err}`, (err) => {
 
         });
     }) 
@@ -98,9 +98,10 @@ function launchApplication() {
         window.show();
     });
 
-    // if(process.env.NODE_ENV == 'dev') {
-    //     window.webContents.toggleDevTools();
-    // }
+    if(process.env.NODE_ENV == 'dev') {
+        window.webContents.toggleDevTools();
+    }
+    
     window.loadFile('./dist/index.html');
 
     if(!firstRun && process.env.NODE_ENV != 'dev' && process.platform == 'win32') {

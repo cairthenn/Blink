@@ -449,6 +449,10 @@ export class ChatService {
 
         const message = Message.fromIncoming(original, params, this.emotes, this.cheers, this.settings, this.usernameLower);
 
+        if(message.ignore) {
+            return;
+        }
+
         if (message.highlight && !this.active) {
             this.mentions++;
             if (this.settings.flash) {

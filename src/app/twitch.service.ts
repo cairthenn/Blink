@@ -4,13 +4,14 @@ import { IrcService } from './irc.service';
 import CryptoJS from 'crypto-js';
 import * as qs from 'querystring';
 import { Web } from './web';
+import { ChatService } from './chat.service';
 
 const authBase = 'https://id.twitch.tv/oauth2';
 const authUrl = `${authBase}/authorize`;
 const validateUrl = `${authBase}/validate`;
 const revokeUrl = `${authBase}/revoke`;
 const redirect = 'https://cairthenn.com';
-const scopes = 'chat:edit chat:read whispers:edit whispers:read channel:moderate user_subscriptions';
+const scopes = 'chat:edit chat:read whispers:edit whispers:read channel:moderate user_subscriptions channel_editor';
 const clientId = 'ut8pnp247zcvfj7gga2lxo8kp2d9lz';
 
 const badgeChannelUrl = 'https://badges.twitch.tv/v1/badges/channels/';
@@ -106,6 +107,8 @@ export class TwitchService {
 
     public username: string;
     public usernameLower: string;
+    public whispers: ChatService;
+    public mentions: ChatService;
 
     private authWindow;
     private cheers: any = {};
@@ -115,6 +118,7 @@ export class TwitchService {
     private emotes: any = {};
     private setNames: any = {};
     private validation: any = {};
+    private userIdMap: any = {};
     private enckey: string;
     private loggedIn: boolean;
     private emoteCheck: number;
@@ -228,6 +232,7 @@ export class TwitchService {
         return promise.then((auth: any) => {
             return Web.get(validateUrl, {
                 headers: {
+                    Accept: 'application/vnd.twitchtv.v5+json',
                     Authorization : `OAuth ${auth.access_token}`
                 }
             }).then(validatation => {
@@ -235,7 +240,7 @@ export class TwitchService {
                 this.usernameLower = validatation.login;
                 this.enckey = CryptoJS.AES.encrypt(auth.access_token, validatation.login);
                 this.loggedIn = true;
-                
+
                 const displayNamePromise = this.getChannel(validatation.login).then(channel => {
                     this.username = channel.display_name;
                     return true;
@@ -247,47 +252,69 @@ export class TwitchService {
                 const ircPromise = this.irc.connect(validatation.login, auth.access_token).then(() => true).catch(err => false);
                 const emotePromise = this.getEmotes().then(() => true).catch(err => false);
                 return Promise.all([displayNamePromise, ircPromise, emotePromise]).then(results => {
-                    console.log(results);
                     return results.every(x => x);
                 }).catch(err => { console.log(`Error fetching channel info: ${err}`); return false; });
             });
         }).catch(err => { console.log(`Error fetching channel info: ${err}`); return false; });
     }
 
-    public getStream(id: string, update?: boolean) {
-        const fetch = update || this.streams[id] ? this.needsUpdate(this.streams[id][1], 'streams') : true;
-        if (!fetch) {
-            return Promise.resolve(this.streams[id][0]);
-        }
-
-        return Web.get(`${twitchApi}/${apiVersion}/${streamEp}/${id}`, {
-            headers: {
-                Authorization : `OAuth ${this.key}`
+    public getStream(name: string, update?: boolean) {
+        
+        return this.getChannelID(name).then(id => {
+            const fetch = update || this.streams[id] ? this.needsUpdate(this.streams[id][1], 'streams') : true;
+            if (!fetch) {
+                return Promise.resolve(this.streams[id][0]);
             }
-        }).then(stream => {
-            const info = stream.stream || {};
-            info.live = info.stream_type === 'live';
-            info.vod = info.stream_type === 'playlist';
-            this.streams[id] = [ info, Date.now() ];
-            return info;
+
+            return Web.get(`${twitchApi}/${apiVersion}/${streamEp}/${id}`, {
+                headers: {
+                    Accept: 'application/vnd.twitchtv.v5+json',
+                    Authorization : `OAuth ${this.key}`
+                }
+            }).then(stream => {
+                const info = stream.stream || {};
+                info.live = info.stream_type === 'live';
+                info.vod = info.stream_type === 'playlist';
+                this.streams[id] = [ info, Date.now() ];
+                return info;
+            });
         });
     }
 
-    public getChannel(id: string, update?: boolean) {
+    private getChannelID(name: string) {
 
-        const fetch = update || this.channels[id] ? this.needsUpdate(this.channels[id][1], 'channels') : true;
-        if (!fetch) {
-            return Promise.resolve(this.channels[id][0]);
+        if (name in this.userIdMap) {
+            return Promise.resolve(this.userIdMap[name]);
         }
 
-        return Web.get(`${twitchApi}/${apiVersion}/${channelEp}/${id}`, {
+        return Web.get(`${twitchApi}/helix/users?login=${name}`, {
             headers: {
-                Authorization : `OAuth ${this.key}`
+                Authorization : `Bearer ${this.key}`
             }
-        }).then(channel => {
-            channel.signup = new Date(channel.created_at).toDateString();
-            this.channels[id] = [ channel, Date.now() ];
-            return channel;
+        }).then(response => {
+            return this.userIdMap[name] = response.data[0].id;
+        })
+
+    }
+
+    public getChannel(name: string, update?: boolean) {
+
+        return this.getChannelID(name).then(id => {
+            const fetch = update || this.channels[id] ? this.needsUpdate(this.channels[id][1], 'channels') : true;
+            if (!fetch) {
+                return Promise.resolve(this.channels[id][0]);
+            }
+
+            return Web.get(`${twitchApi}/${apiVersion}/${channelEp}/${id}`, {
+                headers: {
+                    Accept: 'application/vnd.twitchtv.v5+json',
+                    Authorization : `OAuth ${this.key}`
+                }
+            }).then(channel => {
+                channel.signup = new Date(channel.created_at).toDateString();
+                this.channels[id] = [ channel, Date.now() ];
+                return channel;
+            });
         });
     }
 
@@ -336,8 +363,9 @@ export class TwitchService {
             return Promise.resolve(this.emotes);
         }
 
-        return Web.get(`${twitchApi}/${apiVersion}/users/${this.usernameLower}/emotes`, {
+        return Web.get(`${twitchApi}/${apiVersion}/users/${this.validation.user_id}/emotes`, {
             headers: {
+                Accept: 'application/vnd.twitchtv.v5+json',
                 Authorization : `OAuth ${this.key}`
             }
         }).then(emotes => {
