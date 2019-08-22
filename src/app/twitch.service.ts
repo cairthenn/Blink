@@ -11,7 +11,7 @@ const authUrl = `${authBase}/authorize`;
 const validateUrl = `${authBase}/validate`;
 const revokeUrl = `${authBase}/revoke`;
 const redirect = 'https://cairthenn.com';
-const scopes = 'chat:edit chat:read whispers:edit whispers:read channel:moderate user_subscriptions';
+const scopes = 'chat:edit chat:read whispers:edit whispers:read channel:moderate user_subscriptions channel_editor';
 const clientId = 'ut8pnp247zcvfj7gga2lxo8kp2d9lz';
 
 const badgeChannelUrl = 'https://badges.twitch.tv/v1/badges/channels/';
