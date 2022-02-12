@@ -34,7 +34,7 @@
     "@angular/platform-browser": "^7.2.14",
     "@angular/platform-browser-dynamic": "^7.2.14",
     "@angular/router": "^7.2.14",
-    "axios": "^0.18.0",
+    "axios": "^0.21.2",
     "core-js": "^2.5.4",
     "crypto-js": "^3.1.9-1",
     "dateformat": "^3.0.3",
