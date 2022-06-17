@@ -52,7 +52,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^8.10.48",
     "codelyzer": "~4.5.0",
-    "electron": "^11.5.0",
+    "electron": "^15.5.5",
     "electron-installer-dmg": "^2.0.0",
     "electron-packager": "^13.1.1",
     "electron-winstaller": "^3.0.4",
